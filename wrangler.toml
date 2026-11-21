@@ -1,10 +1,18 @@
 # Cloudflare Pages configuration for Mehfeez Jewels.
+# Because this file exists, Cloudflare Pages uses it as the source of truth:
+# variables entered in the dashboard are ignored, so public vars live here.
 # Build command: npm run build   |   Output directory: .svelte-kit/cloudflare
 name = "mehfeez-jewels"
-compatibility_date = "2026-11-01"
+compatibility_date = "2026-09-01"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".svelte-kit/cloudflare"
 
-# Public (non-secret) variables. Set real values in the Cloudflare dashboard:
-# Pages > mehfeez-jewels > Settings > Variables and Secrets.
-# NEVER put the Supabase service_role key anywhere in this project.
+# PUBLIC values only. The publishable/anon key is designed to be public;
+# every table is protected by Row Level Security.
+# NEVER put the Supabase service_role / secret key anywhere in this project.
+# Local `wrangler pages dev` uses .dev.vars instead (it overrides these).
+[vars]
+PUBLIC_SUPABASE_URL = "https://oowhlrwxftiqyomhedod.supabase.co"
+PUBLIC_SUPABASE_ANON_KEY = "sb_publishable_jllNaVDQ5Vt4PsxszI2o-g_UyYJ5h5V"
+PUBLIC_SITE_URL = "https://mehfeez-jewels.pages.dev"
+PUBLIC_SUPABASE_IMAGE_TRANSFORM = "false"

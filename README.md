@@ -68,11 +68,8 @@ GitHub Actions runs type checks, RLS tests and a build on every push.
 ## 4. Cloudflare Pages (automatic deployment from GitHub)
 1. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git** → select the repository.
 2. Production branch: `main` · Framework preset: *SvelteKit* · Build command: `npm run build` · Output directory: `.svelte-kit/cloudflare`.
-3. **Settings → Variables and Secrets** (Production and Preview):
-   - `PUBLIC_SUPABASE_URL` = your project URL
-   - `PUBLIC_SUPABASE_ANON_KEY` = anon / publishable key
-   - `PUBLIC_SITE_URL` = `https://www.yourdomain.com`
-   - `NODE_VERSION` = `22`
+3. Public variables (`PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`, `PUBLIC_SITE_URL`) live in the `[vars]` section of `wrangler.toml`. Because that file exists, Cloudflare Pages **ignores variables entered in the dashboard**. Edit `wrangler.toml` and push to change them. Node 22 is pinned by `.nvmrc`.
+   The **build command** must be set in the dashboard (Settings → Build → Build configuration), since `wrangler.toml` cannot hold it.
 4. **Settings → Runtime → Compatibility flags**: `nodejs_compat` (also declared in `wrangler.toml`).
 5. **Custom domains**: add your domain; then update the Supabase Site URL to match.
 6. Every push to `main` deploys to production; other branches get preview URLs. Roll back any time from **Deployments → ⋯ → Rollback to this deployment**.

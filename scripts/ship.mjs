@@ -14,7 +14,10 @@ if (!message) {
 }
 
 const sh = (cmd) => execSync(cmd, { encoding: 'utf8' }).trim();
-const run = (cmd, args) => spawnSync(cmd, args, { stdio: 'inherit', shell: process.platform === 'win32' }).status === 0;
+// npm needs a shell on Windows (npm.cmd); git must NOT use one, or the commit
+// message would be split into separate arguments.
+const run = (cmd, args) =>
+  spawnSync(cmd, args, { stdio: 'inherit', shell: process.platform === 'win32' && cmd === 'npm' }).status === 0;
 
 const status = sh('git status --porcelain');
 if (!status) {

@@ -89,12 +89,17 @@
   }
   .cols {
     display: grid;
-    gap: 36px;
-    grid-template-columns: 1fr;
+    gap: 28px 20px;
+    grid-template-columns: 1fr 1fr;
   }
-  @media (min-width: 700px) {
-    .cols {
-      grid-template-columns: 1fr 1fr;
+  .brand,
+  .cols > div:last-child {
+    grid-column: 1 / -1;
+  }
+  @media (min-width: 1024px) {
+    .brand,
+    .cols > div:last-child {
+      grid-column: auto;
     }
   }
   @media (min-width: 1024px) {

@@ -3,7 +3,7 @@
 B2B wholesale catalogue for an artificial jewellery manufacturer. SvelteKit 2 (Svelte 5 runes) on Cloudflare Pages, Supabase (Postgres + Auth + Storage).
 
 ## Non-negotiables
-- Palette ONLY: burgundy #541C30 (primary), ivory #F8F4ED, charcoal #302B2B, white #FFFFFF (and transparencies of these). Never gold, golden, beige, bronze, champagne or metallic shades.
+- Palette ONLY: burgundy #581328 (primary, sampled from the brand colour board), ivory #F8F4ED, charcoal #302B2B, white #FFFFFF (and transparencies of these). Never gold, golden, beige, bronze, champagne or metallic shades.
 - No payment gateway, cart, checkout, COD, coupons or retail discounts. Orders are discussed on WhatsApp.
 - Wholesale prices live only in `product_prices`, protected by RLS (approved customers + admins). Always query prices with the visitor's own Supabase session (`locals.supabase`). Never add a service-role key, never fetch prices with elevated privileges, never put prices in JSON-LD, meta tags or public endpoints.
 - Dynamic pages must never be shared-cacheable (see `src/hooks.server.ts`); the Cloudflare edge cache keys only on URL.

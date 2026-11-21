@@ -3,25 +3,16 @@ import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { supabase, configured, canSeePrices } = locals;
-  const [featured, arrivals, bestsellers] = await Promise.all([
-    listProducts(supabase, configured, { flag: 'is_featured', limit: 8 }),
+  const [arrivals, featured] = await Promise.all([
     listProducts(supabase, configured, { flag: 'is_new_arrival', limit: 8 }),
-    listProducts(supabase, configured, { flag: 'is_bestseller', limit: 8 })
+    listProducts(supabase, configured, { flag: 'is_featured', limit: 6 })
   ]);
-  const all = [...featured.products, ...arrivals.products, ...bestsellers.products];
-  const unique = [...new Map(all.map((p) => [p.id, p])).values()];
-  const prices = await withCardPrices(supabase, canSeePrices, unique);
-  return {
-    featured: featured.products,
-    arrivals: arrivals.products,
-    bestsellers: bestsellers.products,
-    prices
-  };
-};
-
-import { submitEnquiry } from '$lib/server/enquiry';
-import type { Actions } from './$types';
-
-export const actions: Actions = {
-  enquiry: submitEnquiry
+  // Product photos shown in the hero showcase: featured designs first, then new arrivals.
+  const showcase = [...featured.products, ...arrivals.products]
+    .filter((p) => p.images?.length)
+    .filter((p, i, a) => a.findIndex((q) => q.id === p.id) === i)
+    .slice(0, 3)
+    .map((p) => ({ name: p.name, slug: p.slug, url: p.images![0].url }));
+  const prices = await withCardPrices(supabase, canSeePrices, arrivals.products);
+  return { arrivals: arrivals.products, showcase, prices };
 };

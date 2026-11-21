@@ -118,7 +118,7 @@
   }
   .desktop {
     display: none;
-    gap: 26px;
+    gap: clamp(14px, 1.6vw, 26px);
     align-items: center;
   }
   .desktop > a,
@@ -131,6 +131,7 @@
     padding: 26px 0;
     position: relative;
     text-decoration: none;
+    white-space: nowrap;
   }
   .desktop a.active::after,
   .desktop > a:hover::after,

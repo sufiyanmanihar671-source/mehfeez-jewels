@@ -1,19 +1,19 @@
 /* =====================================================================
    MEHFEEZ JEWELS — design tokens
-   Palette is restricted to: Deep Burgundy #541C30, Ivory #F8F4ED,
+   Palette is restricted to: Deep Burgundy #581328, Ivory #F8F4ED,
    Charcoal #302B2B, Pure White #FFFFFF (plus transparencies of these).
    No gold / beige / bronze / champagne anywhere.
    ===================================================================== */
 :root {
-  --burgundy: #541c30;
+  --burgundy: #581328;
   --burgundy-deep: var(--charcoal); /* hover state for burgundy buttons */
   --ivory: #f8f4ed;
   --charcoal: #302b2b;
   --white: #ffffff;
 
-  --burgundy-08: rgba(84, 28, 48, 0.08);
-  --burgundy-15: rgba(84, 28, 48, 0.15);
-  --burgundy-30: rgba(84, 28, 48, 0.3);
+  --burgundy-08: rgba(88, 19, 40, 0.08);
+  --burgundy-15: rgba(88, 19, 40, 0.15);
+  --burgundy-30: rgba(88, 19, 40, 0.3);
   --charcoal-70: rgba(48, 43, 43, 0.72);
   --charcoal-50: rgba(48, 43, 43, 0.55);
   --charcoal-15: rgba(48, 43, 43, 0.15);
@@ -27,7 +27,7 @@
   --radius: 4px;
   --radius-lg: 10px;
   --shadow: 0 10px 30px -12px rgba(48, 43, 43, 0.25);
-  --shadow-lg: 0 24px 60px -20px rgba(84, 28, 48, 0.35);
+  --shadow-lg: 0 24px 60px -20px rgba(88, 19, 40, 0.35);
   --container: 1240px;
   --gutter: clamp(16px, 4vw, 40px);
   --header-h: 72px;

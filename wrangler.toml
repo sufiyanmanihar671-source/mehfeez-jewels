@@ -1,0 +1,10 @@
+# Cloudflare Pages configuration for Mehfeez Jewels.
+# Build command: npm run build   |   Output directory: .svelte-kit/cloudflare
+name = "mehfeez-jewels"
+compatibility_date = "2026-11-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".svelte-kit/cloudflare"
+
+# Public (non-secret) variables. Set real values in the Cloudflare dashboard:
+# Pages > mehfeez-jewels > Settings > Variables and Secrets.
+# NEVER put the Supabase service_role key anywhere in this project.

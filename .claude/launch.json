@@ -1,0 +1,7 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "mock-supabase", "runtimeExecutable": "node", "runtimeArgs": ["tests/mock-supabase.mjs"], "port": 54321 },
+    { "name": "site", "runtimeExecutable": "npx", "runtimeArgs": ["wrangler", "pages", "dev", ".svelte-kit/cloudflare", "--port", "8788"], "port": 8788 }
+  ]
+}

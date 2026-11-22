@@ -2,6 +2,7 @@
   import { enhance } from '$app/forms';
   import Seo from '$lib/components/Seo.svelte';
   import AuthShell from '$lib/components/AuthShell.svelte';
+  import { page } from '$app/state';
   let { form } = $props();
 </script>
 
@@ -12,6 +13,7 @@
     <div class="alert alert--success" role="status">If an account exists for that email, a password reset link is on its way. Please check your inbox.</div>
     <a href="/login">Back to login</a>
   {:else}
+    {#if page.url.searchParams.get('expired')}<div class="alert alert--error" role="alert">That reset link could not be used here. Please request a new one and open it in this same browser.</div>{/if}
     {#if form?.message}<div class="alert alert--error" role="alert">{form.message}</div>{/if}
     <form method="POST" use:enhance>
       <div class="field">

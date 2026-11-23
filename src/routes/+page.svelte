@@ -81,21 +81,6 @@
   </div>
 </section>
 
-<!-- Video-call band (reference "shop from home" panel, B2B version) -->
-<section class="vc">
-  <div class="container">
-    <div class="vc-panel">
-      <span class="vc-eb">See before you order</span>
-      <h2>Explore our designs on a <em>live video call</em></h2>
-      <p>Our team shows you each design up close and discusses quantities, assortments and wholesale pricing for your business.</p>
-      <div class="vc-btns">
-        <a class="btn" href={videoCall} target="_blank" rel="noopener noreferrer"><Icon name="video" size={17} /> Book a Video Call</a>
-        <a class="btn btn--outline" href={wa} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={17} /> Chat on WhatsApp</a>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- D. Explore Our Collections (arched cards) -->
 {#if signature.length}
   <section class="block">
@@ -339,42 +324,9 @@
     }
   }
 
-  /* video-call band */
-  .vc {
-    background: var(--ivory);
-    padding: clamp(32px, 5vw, 56px) 0;
-  }
-  .vc-panel {
-    max-width: 920px;
-    margin: 0 auto;
-    text-align: center;
-    padding: clamp(26px, 4vw, 44px) clamp(18px, 4vw, 48px);
-    border: 1px solid var(--burgundy-30);
-    outline: 1px solid var(--burgundy-15);
-    outline-offset: 6px;
-    background: var(--white);
-  }
-  .vc-eb {
-    font-size: 0.7rem;
-    letter-spacing: 0.32em;
-    text-transform: uppercase;
-    color: var(--burgundy-accent);
-  }
-  .vc h2 {
-    margin: 10px 0 8px;
-    font-size: clamp(1.7rem, 3vw, 2.4rem);
-    font-weight: 500;
-  }
-  .vc h2 em,
   .cta h2 em {
     color: var(--burgundy);
   }
-  .vc p {
-    color: var(--muted);
-    max-width: 58ch;
-    margin: 0 auto 18px;
-  }
-  .vc-btns,
   .cta-btns {
     display: flex;
     gap: 12px;

@@ -17,6 +17,6 @@ export const actions: Actions = {
       return fail(429, { email, message: 'Too many requests. Please wait a few minutes and try again.' });
     }
     // Same response whether or not the account exists (prevents email enumeration).
-    return { sent: true };
+    return { sent: true, email };
   }
 };

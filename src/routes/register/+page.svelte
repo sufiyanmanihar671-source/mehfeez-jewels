@@ -3,6 +3,7 @@
   import Seo from '$lib/components/Seo.svelte';
   import AuthShell from '$lib/components/AuthShell.svelte';
   import BusinessFields from '$lib/components/BusinessFields.svelte';
+  import GoogleButton from '$lib/components/GoogleButton.svelte';
 
   let { form } = $props();
   let busy = $state(false);
@@ -26,6 +27,7 @@
     <a class="btn" href="/login">Go to login</a>
   {:else}
     {#if form?.message}<div class="alert alert--error" role="alert">{form.message}</div>{/if}
+    <div class="g"><GoogleButton label="Sign up with Google" /></div>
     <form
       method="POST"
       novalidate
@@ -82,5 +84,8 @@
   }
   .alt {
     margin-top: 22px;
+  }
+  .g {
+    max-width: 420px;
   }
 </style>

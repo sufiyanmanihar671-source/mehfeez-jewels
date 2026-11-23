@@ -16,3 +16,5 @@ PUBLIC_SUPABASE_URL = "https://oowhlrwxftiqyomhedod.supabase.co"
 PUBLIC_SUPABASE_ANON_KEY = "sb_publishable_jllNaVDQ5Vt4PsxszI2o-g_UyYJ5h5V"
 PUBLIC_SITE_URL = "https://mehfeezjewels.com"
 PUBLIC_SUPABASE_IMAGE_TRANSFORM = "false"
+# Set to "true" after enabling the Google provider in Supabase (Auth > Sign In / Providers).
+PUBLIC_GOOGLE_LOGIN = "false"

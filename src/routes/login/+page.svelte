@@ -2,10 +2,12 @@
   import { enhance } from '$app/forms';
   import Seo from '$lib/components/Seo.svelte';
   import AuthShell from '$lib/components/AuthShell.svelte';
+  import GoogleButton from '$lib/components/GoogleButton.svelte';
   import { page } from '$app/state';
   let { data, form } = $props();
   const notice = $derived(page.url.searchParams.get('notice'));
   const linkError = $derived(page.url.searchParams.get('error') === 'link');
+  const oauthError = $derived(page.url.searchParams.get('error') === 'oauth');
   let busy = $state(false);
 </script>
 
@@ -17,7 +19,11 @@
   {:else if linkError && !form?.message}
     <div class="alert alert--error" role="alert">This link is invalid or has expired. Please log in, or request a new link from “Forgot password?”.</div>
   {/if}
+  {#if oauthError}
+    <div class="alert alert--error" role="alert">Google sign-in could not be completed. Please try again, or log in with your email and password.</div>
+  {/if}
   {#if form?.message}<div class="alert alert--error" role="alert">{form.message}</div>{/if}
+  <GoogleButton next={data.next || '/account'} />
   <form
     method="POST"
     use:enhance={() => {

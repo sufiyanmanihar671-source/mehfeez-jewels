@@ -23,3 +23,13 @@ const AUTH_MESSAGES: Record<string, string> = {
 export function authMessage(err: { code?: string; message: string }): string {
   return (err.code && AUTH_MESSAGES[err.code]) || 'Something went wrong. Please try again.';
 }
+
+/**
+ * A wholesale profile is complete once the business details needed for
+ * approval are filled in. Accounts created with Google start incomplete,
+ * because Google only provides a name and email.
+ */
+export function isProfileComplete(p: { company_name?: string | null; whatsapp?: string | null; country?: string | null; city?: string | null; address?: string | null; business_type?: string | null } | null | undefined): boolean {
+  if (!p) return false;
+  return [p.company_name, p.whatsapp, p.country, p.city, p.address, p.business_type].every((v) => !!v && v.trim().length > 0);
+}

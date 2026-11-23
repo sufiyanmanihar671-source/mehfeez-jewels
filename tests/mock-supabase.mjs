@@ -23,9 +23,13 @@ const prices = [
 const users = {
   'approved-token': { id: 'u-approved', email: 'approved@test.local', status: 'approved', role: 'customer' },
   'pending-token': { id: 'u-pending', email: 'pending@test.local', status: 'pending', role: 'customer' },
-  'admin-token': { id: 'u-admin', email: 'admin@test.local', status: 'approved', role: 'admin' }
+  'admin-token': { id: 'u-admin', email: 'admin@test.local', status: 'approved', role: 'admin' },
+  // Signed up with Google: only name + email, no business details yet.
+  'google-token': { id: 'u-google', email: 'google@test.local', status: 'pending', role: 'customer', incomplete: true }
 };
-const profile = (u) => ({ id: u.id, email: u.email, full_name: 'Test Buyer', company_name: 'Test Traders', whatsapp: '+971501234567', country: 'United Arab Emirates', city: 'Dubai', address: 'Deira, Dubai', business_type: 'Wholesaler', gst_number: null, website: null, additional_info: null, status: u.status, role: u.role, created_at: '2026-11-01T00:00:00Z' });
+const profile = (u) => u.incomplete
+  ? { id: u.id, email: u.email, full_name: 'Google Buyer', company_name: '', whatsapp: '', country: '', city: '', address: '', business_type: '', gst_number: null, website: null, additional_info: null, status: u.status, role: u.role, created_at: '2026-11-01T00:00:00Z' }
+  : ({ id: u.id, email: u.email, full_name: 'Test Buyer', company_name: 'Test Traders', whatsapp: '+971501234567', country: 'United Arab Emirates', city: 'Dubai', address: 'Deira, Dubai', business_type: 'Wholesaler', gst_number: null, website: null, additional_info: null, status: u.status, role: u.role, created_at: '2026-11-01T00:00:00Z' });
 const settings = { id: 1, whatsapp_number: '919321245814', whatsapp_message: 'Hello Mehfeez Jewels, I am interested in your wholesale jewellery collections.', video_call_number: '919321245814', video_call_message: 'Hello Mehfeez Jewels, I would like to schedule a video call to discuss your jewellery collections, wholesale pricing and bulk order requirements.', video_call_enabled: true, contact_phone: '+91 93212 45814', contact_email: null, address: 'Room No. 4, Malad West, Chincholi Bunder Road, Opposite Vivanta Hospital, Mumbai – 400064, Maharashtra, India.', business_hours: null, instagram_url: null, facebook_url: null, logo_url: null, hero_title: 'Artificial Jewellery, Crafted for Wholesale', hero_subtitle: 'Manufacturer and wholesale supplier for retailers and distributors worldwide.', hero_image_url: null };
 export const enquiries = [];
 

@@ -47,7 +47,10 @@
     <tbody>
       {#each data.customers as c (c.id)}
         <tr>
-          <td><a href={`/admin/customers/${c.id}`}><strong>{c.company_name || '—'}</strong></a><br /><span class="muted">{c.full_name}</span></td>
+          <td>
+            <a href={`/admin/customers/${c.id}`}><strong>{c.company_name || '—'}</strong></a><br /><span class="muted">{c.full_name}</span>
+            {#if !c.company_name || !c.whatsapp || !c.country}<br /><span class="badge badge--muted">Profile incomplete</span>{/if}
+          </td>
           <td>{c.email}<br /><a href={waLink(c.whatsapp, `Hello ${c.full_name}, this is Mehfeez Jewels.`)} target="_blank" rel="noopener noreferrer">{c.whatsapp}</a></td>
           <td>{c.city}, {c.country}</td>
           <td>{c.business_type}</td>

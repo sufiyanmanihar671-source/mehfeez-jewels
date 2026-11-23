@@ -139,6 +139,41 @@ await check('unknown product returns 404', async () => {
   const r = await get('/products/does-not-exist');
   assert.equal(r.status, 404);
 });
+await check('Continue with Google starts Supabase OAuth with a same-host callback', async () => {
+  const r = await get('/auth/google?next=/collections');
+  assert.equal(r.status, 303);
+  const loc = new URL(r.headers.get('location'));
+  assert.match(loc.pathname, /\/auth\/v1\/authorize$/);
+  assert.equal(loc.searchParams.get('provider'), 'google');
+  assert.match(loc.searchParams.get('redirect_to') ?? '', /^http:\/\/localhost:8788\/auth\/callback\?next=%2Fcollections$/);
+  assert.ok(loc.searchParams.get('code_challenge'), 'PKCE challenge missing');
+});
+await check('OAuth callback without a code goes back to login with an error', async () => {
+  const r = await get('/auth/callback');
+  assert.equal(r.status, 303);
+  assert.equal(r.headers.get('location'), '/login?error=oauth');
+});
+await check('login and register pages offer Google sign-in', async () => {
+  assert.match((await get('/login')).body, /Continue with Google/);
+  assert.match((await get('/register')).body, /Sign up with Google/);
+});
+await check('Google user without business details is sent to complete profile', async () => {
+  const r = await get('/account', 'google-token');
+  assert.equal(r.status, 303);
+  assert.equal(r.headers.get('location'), '/account/complete');
+  const c = await get('/account/complete', 'google-token');
+  assert.equal(c.status, 200);
+  assert.match(c.body, /Complete your business profile/);
+});
+await check('Google user without business details never sees prices', async () => {
+  const r = await get('/products/royal-kundan-bridal-set', 'google-token');
+  assert.deepEqual(leaks(r.body), []);
+});
+await check('complete profile page skips users who already finished it', async () => {
+  const r = await get('/account/complete', 'approved-token');
+  assert.equal(r.status, 303);
+  assert.equal(r.headers.get('location'), '/account');
+});
 await check('no payment gateway / cart code', async () => {
   const r = await get('/');
   assert.doesNotMatch(r.body, /razorpay|stripe|paypal|add to cart|checkout/i);

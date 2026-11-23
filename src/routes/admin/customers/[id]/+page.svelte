@@ -20,6 +20,9 @@
 <div class="grid2">
   <section class="card">
     <h2>Approval</h2>
+    {#if !c.company_name || !c.whatsapp || !c.country || !c.address}
+      <div class="alert">This customer has not completed their business profile yet (e.g. signed up with Google). Review carefully before approving.</div>
+    {/if}
     <p>Current status: <span class="badge" class:badge--solid={c.status === 'approved'} class:badge--dark={c.status === 'rejected'}>{c.status}</span>
       {#if c.status_changed_at}<span class="muted"> since {formatDate(c.status_changed_at)}</span>{/if}</p>
     <form method="POST" action="?/status" use:enhance>

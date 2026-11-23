@@ -1,9 +1,12 @@
 import { fail, redirect } from '@sveltejs/kit';
 import { businessProfileSchema, fieldErrors, formToObject } from '$lib/server/validation';
+import { isProfileComplete } from '$lib/server/auth';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
   if (!locals.user) redirect(303, '/login?next=/account');
+  // Accounts created with Google must add business details first (admins exempt).
+  if (!locals.isAdmin && !isProfileComplete(locals.profile)) redirect(303, '/account/complete');
   const { data: enquiries } = await locals.supabase
     .from('enquiries')
     .select('id, message, status, created_at, product:products(name, sku, slug)')

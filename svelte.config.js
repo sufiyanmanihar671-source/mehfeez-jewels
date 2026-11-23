@@ -13,11 +13,13 @@ const config = {
       mode: 'auto',
       directives: {
         'default-src': ['self'],
-        'script-src': ['self'],
-        'style-src': ['self', 'unsafe-inline', 'https://fonts.googleapis.com'],
+        // Google Identity Services ("Sign in with Google" button)
+        'script-src': ['self', 'https://accounts.google.com/gsi/client'],
+        'frame-src': ['https://accounts.google.com/gsi/'],
+        'style-src': ['self', 'unsafe-inline', 'https://fonts.googleapis.com', 'https://accounts.google.com/gsi/style'],
         'font-src': ['self', 'https://fonts.gstatic.com'],
-        'img-src': ['self', 'data:', 'blob:', 'https://*.supabase.co'],
-        'connect-src': ['self', 'https://*.supabase.co', 'wss://*.supabase.co'],
+        'img-src': ['self', 'data:', 'blob:', 'https://*.supabase.co', 'https://*.googleusercontent.com'],
+        'connect-src': ['self', 'https://*.supabase.co', 'wss://*.supabase.co', 'https://accounts.google.com/gsi/'],
         'frame-ancestors': ['none'],
         'base-uri': ['self'],
         'form-action': ['self'],

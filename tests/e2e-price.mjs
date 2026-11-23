@@ -154,8 +154,9 @@ await check('OAuth callback without a code goes back to login with an error', as
   assert.equal(r.headers.get('location'), '/login?error=oauth');
 });
 await check('login and register pages offer Google sign-in', async () => {
-  assert.match((await get('/login')).body, /Continue with Google/);
-  assert.match((await get('/register')).body, /Sign up with Google/);
+  // Google's own button is drawn in the browser; the server renders its container.
+  assert.match((await get('/login')).body, /class="gis/);
+  assert.match((await get('/register')).body, /class="gis/);
 });
 await check('Google user without business details is sent to complete profile', async () => {
   const r = await get('/account', 'google-token');
@@ -173,6 +174,26 @@ await check('complete profile page skips users who already finished it', async (
   const r = await get('/account/complete', 'approved-token');
   assert.equal(r.status, 303);
   assert.equal(r.headers.get('location'), '/account');
+});
+await check('Google nonce endpoint sets an httpOnly nonce and returns only its hash', async () => {
+  const r = await fetch(BASE + '/auth/google/nonce');
+  const body = await r.json();
+  assert.match(body.nonce, /^[0-9a-f]{64}$/);
+  const sc = r.headers.get('set-cookie') ?? '';
+  assert.match(sc, /mj_gnonce=/);
+  assert.match(sc, /HttpOnly/i);
+  assert.ok(!sc.includes(body.nonce), 'raw nonce must differ from the hash given to Google');
+});
+await check('Google token endpoint rejects requests without a nonce or from other sites', async () => {
+  const noNonce = await fetch(BASE + '/auth/google/token', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ credential: 'x.y.z' }) });
+  assert.equal(noNonce.status, 400);
+  const foreign = await fetch(BASE + '/auth/google/token', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://evil.example' }, body: JSON.stringify({ credential: 'x.y.z' }) });
+  assert.equal(foreign.status, 403);
+});
+await check('CSP allows Google sign-in script and frame only', async () => {
+  const csp = (await get('/login')).headers.get('content-security-policy') ?? '';
+  assert.match(csp, /script-src[^;]*https:\/\/accounts\.google\.com\/gsi\/client/);
+  assert.match(csp, /frame-src https:\/\/accounts\.google\.com\/gsi\//);
 });
 await check('no payment gateway / cart code', async () => {
   const r = await get('/');

@@ -18,3 +18,5 @@ PUBLIC_SITE_URL = "https://mehfeezjewels.com"
 PUBLIC_SUPABASE_IMAGE_TRANSFORM = "false"
 # Set to "true" after enabling the Google provider in Supabase (Auth > Sign In / Providers).
 PUBLIC_GOOGLE_LOGIN = "true"
+# Public OAuth client ID (not a secret). The client SECRET lives only in Supabase.
+PUBLIC_GOOGLE_CLIENT_ID = "955127771647-r7o4b3g40ukjj9fgd1iapa35is0o1g5s.apps.googleusercontent.com"

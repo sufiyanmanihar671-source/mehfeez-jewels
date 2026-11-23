@@ -6,6 +6,7 @@
     { href: '/admin/customers', label: 'Customers', count: data.pendingCount },
     { href: '/admin/products', label: 'Products & Prices' },
     { href: '/admin/categories', label: 'Categories' },
+    { href: '/admin/hero', label: 'Homepage Slides' },
     { href: '/admin/enquiries', label: 'Enquiries', count: data.newEnquiries },
     { href: '/admin/settings', label: 'Settings' }
   ]);

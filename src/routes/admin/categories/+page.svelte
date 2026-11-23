@@ -56,6 +56,13 @@
           <input id="c-img" name="image" type="file" accept="image/jpeg,image/png,image/webp,image/avif" use:compressImages />
           {#if cur?.image_url}<label class="checkbox"><input type="checkbox" name="remove_image" /> Remove current image</label>{/if}
         </div>
+        <div class="field">
+          <label for="c-group">Show under</label>
+          <select id="c-group" name="category_group">
+            <option value="type" selected={(cur?.category_group ?? 'type') === 'type'}>Shop by Category (necklace sets, earrings…)</option>
+            <option value="style" selected={cur?.category_group === 'style'}>Shop by Jewellery Style (American Diamond, Victorian…)</option>
+          </select>
+        </div>
         <label class="checkbox"><input type="checkbox" name="is_active" checked={cur?.is_active ?? true} /> Visible on website</label>
       </div>
       <div class="row">
@@ -68,7 +75,7 @@
 
 <div class="table-wrap">
   <table>
-    <thead><tr><th>Order</th><th>Name</th><th>Slug</th><th>Products</th><th>Visible</th><th>Actions</th></tr></thead>
+    <thead><tr><th>Order</th><th>Name</th><th>Group</th><th>Slug</th><th>Products</th><th>Visible</th><th>Actions</th></tr></thead>
     <tbody>
       {#each data.all as c, i (c.id)}
         <tr>
@@ -77,6 +84,7 @@
             <form method="POST" action="?/move" use:enhance><input type="hidden" name="id" value={c.id} /><input type="hidden" name="dir" value="down" /><button disabled={i === data.all.length - 1} aria-label="Move down">▼</button></form>
           </td>
           <td><strong>{c.name}</strong></td>
+          <td>{c.category_group === 'style' ? 'Style' : 'Category'}</td>
           <td><a href={`/categories/${c.slug}`} target="_blank">/{c.slug}</a></td>
           <td>{data.productCounts[c.id] ?? 0}</td>
           <td>{c.is_active ? 'Yes' : 'Hidden'}</td>
@@ -89,7 +97,7 @@
           </td>
         </tr>
       {:else}
-        <tr><td colspan="6" class="muted">No categories yet.</td></tr>
+        <tr><td colspan="7" class="muted">No categories yet.</td></tr>
       {/each}
     </tbody>
   </table>

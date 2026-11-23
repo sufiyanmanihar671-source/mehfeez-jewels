@@ -17,7 +17,7 @@
   </div>
 {/if}
 
-<Header logo={data.settings.logo_url} categories={data.categories} profile={data.profile} loggedIn={!!data.user} />
+<Header settings={data.settings} categories={data.categories} profile={data.profile} loggedIn={!!data.user} />
 
 <main id="main">
   {@render children()}

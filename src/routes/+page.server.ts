@@ -1,18 +1,38 @@
-import { listProducts, withCardPrices } from '$lib/server/catalog';
+import { listHeroSlides, listProducts, sortImages, withCardPrices } from '$lib/server/catalog';
+import type { Product } from '$lib/types';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
   const { supabase, configured, canSeePrices } = locals;
-  const [arrivals, featured] = await Promise.all([
+
+  const [slides, featured, arrivals, recent] = await Promise.all([
+    listHeroSlides(supabase, configured),
+    listProducts(supabase, configured, { flag: 'is_featured', limit: 8 }),
     listProducts(supabase, configured, { flag: 'is_new_arrival', limit: 8 }),
-    listProducts(supabase, configured, { flag: 'is_featured', limit: 6 })
+    listProducts(supabase, configured, { limit: 60 })
   ]);
-  // Product photos shown in the hero showcase: featured designs first, then new arrivals.
-  const showcase = [...featured.products, ...arrivals.products]
-    .filter((p) => p.images?.length)
-    .filter((p, i, a) => a.findIndex((q) => q.id === p.id) === i)
-    .slice(0, 3)
-    .map((p) => ({ name: p.name, slug: p.slug, url: p.images![0].url }));
-  const prices = await withCardPrices(supabase, canSeePrices, arrivals.products);
-  return { arrivals: arrivals.products, showcase, prices };
+
+  // "Our Featured Designs": featured first, topped up with new arrivals, then latest designs.
+  const seen = new Set<string>();
+  const designs: Product[] = [];
+  for (const p of [...featured.products, ...arrivals.products, ...recent.products]) {
+    if (designs.length >= 8) break;
+    if (!seen.has(p.id)) {
+      seen.add(p.id);
+      designs.push(p);
+    }
+  }
+
+  // One real product photo per category (used when a category has no image of its own).
+  const categoryPhoto: Record<string, string> = {};
+  const gallery: { url: string; name: string; slug: string }[] = [];
+  for (const p of recent.products.map(sortImages)) {
+    const img = p.images?.[0]?.url;
+    if (!img) continue;
+    if (p.category?.id && !categoryPhoto[p.category.id]) categoryPhoto[p.category.id] = img;
+    if (gallery.length < 8) gallery.push({ url: img, name: p.name, slug: p.slug });
+  }
+
+  const prices = await withCardPrices(supabase, canSeePrices, designs);
+  return { slides, designs, prices, categoryPhoto, gallery };
 };

@@ -17,7 +17,7 @@
 <style>
   .auth {
     padding: clamp(36px, 7vw, 80px) 0;
-    background: linear-gradient(180deg, var(--burgundy) 0, var(--burgundy) 220px, var(--ivory) 220px);
+    background: linear-gradient(180deg, var(--cream) 0, var(--cream) 220px, var(--ivory) 220px);
   }
   .box {
     max-width: 480px;

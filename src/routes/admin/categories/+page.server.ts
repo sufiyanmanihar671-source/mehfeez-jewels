@@ -37,7 +37,14 @@ export const actions: Actions = {
     }
     if (form.get('remove_image') === 'on') row.image_url = null;
 
-    const { error } = id ? await supabase.from('categories').update(row).eq('id', id) : await supabase.from('categories').insert(row);
+    const write = (r: Record<string, unknown>) =>
+      id ? supabase.from('categories').update(r).eq('id', id) : supabase.from('categories').insert(r);
+    let { error } = await write(row);
+    if (error && error.message.includes('category_group')) {
+      // Redesign migration not applied yet: save without the group.
+      const { category_group: _g, ...rest } = row;
+      ({ error } = await write(rest));
+    }
     if (error) return dbFail(error, raw);
     return { saved: true };
   },

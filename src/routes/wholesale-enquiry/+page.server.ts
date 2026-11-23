@@ -16,7 +16,12 @@ export const load: PageServerLoad = async ({ locals, url }) => {
       .maybeSingle();
     product = data;
   }
-  return { defaults, product };
+  const catalogue = url.searchParams.get('type') === 'catalogue';
+  if (catalogue) {
+    defaults.message =
+      'Please share your latest wholesale catalogue with designs, MOQs and wholesale pricing. My business details are above.';
+  }
+  return { defaults, product, catalogue };
 };
 
 export const actions: Actions = { default: submitEnquiry };

@@ -1,9 +1,11 @@
 <script lang="ts">
-  import PriceGate from './PriceGate.svelte';
+  import { page } from '$app/state';
   import JewelPlaceholder from './JewelPlaceholder.svelte';
+  import Icon from './Icon.svelte';
   import { imageUrl, srcset } from '$lib/image';
-  import { STOCK_LABELS } from '$lib/format';
-  import type { Price, Product } from '$lib/types';
+  import { formatPrice } from '$lib/format';
+  import { productEnquiryMessage, waLink } from '$lib/whatsapp';
+  import type { Price, Product, SiteSettings } from '$lib/types';
 
   let {
     product,
@@ -18,13 +20,19 @@
   } = $props();
 
   const img = $derived(product.images?.[0]);
+  const img2 = $derived(product.images?.[1]);
+  const settings = $derived(page.data.settings as SiteSettings);
+  const wa = $derived(
+    waLink(settings?.whatsapp_number ?? '', productEnquiryMessage({ name: product.name, sku: product.sku }, `${page.url.origin}/products/${product.slug}`))
+  );
 </script>
 
 <article class="pc">
   <a class="media" href={`/products/${product.slug}`} aria-label={product.name}>
     {#if img}
       <img
-        src={imageUrl(img.url, 480)}
+        class="main"
+        src={imageUrl(img.url, 600)}
         srcset={srcset(img.url)}
         sizes="(min-width: 1100px) 25vw, (min-width: 760px) 33vw, 50vw"
         alt={img.alt || product.name}
@@ -33,35 +41,40 @@
         width="480"
         height="600"
       />
+      {#if img2}<img class="alt" src={imageUrl(img2.url, 600)} alt="" loading="lazy" decoding="async" width="480" height="600" />{/if}
     {:else}
       <JewelPlaceholder label={product.name} />
     {/if}
-    <div class="tags">
-      {#if product.is_new_arrival}<span class="badge badge--solid">New</span>{/if}
-      {#if product.is_bestseller}<span class="badge badge--dark">Bestseller</span>{/if}
-    </div>
+    <span class="tags">
+      {#if product.is_new_arrival}<span class="tag">New</span>{/if}
+      {#if product.is_bestseller}<span class="tag tag--dark">Bestseller</span>{/if}
+    </span>
   </a>
   <div class="body">
-    {#if product.category}<a class="cat" href={`/categories/${product.category.slug}`}>{product.category.name}</a>{/if}
     <h3><a href={`/products/${product.slug}`}>{product.name}</a></h3>
-    <div class="meta">
-      <span>SKU {product.sku}</span>
-      <span>MOQ {product.moq}</span>
+    <p class="meta"><span class="nw">SKU {product.sku}</span><span class="dot">·</span><span class="nw">MOQ {product.moq}</span></p>
+    {#if price}
+      <p class="price">{formatPrice(price.price, price.currency)} <span>wholesale</span></p>
+    {:else if loggedIn && status === 'pending'}
+      <p class="note">Price visible after approval</p>
+    {/if}
+    <div class="actions">
+      <a class="btn btn--sm btn--block" href={wa} target="_blank" rel="noopener noreferrer">
+        <Icon name="whatsapp" size={15} /> {price ? 'Order on WhatsApp' : 'Request Price on WhatsApp'}
+      </a>
+      <a class="link" href={`/products/${product.slug}`}>Enquire <Icon name="arrow" size={13} /></a>
     </div>
-    <div class="stock">{STOCK_LABELS[product.stock_status]}</div>
-    <PriceGate {price} {loggedIn} {status} compact />
   </div>
 </article>
 
 <style>
   .pc {
-    background: var(--white);
-    border: 1px solid var(--charcoal-08);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: box-shadow 0.25s, transform 0.25s;
+    background: var(--white);
+    border: 1px solid var(--burgundy-15);
+    padding: 8px;
+    transition: box-shadow 0.3s, transform 0.3s;
   }
   .pc:hover {
     box-shadow: var(--shadow-lg);
@@ -71,16 +84,24 @@
     position: relative;
     display: block;
     aspect-ratio: 4 / 5;
-    background: var(--ivory);
     overflow: hidden;
+    background: var(--cream);
   }
   .media img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s ease;
+    transition: opacity 0.5s ease, transform 0.8s ease;
   }
-  .pc:hover .media img {
+  .media .alt {
+    opacity: 0;
+  }
+  .pc:hover .media .alt {
+    opacity: 1;
+  }
+  .pc:hover .media .main {
     transform: scale(1.04);
   }
   .tags {
@@ -89,50 +110,109 @@
     left: 10px;
     display: flex;
     gap: 6px;
-    flex-wrap: wrap;
   }
-  .body {
-    padding: 14px 14px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    flex: 1;
-  }
-  .cat {
-    font-size: 0.68rem;
+  .tag {
+    padding: 4px 10px;
+    font-size: 0.62rem;
+    font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--burgundy);
+    background: var(--burgundy);
+    color: var(--white);
+  }
+  .tag--dark {
+    background: var(--charcoal);
+  }
+  .body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 4px;
+    padding: 14px 8px 8px;
+    flex: 1;
   }
   h3 {
     font-size: 1.12rem;
+    line-height: 1.25;
     margin: 0;
   }
   h3 a {
     color: var(--charcoal);
   }
+  h3 a:hover {
+    color: var(--burgundy);
+    text-decoration: none;
+  }
   .meta {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
+    margin: 0;
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .meta .dot {
+    margin: 0 6px;
+  }
+  .meta .nw {
+    white-space: nowrap;
+  }
+  .price {
+    margin: 4px 0 0;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--burgundy);
+  }
+  .price span {
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .note {
+    margin: 4px 0 0;
     font-size: 0.78rem;
-    color: var(--charcoal-70);
+    color: var(--muted);
   }
-  .stock {
-    font-size: 0.76rem;
-    color: var(--charcoal-50);
-    margin-bottom: 4px;
-  }
-  .body :global(.gate),
-  .body :global(.price) {
+  .actions {
     margin-top: auto;
+    padding-top: 12px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .actions .btn {
+    letter-spacing: 0.06em;
+    text-transform: none;
+    font-size: 0.8rem;
+  }
+  .link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
   }
   @media (max-width: 480px) {
-    .body {
-      padding: 12px 10px 14px;
+    .pc {
+      padding: 5px;
     }
     h3 {
-      font-size: 1rem;
+      font-size: 0.98rem;
+    }
+    .actions .btn {
+      font-size: 0.7rem;
+      padding: 0 8px;
+      white-space: normal;
+      line-height: 1.2;
+      min-height: 40px;
     }
   }
 </style>

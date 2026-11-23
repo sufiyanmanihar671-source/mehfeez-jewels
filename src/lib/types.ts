@@ -31,6 +31,23 @@ export interface Category {
   image_url: string | null;
   sort_order: number;
   is_active: boolean;
+  /** 'type' = Necklace Sets, Earrings…  'style' = American Diamond, Victorian… */
+  category_group?: 'type' | 'style';
+}
+
+export interface HeroSlide {
+  id: string;
+  image_url: string;
+  mobile_image_url: string | null;
+  eyebrow: string | null;
+  title: string;
+  subtitle: string | null;
+  cta_label: string | null;
+  cta_href: string | null;
+  sort_order: number;
+  is_active: boolean;
+  storage_path?: string | null;
+  mobile_storage_path?: string | null;
 }
 
 export interface ProductImage {

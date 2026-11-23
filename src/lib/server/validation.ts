@@ -90,7 +90,8 @@ export const categorySchema = z.object({
   slug: slugSchema,
   description: optionalText(1000),
   sort_order: z.coerce.number().int().min(0).max(10000).default(0),
-  is_active: z.boolean()
+  is_active: z.boolean(),
+  category_group: z.enum(['type', 'style']).default('type')
 });
 
 const stock = z.enum(['in_stock', 'low_stock', 'out_of_stock', 'made_to_order']);

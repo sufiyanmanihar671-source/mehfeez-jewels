@@ -15,8 +15,12 @@
 <section class="page-hero">
   <div class="container">
     <span class="eyebrow">Business to business</span>
-    <h1>Wholesale Enquiry</h1>
-    <p>Tell us what you are looking for — categories, quantities and destination country — and our team will get back to you.</p>
+    <h1>{data.catalogue ? 'Request Wholesale Catalogue' : 'B2B Wholesale Enquiry'}</h1>
+    <p>
+      {data.catalogue
+        ? 'Share your business details and we will send our latest catalogue with designs, MOQs and wholesale pricing.'
+        : 'Tell us what you are looking for — categories, quantities and destination country — and our team will get back to you.'}
+    </p>
   </div>
 </section>
 

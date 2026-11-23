@@ -1,7 +1,8 @@
 <script lang="ts">
   type Name =
     | 'whatsapp' | 'video' | 'menu' | 'close' | 'user' | 'lock' | 'phone' | 'mail' | 'pin' | 'check'
-    | 'diamond' | 'globe' | 'box' | 'factory' | 'handshake' | 'search' | 'arrow' | 'instagram' | 'facebook' | 'clock';
+    | 'diamond' | 'globe' | 'box' | 'factory' | 'handshake' | 'search' | 'arrow' | 'instagram' | 'facebook' | 'clock'
+    | 'tag' | 'sparkle' | 'grid' | 'truck';
   let { name, size = 20, label }: { name: Name; size?: number; label?: string } = $props();
 </script>
 
@@ -62,5 +63,13 @@
     <path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8Z" />
   {:else if name === 'clock'}
     <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />
+  {:else if name === 'tag'}
+    <path d="M3 12V4a1 1 0 0 1 1-1h8l9 9-9 9-9-9Z" /><circle cx="8" cy="8" r="1.6" />
+  {:else if name === 'sparkle'}
+    <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z" /><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7.7-2Z" />
+  {:else if name === 'grid'}
+    <rect x="3.5" y="3.5" width="7" height="7" /><rect x="13.5" y="3.5" width="7" height="7" /><rect x="3.5" y="13.5" width="7" height="7" /><rect x="13.5" y="13.5" width="7" height="7" />
+  {:else if name === 'truck'}
+    <path d="M2.5 6h11v10h-11zM13.5 9.5h4l3 3.5V16h-7" /><circle cx="6.5" cy="17.5" r="1.8" /><circle cx="17" cy="17.5" r="1.8" />
   {/if}
 </svg>

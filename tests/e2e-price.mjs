@@ -123,13 +123,13 @@ await check('approved customer still sees prices after a guest visited the same 
   const r = await get('/products/royal-kundan-bridal-set', 'approved-token');
   assert.match(r.body, /4,850/);
 });
-for (const p of ['/admin', '/admin/customers', '/admin/products', '/admin/products/new', '/admin/categories', '/admin/enquiries', '/admin/settings']) {
+for (const p of ['/admin', '/admin/customers', '/admin/products', '/admin/products/new', '/admin/categories', '/admin/hero', '/admin/enquiries', '/admin/settings']) {
   await check(`admin can open ${p}`, async () => {
     const r = await get(p, 'admin-token');
     assert.equal(r.status, 200);
   });
 }
-for (const p of ['/about', '/contact', '/categories', '/wholesale-enquiry', '/login', '/register', '/forgot-password', '/privacy', '/terms']) {
+for (const p of ['/about', '/contact', '/categories', '/wholesale-enquiry', '/login', '/register', '/forgot-password', '/privacy', '/terms', '/shipping-policy']) {
   await check(`public page ${p} renders`, async () => {
     const r = await get(p);
     assert.equal(r.status, 200);
@@ -194,6 +194,19 @@ await check('CSP allows Google sign-in script and frame only', async () => {
   const csp = (await get('/login')).headers.get('content-security-policy') ?? '';
   assert.match(csp, /script-src[^;]*https:\/\/accounts\.google\.com\/gsi\/client/);
   assert.match(csp, /frame-src https:\/\/accounts\.google\.com\/gsi\//);
+});
+await check('homepage: B2B sections, logo, catalogue + video-call CTAs', async () => {
+  const r = await get('/');
+  for (const t of ['Our Featured', 'Why Choose', 'Wholesale Jewellery Made', 'Request Wholesale Catalogue', 'Book a Video Call', '/brand/mehfeez-burgundy.png', 'JEWELS']) {
+    assert.ok(r.body.includes(t), `missing: ${t}`);
+  }
+  const wa = (r.body.match(/https:\/\/wa\.me\/[^"]+/g) ?? []).map((h) => decodeURIComponent(h.replace(/&amp;/g, '&')));
+  assert.ok(wa.some((h) => h.includes('Royal Kundan Bridal Set') && h.includes('MJ-BR-001')), 'product card WhatsApp link must include name and SKU');
+});
+await check('Request Catalogue prefills the enquiry form', async () => {
+  const r = await get('/wholesale-enquiry?type=catalogue');
+  assert.match(r.body, /Request Wholesale Catalogue/);
+  assert.match(r.body, /Please share your latest wholesale catalogue/);
 });
 await check('no payment gateway / cart code', async () => {
   const r = await get('/');

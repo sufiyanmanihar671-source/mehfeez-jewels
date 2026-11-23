@@ -9,16 +9,41 @@ export function sortImages<T extends { images?: { sort_order: number }[] }>(p: T
   return p;
 }
 
+const STYLE_SLUGS = new Set([
+  'american-diamond-jewellery',
+  'victorian-jewellery',
+  'heritage-jewellery',
+  'south-indian-jewellery',
+  'traditional-jewellery',
+  'contemporary-jewellery'
+]);
+
 export async function listCategories(supabase: SupabaseClient, configured: boolean): Promise<Category[]> {
   if (!configured) return [];
+  const base = 'id, name, slug, description, image_url, sort_order, is_active';
+  const query = (cols: string) => supabase.from('categories').select(cols).eq('is_active', true).order('sort_order').order('name');
+  let { data, error } = await query(`${base}, category_group`);
+  if (error) {
+    // Before the redesign migration is applied the column does not exist yet.
+    ({ data, error } = await query(base));
+  }
+  if (error) console.error('listCategories', error.message);
+  return ((data as unknown as Category[]) ?? []).map((c) => ({
+    ...c,
+    category_group: c.category_group ?? (STYLE_SLUGS.has(c.slug) ? 'style' : 'type')
+  }));
+}
+
+export async function listHeroSlides(supabase: SupabaseClient, configured: boolean) {
+  if (!configured) return [];
   const { data, error } = await supabase
-    .from('categories')
-    .select('id, name, slug, description, image_url, sort_order, is_active')
+    .from('hero_slides')
+    .select('id, image_url, mobile_image_url, eyebrow, title, subtitle, cta_label, cta_href, sort_order, is_active')
     .eq('is_active', true)
     .order('sort_order')
-    .order('name');
-  if (error) console.error('listCategories', error.message);
-  return (data as Category[]) ?? [];
+    .order('created_at');
+  if (error) return []; // table not created yet
+  return (data as import('$lib/types').HeroSlide[]) ?? [];
 }
 
 export interface ProductQuery {

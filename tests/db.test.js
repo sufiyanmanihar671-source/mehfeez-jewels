@@ -178,7 +178,23 @@ test('rate limit table is not directly accessible', async () => {
   await assert.rejects(as('authenticated', APPROVED, `select public.hit_rate_limit('x', 1, '1 hour')`), /permission denied/);
 });
 
-test('default categories are seeded', async () => {
-  const r = await as('anon', null, `select count(*)::int n from public.categories`);
-  assert.equal(r.rows[0].n, 9);
+test('default categories are seeded with type/style groups', async () => {
+  const r = await as('anon', null, `select category_group g, count(*)::int n from public.categories group by 1 order by 1`);
+  assert.deepEqual(r.rows, [{ g: 'style', n: 6 }, { g: 'type', n: 7 }]);
+});
+
+test('hero slides: public sees active only, only admins can write', async () => {
+  await as('authenticated', ADMIN, `insert into public.hero_slides (image_url, title, is_active) values ('https://x.supabase.co/a.webp', 'Live', true), ('https://x.supabase.co/b.webp', 'Draft', false)`);
+  const pub = await as('anon', null, `select title from public.hero_slides`);
+  assert.deepEqual(pub.rows, [{ title: 'Live' }]);
+  const adm = await as('authenticated', ADMIN, `select count(*)::int n from public.hero_slides`);
+  assert.equal(adm.rows[0].n, 2);
+  await assert.rejects(
+    as('authenticated', APPROVED, `insert into public.hero_slides (image_url, title) values ('https://x/a', 'Hack')`),
+    /row-level security/
+  );
+  await assert.rejects(
+    as('authenticated', ADMIN, `insert into public.hero_slides (image_url, title, cta_href) values ('https://x/a', 'Bad', 'javascript:alert(1)')`),
+    /check constraint/
+  );
 });

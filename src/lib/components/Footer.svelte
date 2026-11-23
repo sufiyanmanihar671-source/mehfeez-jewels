@@ -6,90 +6,90 @@
 
   let { settings, categories }: { settings: SiteSettings; categories: Category[] } = $props();
   const year = new Date().getFullYear();
+  const wa = $derived(waLink(settings.whatsapp_number, settings.whatsapp_message));
 </script>
 
 <footer class="footer">
   <div class="container cols">
     <div class="brand">
-      <Logo src={settings.logo_url} light />
+      <Logo light size="lg" />
       <p>
-        Artificial jewellery manufacturer and wholesale supplier based in Mumbai, India — serving retailers, distributors,
-        boutiques and resellers in India and internationally.
+        Premium artificial jewellery manufacturer and wholesale supplier based in Mumbai, India — supplying retailers,
+        wholesalers, boutiques and resellers in India and internationally.
       </p>
       <div class="social">
+        <a href={wa} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><Icon name="whatsapp" /></a>
         {#if settings.instagram_url}
-          <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer" aria-label="Instagram"
-            ><Icon name="instagram" /></a
-          >
+          <a href={settings.instagram_url} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Icon name="instagram" /></a>
         {/if}
         {#if settings.facebook_url}
-          <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" aria-label="Facebook"
-            ><Icon name="facebook" /></a
-          >
+          <a href={settings.facebook_url} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><Icon name="facebook" /></a>
         {/if}
-        <a href={waLink(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"
-          ><Icon name="whatsapp" /></a
-        >
+        {#if settings.contact_email}
+          <a href={`mailto:${settings.contact_email}`} aria-label="Email"><Icon name="mail" /></a>
+        {/if}
       </div>
     </div>
 
     <div>
-      <h4>Explore</h4>
+      <h4>Collections</h4>
       <ul>
-        <li><a href="/about">About Us</a></li>
-        <li><a href="/collections">Collections</a></li>
-        <li><a href="/categories">Jewellery Categories</a></li>
-        <li><a href="/wholesale-enquiry">Wholesale Enquiry</a></li>
-        <li><a href="/contact">Contact Us</a></li>
-        <li><a href="/register">Register as Wholesale Buyer</a></li>
+        {#each categories.slice(0, 8) as c}
+          <li><a href={`/categories/${c.slug}`}>{c.name}</a></li>
+        {/each}
+        <li><a href="/collections">View all designs</a></li>
       </ul>
     </div>
 
     <div>
-      <h4>Categories</h4>
+      <h4>Wholesale</h4>
       <ul>
-        {#each categories.slice(0, 9) as c}
-          <li><a href={`/categories/${c.slug}`}>{c.name}</a></li>
-        {/each}
+        <li><a href="/wholesale-enquiry">B2B Enquiry</a></li>
+        <li><a href="/wholesale-enquiry?type=catalogue">Request Catalogue</a></li>
+        <li><a href={waLink(settings.video_call_number, settings.video_call_message)} target="_blank" rel="noopener noreferrer">Book a Video Call</a></li>
+        <li><a href="/register">Open a Wholesale Account</a></li>
+        <li><a href="/about">About Us</a></li>
+        <li><a href="/contact">Contact</a></li>
       </ul>
     </div>
 
     <div>
       <h4>Contact</h4>
       <ul class="contact">
-        <li><Icon name="pin" size={18} /><span>{settings.address}</span></li>
-        <li>
-          <Icon name="whatsapp" size={18} /><a href={waLink(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer"
-            >{settings.contact_phone}</a
-          >
-        </li>
+        <li><Icon name="pin" size={17} /><span>{settings.address}</span></li>
+        <li><Icon name="whatsapp" size={17} /><a href={wa} target="_blank" rel="noopener noreferrer">{settings.contact_phone}</a></li>
         {#if settings.contact_email}
-          <li><Icon name="mail" size={18} /><a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a></li>
+          <li><Icon name="mail" size={17} /><a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a></li>
         {/if}
         {#if settings.business_hours}
-          <li><Icon name="clock" size={18} /><span>{settings.business_hours}</span></li>
+          <li><Icon name="clock" size={17} /><span>{settings.business_hours}</span></li>
         {/if}
       </ul>
     </div>
   </div>
+
   <div class="bottom">
     <div class="container bottom-inner">
       <span>© {year} Mehfeez Jewels. All rights reserved.</span>
-      <span><a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms of Service</a> · Wholesale only</span>
+      <nav aria-label="Legal">
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/terms">Terms &amp; Conditions</a>
+        <a href="/shipping-policy">Shipping Policy</a>
+      </nav>
     </div>
   </div>
 </footer>
 
 <style>
   .footer {
-    background: var(--charcoal);
+    background: var(--burgundy-deep);
     color: var(--ivory-70);
-    padding-top: clamp(48px, 7vw, 80px);
-    font-size: 0.93rem;
+    padding-top: clamp(48px, 7vw, 84px);
+    font-size: 0.92rem;
   }
   .cols {
     display: grid;
-    gap: 28px 20px;
+    gap: 34px 20px;
     grid-template-columns: 1fr 1fr;
   }
   .brand,
@@ -97,25 +97,25 @@
     grid-column: 1 / -1;
   }
   @media (min-width: 1024px) {
+    .cols {
+      grid-template-columns: 1.5fr 1fr 1fr 1.3fr;
+      gap: 48px;
+    }
     .brand,
     .cols > div:last-child {
       grid-column: auto;
     }
   }
-  @media (min-width: 1024px) {
-    .cols {
-      grid-template-columns: 1.4fr 0.8fr 1fr 1.3fr;
-    }
-  }
   .brand p {
-    margin-top: 16px;
-    max-width: 360px;
+    margin: 20px 0 18px;
+    max-width: 380px;
+    line-height: 1.7;
   }
   h4 {
     color: var(--white);
     font-family: var(--font-body);
-    font-size: 0.78rem;
-    letter-spacing: 0.22em;
+    font-size: 0.74rem;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
     font-weight: 600;
     margin-bottom: 18px;
@@ -151,11 +151,11 @@
     align-items: center;
     justify-content: center;
     border: 1px solid var(--ivory-20);
-    border-radius: 50%;
   }
   .social a:hover {
     background: var(--burgundy);
     border-color: var(--burgundy);
+    text-decoration: none;
   }
   .bottom {
     margin-top: 56px;
@@ -166,8 +166,14 @@
   .bottom-inner {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px 24px;
+    gap: 10px 24px;
     justify-content: space-between;
+    align-items: center;
+  }
+  .bottom nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
   }
   @media (min-width: 760px) {
     .bottom {

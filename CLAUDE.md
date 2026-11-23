@@ -3,7 +3,9 @@
 B2B wholesale catalogue for an artificial jewellery manufacturer. SvelteKit 2 (Svelte 5 runes) on Cloudflare Pages, Supabase (Postgres + Auth + Storage).
 
 ## Non-negotiables
-- Palette ONLY: burgundy #581328 (primary, sampled from the brand colour board), ivory #F8F4ED, charcoal #302B2B, white #FFFFFF (and transparencies of these). Never gold, golden, beige, bronze, champagne or metallic shades.
+- Palette (Nov 2026 brand update): Deep Burgundy #650D26 (primary), Dark Burgundy #480819, Burgundy Accent #8B1938, Warm Ivory #FFF9F3, Soft Cream #F8F1E9, text #302323 / #756666, white. Mostly light surfaces; burgundy for buttons, icons, links and a few selected sections only. Never blue, never a gold/golden theme.
+- Logo: use the official files in `static/brand/` (lettering unchanged) with "JEWELS" set beneath — never redraw or generate a different logo.
+- Homepage structure follows the reference ganeshbridal.com layout (hero slider, trust strip, video-call band, arched collections, featured designs, category scroller, styles, B2B band, why-us, showcase, story, CTA) with original Mehfeez content — never copy the reference's text, photos or branding.
 - No payment gateway, cart, checkout, COD, coupons or retail discounts. Orders are discussed on WhatsApp.
 - Wholesale prices live only in `product_prices`, protected by RLS (approved customers + admins). Always query prices with the visitor's own Supabase session (`locals.supabase`). Never add a service-role key, never fetch prices with elevated privileges, never put prices in JSON-LD, meta tags or public endpoints.
 - Dynamic pages must never be shared-cacheable (see `src/hooks.server.ts`); the Cloudflare edge cache keys only on URL.

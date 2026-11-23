@@ -1,7 +1,7 @@
 import { siteOrigin } from '$lib/server/auth';
 import type { RequestHandler } from './$types';
 
-const STATIC = ['/', '/about', '/collections', '/categories', '/wholesale-enquiry', '/contact', '/register'];
+const STATIC = ['/', '/about', '/collections', '/categories', '/wholesale-enquiry', '/contact', '/register', '/privacy', '/terms'];
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 

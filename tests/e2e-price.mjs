@@ -129,7 +129,7 @@ for (const p of ['/admin', '/admin/customers', '/admin/products', '/admin/produc
     assert.equal(r.status, 200);
   });
 }
-for (const p of ['/about', '/contact', '/categories', '/wholesale-enquiry', '/login', '/register', '/forgot-password']) {
+for (const p of ['/about', '/contact', '/categories', '/wholesale-enquiry', '/login', '/register', '/forgot-password', '/privacy', '/terms']) {
   await check(`public page ${p} renders`, async () => {
     const r = await get(p);
     assert.equal(r.status, 200);

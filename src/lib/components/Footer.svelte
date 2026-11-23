@@ -75,7 +75,7 @@
   <div class="bottom">
     <div class="container bottom-inner">
       <span>© {year} Mehfeez Jewels. All rights reserved.</span>
-      <span>Wholesale only · Prices visible to approved business customers</span>
+      <span><a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms of Service</a> · Wholesale only</span>
     </div>
   </div>
 </footer>

@@ -43,7 +43,6 @@
     ].filter((l) => l.exists)
   );
   const wa = $derived(waLink(settings.whatsapp_number, settings.whatsapp_message));
-  const videoCall = $derived(waLink(settings.video_call_number, settings.video_call_message));
 
   function active(href: string) {
     const [path, q] = href.split('?');
@@ -131,19 +130,6 @@
       </div>
     </form>
   {/if}
-
-  <!-- Mobile: reference-style link row + 2×2 "shop by" grid -->
-  <nav class="m-row" aria-label="Quick links">
-    <a href="/collections">Shop All</a><i aria-hidden="true">◆</i>
-    <a href="/collections?show=new">New Arrivals</a><i aria-hidden="true">◆</i>
-    <a href="/contact">Contact</a>
-  </nav>
-  <nav class="m-grid" aria-label="Shop by">
-    <a href="/categories">Shop by <b>Category</b></a>
-    <a href="/categories#styles">Shop by <b>Style</b></a>
-    <a href="/wholesale-enquiry">Wholesale <b>Enquiry</b></a>
-    <a href={videoCall} target="_blank" rel="noopener noreferrer">Video <b>Call</b></a>
-  </nav>
 
   {#if open}
     <nav id="mobile-nav" class="mobile" aria-label="Mobile">
@@ -352,48 +338,6 @@
     border-color: var(--ivory);
   }
 
-  .m-row {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 8px;
-    border-top: 1px solid var(--ivory-20);
-  }
-  .m-row a {
-    color: var(--ivory);
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-  .m-row i {
-    font-style: normal;
-    font-size: 0.45rem;
-    color: var(--ivory-70);
-  }
-  .m-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    border-top: 1px solid var(--ivory-20);
-  }
-  .m-grid a {
-    text-align: center;
-    padding: 11px 4px;
-    color: var(--ivory-70);
-    font-size: 0.66rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--ivory-20);
-  }
-  .m-grid a:nth-child(odd) {
-    border-right: 1px solid var(--ivory-20);
-  }
-  .m-grid b {
-    color: var(--white);
-    font-weight: 600;
-  }
-
   .mobile {
     display: flex;
     flex-direction: column;
@@ -440,12 +384,6 @@
     flex: 1;
   }
 
-  /* Phones/tablets: the tall header (bar + link row + grid) scrolls away instead of covering the screen. */
-  @media (max-width: 1099px) {
-    .site-header {
-      position: relative;
-    }
-  }
   @media (max-width: 560px) {
     .hide-sm {
       display: none;
@@ -475,8 +413,6 @@
       grid-row: 1;
     }
     .burger,
-    .m-row,
-    .m-grid,
     .mobile {
       display: none;
     }

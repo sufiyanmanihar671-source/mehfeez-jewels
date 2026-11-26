@@ -103,6 +103,7 @@
   .hero {
     position: relative;
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     background: var(--burgundy-deep);
     color: var(--ivory);
     overflow: hidden;
@@ -110,7 +111,8 @@
   .slide {
     grid-area: 1 / 1;
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.9s ease, visibility 0.9s;
@@ -184,14 +186,18 @@
   @media (max-width: 559px) {
     .ctas {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 8px;
       width: 100%;
     }
     .ctas .btn {
-      padding: 0 10px;
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
+      min-width: 0;
+      padding: 8px 8px;
+      font-size: 0.66rem;
+      letter-spacing: 0.08em;
+      white-space: normal;
+      line-height: 1.25;
+      text-align: center;
     }
   }
 

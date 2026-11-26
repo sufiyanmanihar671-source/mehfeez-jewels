@@ -34,16 +34,6 @@
       .filter((c): c is Category => !!c)
   );
 
-  // 9. Shop by Collection.
-  const collections = $derived([
-    { label: 'Latest Arrivals', href: '/collections?show=new', img: data.collectionPhoto.new },
-    { label: 'Trending Designs', href: '/collections?show=trending', img: data.collectionPhoto.trending },
-    { label: 'Premium Collection', href: '/collections?show=premium', img: data.collectionPhoto.premium },
-    { label: 'Bridal Collection', href: '/categories/bridal-jewellery', img: photo(bySlug('bridal-jewellery')) },
-    { label: 'Traditional Collection', href: '/collections?show=traditional', img: data.collectionPhoto.traditional },
-    { label: 'Exclusive Designs', href: '/collections?show=exclusive', img: data.collectionPhoto.exclusive }
-  ]);
-
   // 5. Trust highlights.
   const trust = [
     { icon: 'gem', label: 'Direct Manufacturer' },
@@ -92,6 +82,21 @@
   </div>
 </section>
 
+<!-- New Arrivals: 6 designs + View All -->
+{#if data.arrivals.length}
+  <section class="dark" id="new-arrivals">
+    <div class="container">
+      <SectionHead eyebrow="Just added" title="New" accent="Arrivals" light />
+      <div class="six six--products">
+        {#each data.arrivals as p (p.id)}
+          <ProductCard product={p} price={data.prices[p.id]} {loggedIn} {status} />
+        {/each}
+      </div>
+      <div class="center"><a class="btn btn--light" href={data.arrivalsAreNew ? '/collections?show=new' : '/collections'}>View All New Arrivals</a></div>
+    </div>
+  </section>
+{/if}
+
 <!-- Shop by Category: 6 boxes (2 per row on phones, 3 on desktop) + View All -->
 {#if shopCategories.length}
   <section class="light">
@@ -117,41 +122,8 @@
   </section>
 {/if}
 
-<!-- New Arrivals: 6 designs + View All -->
-{#if data.arrivals.length}
-  <section class="dark" id="new-arrivals">
-    <div class="container">
-      <SectionHead eyebrow="Just added" title="New" accent="Arrivals" light />
-      <div class="six six--products">
-        {#each data.arrivals as p (p.id)}
-          <ProductCard product={p} price={data.prices[p.id]} {loggedIn} {status} />
-        {/each}
-      </div>
-      <div class="center"><a class="btn btn--light" href={data.arrivalsAreNew ? '/collections?show=new' : '/collections'}>View All New Arrivals</a></div>
-    </div>
-  </section>
-{/if}
-
-<!-- 9. Shop by Collection (dark tiles) -->
-<section class="dark">
-  <div class="container">
-    <SectionHead eyebrow="Curated edits" title="Shop by" accent="Collection" light />
-    <div class="coll">
-      {#each collections as c}
-        <a class="tile" class:noimg={!c.img} href={c.href}>
-          {#if c.img}<img src={imageUrl(c.img, 700)} alt="" loading="lazy" decoding="async" width="600" height="450" />{/if}
-          <span class="tile-label">
-            <strong>{c.label}</strong>
-            <small>Explore →</small>
-          </span>
-        </a>
-      {/each}
-    </div>
-  </div>
-</section>
-
 <!-- 10. Why Mehfeez (ivory) -->
-<section class="light" id="why-mehfeez">
+<section class="white" id="why-mehfeez">
   <div class="container">
     <SectionHead eyebrow="The Mehfeez promise" title="Why Choose" accent="Mehfeez Jewels?" />
     <div class="why">
@@ -167,7 +139,7 @@
 
 <!-- 11. Instagram-style gallery (real photos only) -->
 {#if data.gallery.length >= 4 || s.instagram_url}
-  <section class="white">
+  <section class="light">
     <div class="container">
       <SectionHead eyebrow="New collection previews" title="Follow" accent="Mehfeez Jewels" />
       {#if data.gallery.length >= 4}
@@ -381,79 +353,6 @@
     font-size: 1.15rem;
     font-weight: 600;
     color: var(--charcoal);
-  }
-  .tile small {
-    font-size: 0.64rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--burgundy);
-  }
-
-  /* collection tiles */
-  .coll {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: clamp(10px, 1.6vw, 18px);
-  }
-  @media (min-width: 900px) {
-    .coll {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-  .tile {
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    text-decoration: none !important;
-    outline: 1px solid var(--ivory-20);
-    outline-offset: -8px;
-  }
-  .tile img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.8s ease;
-  }
-  .tile:hover img {
-    transform: scale(1.06);
-  }
-  .tile::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, transparent 40%, rgba(69, 16, 32, 0.85));
-  }
-  .tile.noimg {
-    align-items: center;
-    background: var(--burgundy);
-  }
-  .tile.noimg::after {
-    display: none;
-  }
-  .tile-label {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 18px 12px;
-    text-align: center;
-  }
-  .tile-label strong {
-    font-family: var(--font-display);
-    font-size: clamp(1.15rem, 2.2vw, 1.7rem);
-    font-weight: 500;
-    color: var(--white);
-    line-height: 1.15;
-  }
-  .tile small {
-    color: var(--ivory-70);
   }
 
   /* why */

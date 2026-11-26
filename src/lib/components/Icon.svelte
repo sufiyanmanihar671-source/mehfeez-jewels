@@ -2,8 +2,9 @@
   type Name =
     | 'whatsapp' | 'video' | 'menu' | 'close' | 'user' | 'lock' | 'phone' | 'mail' | 'pin' | 'check'
     | 'diamond' | 'globe' | 'box' | 'factory' | 'handshake' | 'search' | 'arrow' | 'instagram' | 'facebook' | 'clock'
-    | 'tag' | 'sparkle' | 'grid' | 'truck';
-  let { name, size = 20, label }: { name: Name; size?: number; label?: string } = $props();
+    | 'tag' | 'sparkle' | 'grid' | 'truck'
+    | 'gem' | 'boxes' | 'seal' | 'world' | 'headset' | 'plane' | 'designs' | 'necklace';
+  let { name, size = 20, label, stroke = 1.6 }: { name: Name; size?: number; label?: string; stroke?: number } = $props();
 </script>
 
 <svg
@@ -12,7 +13,7 @@
   viewBox="0 0 24 24"
   fill="none"
   stroke="currentColor"
-  stroke-width="1.6"
+  stroke-width={stroke}
   stroke-linecap="round"
   stroke-linejoin="round"
   role={label ? 'img' : undefined}
@@ -69,6 +70,22 @@
     <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z" /><path d="M19 16l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7.7-2Z" />
   {:else if name === 'grid'}
     <rect x="3.5" y="3.5" width="7" height="7" /><rect x="13.5" y="3.5" width="7" height="7" /><rect x="3.5" y="13.5" width="7" height="7" /><rect x="13.5" y="13.5" width="7" height="7" />
+  {:else if name === 'gem'}
+    <path d="M7 3.5h10l4 5.5-9 11.5L3 9l4-5.5Z" /><path d="M3 9h18" /><path d="M9.5 3.5 8 9l4 11.5L16 9l-1.5-5.5" /><path d="M8 9l4-5.5L16 9" />
+  {:else if name === 'boxes'}
+    <path d="M3.5 13.5h7v7h-7zM13.5 13.5h7v7h-7zM8.5 3.5h7v7h-7z" /><path d="M6 13.5v2M17 13.5v2M11 3.5v2" />
+  {:else if name === 'seal'}
+    <path d="M12 2.8l2 1.5 2.5-.2.9 2.3 2.2 1.2-.4 2.5 1.2 2.2-1.6 1.9.1 2.5-2.4.8-1.3 2.1-2.5-.6L12 21l-1.9-1.6-2.5.6-1.3-2.1-2.4-.8.1-2.5L2.4 12.6l1.2-2.2-.4-2.5 2.2-1.2.9-2.3 2.5.2Z" /><path d="m8.6 12 2.3 2.3 4.5-4.6" />
+  {:else if name === 'world'}
+    <circle cx="12" cy="12" r="8.5" /><path d="M3.5 12h17M12 3.5c2.3 2.4 3.4 5.2 3.4 8.5s-1.1 6.1-3.4 8.5c-2.3-2.4-3.4-5.2-3.4-8.5S9.7 5.9 12 3.5Z" /><path d="M5.5 6.6c2 1 4.1 1.4 6.5 1.4s4.5-.4 6.5-1.4M5.5 17.4c2-1 4.1-1.4 6.5-1.4s4.5.4 6.5 1.4" />
+  {:else if name === 'headset'}
+    <path d="M4.5 13v-1a7.5 7.5 0 0 1 15 0v1" /><rect x="3.5" y="13" width="4" height="6" rx="1.5" /><rect x="16.5" y="13" width="4" height="6" rx="1.5" /><path d="M18.5 19c0 1.4-1.6 2-4 2h-2" />
+  {:else if name === 'plane'}
+    <path d="M21 4 3 11.2l6.5 2.3L12 20l3.2-5.3L21 4Z" /><path d="m9.5 13.5 5.7-4.2" />
+  {:else if name === 'designs'}
+    <rect x="3.5" y="3.5" width="7.5" height="7.5" rx="1" /><rect x="13" y="3.5" width="7.5" height="7.5" rx="1" /><rect x="3.5" y="13" width="7.5" height="7.5" rx="1" /><path d="M16.75 13.5l1.2 2.4 2.6.4-1.9 1.8.5 2.6-2.4-1.3-2.4 1.3.5-2.6-1.9-1.8 2.6-.4Z" />
+  {:else if name === 'necklace'}
+    <path d="M4 4c.5 7 3.8 11 8 11s7.5-4 8-11" /><path d="M12 15l2 2.5-2 3-2-3 2-2.5Z" /><circle cx="6.6" cy="10" r=".9" fill="currentColor" /><circle cx="17.4" cy="10" r=".9" fill="currentColor" /><circle cx="9" cy="13" r=".9" fill="currentColor" /><circle cx="15" cy="13" r=".9" fill="currentColor" />
   {:else if name === 'truck'}
     <path d="M2.5 6h11v10h-11zM13.5 9.5h4l3 3.5V16h-7" /><circle cx="6.5" cy="17.5" r="1.8" /><circle cx="17" cy="17.5" r="1.8" />
   {/if}

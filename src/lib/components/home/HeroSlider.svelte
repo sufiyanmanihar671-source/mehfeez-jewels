@@ -7,11 +7,11 @@
   type Fallback = { images: string[] };
   let { slides, fallback }: { slides: HeroSlide[]; fallback: Fallback } = $props();
 
+  // Minimal copy: short heading, one short line.
   const DEFAULT = {
     eyebrow: 'Mehfeez Jewels',
-    title: 'Premium Artificial Jewellery Manufacturer & Wholesale Supplier',
-    subtitle:
-      'Discover elegant artificial jewellery collections, exceptional craftsmanship and competitive wholesale pricing for your business.'
+    title: 'Wholesale Artificial Jewellery',
+    subtitle: 'Direct from the manufacturer · Mumbai'
   };
 
   let index = $state(0);
@@ -36,7 +36,7 @@
     {#if subtitle}<p>{subtitle}</p>{/if}
     <div class="ctas">
       <a class="btn" href={ctaHref || '/collections'}>{ctaLabel || 'Explore Collections'}</a>
-      <a class="btn btn--outline" href="/wholesale-enquiry?type=catalogue">Request Wholesale Catalogue</a>
+      <a class="btn btn--outline" href="/wholesale-enquiry?type=catalogue">Get Catalogue</a>
     </div>
   </div>
 {/snippet}
@@ -83,22 +83,17 @@
       </div>
     {/if}
   {:else}
-    <!-- No slides uploaded yet: editorial hero using real product photos when available. -->
-    <div class="slide on">
-      <div class="media media--fallback">
-        {#if fallback.images.length}
+    <!-- No slides uploaded yet: real product photos if any, otherwise a compact text-only hero (no logo block). -->
+    <div class="slide on" class:textonly={!fallback.images.length}>
+      {#if fallback.images.length}
+        <div class="media media--fallback">
           <div class="collage n{Math.min(fallback.images.length, 3)}">
             {#each fallback.images.slice(0, 3) as src, i}
               <img src={imageUrl(src, 900)} alt="" loading={i === 0 ? 'eager' : 'lazy'} width="600" height="750" />
             {/each}
           </div>
-        {:else}
-          <div class="brandpanel" aria-hidden="true">
-            <img src="/brand/mehfeez-white.png" alt="" width="1104" height="418" />
-            <span>JEWELS</span>
-          </div>
-        {/if}
-      </div>
+        </div>
+      {/if}
       {@render copy(DEFAULT.eyebrow, DEFAULT.title, DEFAULT.subtitle, null, null, true)}
     </div>
   {/if}
@@ -165,17 +160,19 @@
   }
   h1,
   .h1 {
-    font-size: clamp(2rem, 3.6vw, 3.4rem);
+    font-size: clamp(1.9rem, 3.4vw, 3.2rem);
     font-weight: 600;
     line-height: 1.12;
     color: var(--burgundy);
-    margin: 18px 0 14px;
-    max-width: 18ch;
+    margin: 14px 0 8px;
+    max-width: 16ch;
   }
   .copy p {
     color: var(--muted);
-    max-width: 46ch;
-    font-size: 1.02rem;
+    max-width: 40ch;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
   }
   .ctas {
     display: flex;
@@ -183,6 +180,19 @@
     gap: 12px;
     justify-content: center;
     margin-top: 10px;
+  }
+  @media (max-width: 559px) {
+    .ctas {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      width: 100%;
+    }
+    .ctas .btn {
+      padding: 0 10px;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+    }
   }
 
   .media--fallback {
@@ -213,27 +223,17 @@
   .collage img {
     transform: none !important;
   }
-  .brandpanel {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    background:
-      radial-gradient(90% 70% at 70% 20%, rgba(255, 255, 255, 0.07), transparent 60%),
-      var(--burgundy);
-    color: var(--ivory);
+  .textonly {
+    min-height: 0 !important;
+    grid-template-columns: 1fr !important;
   }
-  .brandpanel img {
-    width: min(70%, 420px);
-    height: auto;
-    transform: none !important;
+  .textonly .copy {
+    align-items: center !important;
+    text-align: center !important;
+    padding: clamp(48px, 8vw, 104px) var(--gutter) !important;
   }
-  .brandpanel span {
-    letter-spacing: 0.7em;
-    margin-right: -0.7em;
-    font-size: clamp(0.8rem, 1.4vw, 1.1rem);
+  .textonly .ctas {
+    justify-content: center !important;
   }
 
   .arrow {

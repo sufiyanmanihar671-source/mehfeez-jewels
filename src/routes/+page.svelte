@@ -29,28 +29,29 @@
   const types = $derived(data.categories.filter((c) => c.category_group === 'type' && c.slug !== 'latest-designs'));
   const styles = $derived(data.categories.filter((c) => c.category_group === 'style'));
 
+  // Minimal copy + refined icons.
   const usps = [
-    { icon: 'factory', label: 'Direct Manufacturer' },
-    { icon: 'tag', label: 'Competitive Wholesale Pricing' },
-    { icon: 'diamond', label: 'Premium Quality' },
-    { icon: 'globe', label: 'Worldwide Supply' }
+    { icon: 'gem', label: 'Manufacturer' },
+    { icon: 'boxes', label: 'Wholesale Rates' },
+    { icon: 'seal', label: 'Premium Quality' },
+    { icon: 'world', label: 'Worldwide Supply' }
   ] as const;
 
   const simple = [
-    { icon: 'factory', title: 'Manufacturer-direct sourcing', text: 'Buy at source from our Mumbai manufacturing unit.' },
-    { icon: 'box', title: 'Bulk order assistance', text: 'Help with quantities, assortments and repeat orders.' },
-    { icon: 'check', title: 'Consistent quality', text: 'Finishing and fittings checked before dispatch.' },
-    { icon: 'sparkle', title: 'New design availability', text: 'Fresh designs added to the catalogue regularly.' },
-    { icon: 'globe', title: 'Domestic & international supply', text: 'Supplying buyers across India and overseas.' }
+    { icon: 'gem', title: 'Direct from manufacturer' },
+    { icon: 'boxes', title: 'Bulk order support' },
+    { icon: 'seal', title: 'Consistent quality' },
+    { icon: 'sparkle', title: 'New designs regularly' },
+    { icon: 'world', title: 'India & worldwide' }
   ] as const;
 
   const why = [
-    { icon: 'factory', title: 'Manufacturer Direct', text: 'No middlemen — designs come straight from our own production.' },
-    { icon: 'tag', title: 'Competitive Wholesale Rates', text: 'Pricing built for retailers, wholesalers and resellers.' },
-    { icon: 'grid', title: 'Wide Range of Designs', text: 'American Diamond, Victorian, Heritage, South Indian, bridal and more.' },
-    { icon: 'diamond', title: 'Quality Craftsmanship', text: 'Careful stone setting, polishing and finishing on every piece.' },
-    { icon: 'handshake', title: 'Reliable Business Support', text: 'Direct communication with our team on WhatsApp and video call.' },
-    { icon: 'truck', title: 'Worldwide Shipping', text: 'Orders packed and shipped to buyers in India and abroad.' }
+    { icon: 'gem', title: 'Manufacturer Direct' },
+    { icon: 'boxes', title: 'Wholesale Rates' },
+    { icon: 'designs', title: 'Wide Range of Designs' },
+    { icon: 'necklace', title: 'Quality Craftsmanship' },
+    { icon: 'headset', title: 'Business Support' },
+    { icon: 'plane', title: 'Worldwide Shipping' }
   ] as const;
 
   const orgLd = $derived({
@@ -76,7 +77,7 @@
 <section class="trust" aria-label="Why buy from us">
   <div class="container trust-row">
     {#each usps as u}
-      <div class="ti"><Icon name={u.icon} size={20} /><span>{u.label}</span></div>
+      <div class="ti"><span class="ti-ic"><Icon name={u.icon} size={22} stroke={1.3} /></span><span class="ti-l">{u.label}</span></div>
     {/each}
   </div>
 </section>
@@ -111,7 +112,7 @@
 <!-- E. Our Featured Designs -->
 <section class="block block--cream" id="featured">
   <div class="container">
-    <SectionHead eyebrow="Handpicked for your store" title="Our Featured" accent="Designs" />
+    <SectionHead eyebrow="Handpicked" title="Our Featured" accent="Designs" />
     {#if data.designs.length}
       <div class="grid grid--products">
         {#each data.designs as p (p.id)}
@@ -180,16 +181,16 @@
 <section class="simple">
   <div class="container simple-grid">
     <div>
-      <SectionHead eyebrow="For retailers & wholesalers" title="Wholesale Jewellery Made" accent="Simple" light />
+      <SectionHead eyebrow="For retailers" title="Wholesale Made" accent="Simple" light />
       <ul class="simple-list">
         {#each simple as it}
-          <li><span class="si"><Icon name={it.icon} size={20} /></span><div><strong>{it.title}</strong><span>{it.text}</span></div></li>
+          <li><span class="si"><Icon name={it.icon} size={20} stroke={1.3} /></span><strong>{it.title}</strong></li>
         {/each}
       </ul>
     </div>
     <div class="simple-card">
-      <h3>Start a wholesale enquiry</h3>
-      <p>Tell us what you are looking for and we will share designs, MOQs and wholesale pricing on WhatsApp.</p>
+      <h3>Start an enquiry</h3>
+      <p>Designs, MOQs &amp; prices on WhatsApp.</p>
       <a class="btn btn--light btn--block" href={wa} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={18} /> Enquire on WhatsApp</a>
       <a class="btn btn--ghost-light btn--block" href="/wholesale-enquiry">Send a B2B Enquiry</a>
     </div>
@@ -203,9 +204,8 @@
     <div class="why">
       {#each why as w}
         <div class="why-item">
-          <span class="wi"><Icon name={w.icon} size={24} /></span>
+          <span class="wi"><Icon name={w.icon} size={26} stroke={1.25} /></span>
           <h3>{w.title}</h3>
-          <p>{w.text}</p>
         </div>
       {/each}
     </div>
@@ -243,15 +243,7 @@
     </div>
     <div class="story-copy">
       <SectionHead eyebrow="About us" title="Our" accent="Story" />
-      <p>
-        Mehfeez Jewels designs and manufactures artificial jewellery in Mumbai for the wholesale trade. From American
-        Diamond to Victorian, Heritage and South Indian designs, our focus is careful craftsmanship and a wide variety of
-        designs that sell well on retail counters.
-      </p>
-      <p>
-        We work with jewellery retailers, wholesalers, boutique owners and resellers in India and internationally,
-        building long-term relationships through consistent quality and direct, dependable communication.
-      </p>
+      <p>Artificial jewellery designed and made in Mumbai — supplied to retailers, wholesalers and resellers in India and abroad.</p>
       <a class="btn btn--outline" href="/about">Read Our Story</a>
     </div>
   </div>
@@ -261,7 +253,7 @@
 <section class="cta">
   <div class="container cta-inner">
     <h2>Let's Build a Successful Business <em>Together</em></h2>
-    <p>Partner with Mehfeez Jewels for premium artificial jewellery collections and reliable wholesale supply.</p>
+    <p>Premium designs. Reliable wholesale supply.</p>
     <div class="cta-btns">
       <a class="btn btn--light" href={wa} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={18} /> Enquire on WhatsApp</a>
       <a class="btn btn--ghost-light" href="/wholesale-enquiry?type=catalogue">Request Catalogue</a>
@@ -290,48 +282,65 @@
     gap: 6px;
   }
 
-  /* C. trust strip */
+  /* C. trust strip — icon badge above a short label (4 across, also on phones) */
   .trust {
     background: var(--cream);
     border-bottom: 1px solid var(--burgundy-15);
   }
   .trust-row {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
   .ti {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    padding: 14px 8px;
-    color: var(--charcoal);
-    font-family: var(--font-display);
-    font-size: 1.05rem;
-    font-weight: 600;
+    gap: 8px;
+    padding: 16px 4px;
     text-align: center;
   }
-  .ti :global(svg) {
+  .ti + .ti {
+    border-left: 1px solid var(--burgundy-15);
+  }
+  .ti-ic {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
     color: var(--burgundy);
-    flex: 0 0 auto;
+    background: var(--white);
+    border: 1px solid var(--burgundy-30);
+  }
+  .ti-l {
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--charcoal);
+    line-height: 1.3;
   }
   @media (min-width: 900px) {
-    .trust-row {
-      grid-template-columns: repeat(4, 1fr);
+    .ti {
+      flex-direction: row;
+      gap: 14px;
+      padding: 18px 8px;
     }
-    .ti + .ti {
-      border-left: 1px solid var(--burgundy-15);
+    .ti-l {
+      font-size: 0.76rem;
     }
   }
-
-  .cta h2 em {
-    color: var(--burgundy);
-  }
-  .cta-btns {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
+  @media (max-width: 400px) {
+    .ti-ic {
+      width: 40px;
+      height: 40px;
+    }
+    .ti-l {
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+    }
   }
 
   /* D. arches */
@@ -539,26 +548,21 @@
   .simple-list li {
     display: flex;
     gap: 14px;
-    align-items: flex-start;
-  }
-  .simple-list div {
-    display: flex;
-    flex-direction: column;
+    align-items: center;
   }
   .simple-list strong {
     color: var(--white);
-    font-size: 1rem;
-  }
-  .simple-list span {
-    color: var(--ivory-70);
-    font-size: 0.92rem;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 500;
   }
   .si {
-    flex: 0 0 42px;
-    height: 42px;
+    flex: 0 0 44px;
+    height: 44px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    border-radius: 50%;
     border: 1px solid var(--ivory-20);
     color: var(--white);
   }
@@ -583,7 +587,7 @@
   /* I. why */
   .why {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
     gap: 1px;
     background: var(--burgundy-15);
     border: 1px solid var(--burgundy-15);
@@ -600,13 +604,13 @@
   }
   .why-item {
     background: var(--white);
-    padding: clamp(24px, 3vw, 38px);
+    padding: clamp(20px, 3vw, 38px) 10px;
     text-align: center;
   }
   .wi {
     display: inline-flex;
-    width: 58px;
-    height: 58px;
+    width: 62px;
+    height: 62px;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
@@ -617,13 +621,8 @@
     margin-bottom: 16px;
   }
   .why-item h3 {
-    font-size: 1.35rem;
-    margin-bottom: 6px;
-  }
-  .why-item p {
-    color: var(--muted);
+    font-size: clamp(1.05rem, 1.8vw, 1.35rem);
     margin: 0;
-    font-size: 0.94rem;
   }
 
   /* J. gallery */

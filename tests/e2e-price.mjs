@@ -197,7 +197,7 @@ await check('CSP allows Google sign-in script and frame only', async () => {
 });
 await check('homepage: B2B sections, logo, catalogue + video-call CTAs', async () => {
   const r = await get('/');
-  for (const t of ['Our Featured', 'Why Choose', 'Wholesale Jewellery Made', 'Request Wholesale Catalogue', 'Book a Video Call', '/brand/mehfeez-burgundy.png', 'JEWELS']) {
+  for (const t of ['Our Featured', 'Why Choose', 'Wholesale Made', 'Get Catalogue', 'Book a Video Call', '/brand/mehfeez-burgundy.png', 'JEWELS']) {
     assert.ok(r.body.includes(t), `missing: ${t}`);
   }
   const wa = (r.body.match(/https:\/\/wa\.me\/[^"]+/g) ?? []).map((h) => decodeURIComponent(h.replace(/&amp;/g, '&')));

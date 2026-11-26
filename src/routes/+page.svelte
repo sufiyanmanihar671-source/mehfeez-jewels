@@ -14,8 +14,6 @@
   const status = $derived(data.profile?.status);
   const wa = $derived(waLink(s.whatsapp_number, s.whatsapp_message));
 
-  let tab = $state(0);
-  const current = $derived(data.tabs[Math.min(tab, data.tabs.length - 1)]);
 
   const bySlug = (slug: string) => data.categories.find((c) => c.slug === slug);
   const photo = (c: Category | undefined) => (c ? c.image_url || data.categoryPhoto[c.id] || null : null);
@@ -94,54 +92,42 @@
   </div>
 </section>
 
-<!-- 7. Featured products with tabs (dark section) -->
-<section class="dark" id="featured">
-  <div class="container">
-    <SectionHead eyebrow="Handpicked for you" title="Featured" accent="Products" light />
-    {#if data.tabs.length}
-      {#if data.tabs.length > 1}
-        <div class="tabs" role="tablist" aria-label="Product groups">
-          {#each data.tabs as t, i (t.key)}
-            <button type="button" role="tab" aria-selected={current.key === t.key} class:on={current.key === t.key} onclick={() => (tab = i)}>{t.label}</button>
-          {/each}
-        </div>
-      {/if}
-      <div class="grid grid--products" role="tabpanel">
-        {#each current.products as p (p.id)}
-          <ProductCard product={p} price={data.prices[p.id]} {loggedIn} {status} />
-        {/each}
-      </div>
-      <div class="center"><a class="btn btn--light" href={current.href}>View all {current.label}</a></div>
-    {:else}
-      <div class="empty-dark">
-        <p>New designs are being added to the catalogue.</p>
-        <a class="btn btn--light" href="/wholesale-enquiry?type=catalogue">Request Wholesale Catalogue</a>
-      </div>
-    {/if}
-  </div>
-</section>
-
-<!-- 8. Shop by Category (ivory, horizontal cards) -->
+<!-- Shop by Category: 6 boxes (2 per row on phones, 3 on desktop) + View All -->
 {#if shopCategories.length}
   <section class="light">
     <div class="container">
       <SectionHead eyebrow="Browse by category" title="Shop by" accent="Category" />
-      <div class="scroller">
-        {#each shopCategories as c (c.id)}
+      <div class="six">
+        {#each shopCategories.slice(0, 6) as c (c.id)}
           {@const src = photo(c)}
           <a class="catcard" href={`/categories/${c.slug}`}>
             <span class="cc-frame" class:noimg={!src}>
               {#if src}
-                <img src={imageUrl(src, 520)} alt={c.name} loading="lazy" decoding="async" width="320" height="420" />
+                <img src={imageUrl(src, 520)} alt={c.name} loading="lazy" decoding="async" width="320" height="400" />
               {:else}
                 <span class="cc-name">{c.name.replace(/ Jewellery$/, '')}</span>
               {/if}
             </span>
             <strong>{c.name}</strong>
-            <small>Explore →</small>
           </a>
         {/each}
       </div>
+      <div class="center"><a class="btn" href="/categories">View All Categories</a></div>
+    </div>
+  </section>
+{/if}
+
+<!-- New Arrivals: 6 designs + View All -->
+{#if data.arrivals.length}
+  <section class="dark" id="new-arrivals">
+    <div class="container">
+      <SectionHead eyebrow="Just added" title="New" accent="Arrivals" light />
+      <div class="six six--products">
+        {#each data.arrivals as p (p.id)}
+          <ProductCard product={p} price={data.prices[p.id]} {loggedIn} {status} />
+        {/each}
+      </div>
+      <div class="center"><a class="btn btn--light" href={data.arrivalsAreNew ? '/collections?show=new' : '/collections'}>View All New Arrivals</a></div>
     </div>
   </section>
 {/if}
@@ -264,10 +250,6 @@
     height: 1px;
     background: var(--ivory-20);
   }
-  .empty-dark {
-    text-align: center;
-    color: var(--ivory-70);
-  }
 
   /* trust strip */
   .trust {
@@ -336,49 +318,24 @@
     color: var(--ivory);
   }
 
-  /* tabs */
-  .tabs {
-    display: flex;
-    justify-content: center;
-    gap: 6px 26px;
-    flex-wrap: wrap;
-    margin: -10px 0 28px;
-  }
-  .tabs button {
-    padding: 8px 0;
-    background: none;
-    border: 0;
-    border-bottom: 1px solid transparent;
-    color: var(--ivory-70);
-    font: inherit;
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-  .tabs button.on {
-    color: var(--white);
-    border-bottom-color: var(--ivory);
-  }
-
-  /* category scroller */
-  .scroller {
+  /* 6-box grids: 2 per row on phones, 3 per row from tablets up */
+  .six {
     display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(160px, 44%);
-    gap: 16px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-bottom: 10px;
-    scrollbar-width: thin;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(12px, 2vw, 24px);
   }
   @media (min-width: 760px) {
-    .scroller {
-      grid-auto-columns: calc((100% - 64px) / 5);
+    .six {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (min-width: 1100px) {
+    .six:not(.six--products) {
+      max-width: 1020px;
+      margin: 0 auto;
     }
   }
   .catcard {
-    scroll-snap-align: start;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -425,7 +382,6 @@
     font-weight: 600;
     color: var(--charcoal);
   }
-  .catcard small,
   .tile small {
     font-size: 0.64rem;
     letter-spacing: 0.2em;

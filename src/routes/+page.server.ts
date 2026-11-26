@@ -8,29 +8,15 @@ export const load: PageServerLoad = async ({ locals }) => {
   const { supabase, configured, canSeePrices } = locals;
   const q = (o: Parameters<typeof listProducts>[2]) => listProducts(supabase, configured, o);
 
-  const [slides, fresh, trending, best, featured, premium, exclusive, traditional, recent] = await Promise.all([
+  const [slides, fresh, trending, premium, exclusive, traditional, recent] = await Promise.all([
     listHeroSlides(supabase, configured),
-    q({ flag: 'is_new_arrival', limit: 8 }),
-    q({ collection: 'trending', limit: 8 }),
-    q({ flag: 'is_bestseller', limit: 8 }),
-    q({ flag: 'is_featured', limit: 8 }),
+    q({ flag: 'is_new_arrival', limit: 6 }),
+    q({ collection: 'trending', limit: 4 }),
     q({ collection: 'premium', limit: 4 }),
     q({ collection: 'exclusive', limit: 4 }),
     q({ collection: 'traditional', limit: 4 }),
     q({ limit: 60 })
   ]);
-
-  // Product tabs (reference "Featured Products"); empty tabs are hidden on the page.
-  const tabs = [
-    { key: 'new', label: 'New Arrivals', href: '/collections?show=new', products: fresh.products },
-    { key: 'trending', label: 'Trending Designs', href: '/collections?show=trending', products: trending.products },
-    { key: 'bestsellers', label: 'Bestselling', href: '/collections?show=bestsellers', products: best.products },
-    { key: 'featured', label: 'Featured Wholesale', href: '/collections?show=featured', products: featured.products }
-  ];
-  // If nothing is tagged yet, still show the latest designs.
-  if (tabs.every((t) => !t.products.length) && recent.products.length) {
-    tabs[0] = { key: 'latest', label: 'Latest Designs', href: '/collections', products: recent.products.slice(0, 8) };
-  }
 
   // One real product photo per category (used when a category has no image of its own).
   const categoryPhoto: Record<string, string> = {};
@@ -50,7 +36,9 @@ export const load: PageServerLoad = async ({ locals }) => {
     traditional: firstImage(traditional.products)
   };
 
-  const all = [...new Map(tabs.flatMap((t) => t.products).map((p) => [p.id, p])).values()];
-  const prices = await withCardPrices(supabase, canSeePrices, all);
-  return { slides, tabs: tabs.filter((t) => t.products.length), prices, categoryPhoto, collectionPhoto, gallery };
+  // New Arrivals grid: 6 designs (tagged new arrivals, otherwise the latest designs).
+  const arrivals = (fresh.products.length ? fresh.products : recent.products).slice(0, 6);
+
+  const prices = await withCardPrices(supabase, canSeePrices, arrivals);
+  return { slides, arrivals, arrivalsAreNew: fresh.products.length > 0, prices, categoryPhoto, collectionPhoto, gallery };
 };

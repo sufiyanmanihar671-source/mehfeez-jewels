@@ -79,7 +79,7 @@
 
 <div class="topbar">
   <div class="container topbar-inner">
-    <span>Wholesale only</span><i aria-hidden="true">◆</i>
+    <span class="hide-sm">Wholesale only</span><i aria-hidden="true" class="hide-sm">◆</i>
     <span>Direct from the manufacturer</span><i aria-hidden="true" class="hide-sm">◆</i>
     <span class="hide-sm">Shipping worldwide</span><i aria-hidden="true" class="hide-sm">◆</i>
     <a class="hide-sm" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp {settings.contact_phone}</a>

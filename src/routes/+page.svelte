@@ -178,13 +178,16 @@
       </div>
     {/if}
     <div class="story-copy">
+      <img class="story-mark" src="/brand/mehfeez-white.png" alt="" aria-hidden="true" width="1104" height="418" loading="lazy" />
       <span class="eb-light"><span></span>Our story<span></span></span>
       <h2>Crafting Jewellery. <em>Building Partnerships.</em></h2>
-      <p>
-        Mehfeez Jewels brings together distinctive artificial jewellery designs and wholesale expertise. We work with retailers,
-        boutiques and jewellery businesses to help them discover collections suited to their customers.
-      </p>
-      <div class="btn-row">
+      <p>Distinctive artificial jewellery designs with wholesale expertise — for retailers, boutiques and jewellery businesses.</p>
+      <ul class="facts">
+        <li><Icon name="pin" size={18} stroke={1.3} /><span>Mumbai, India</span></li>
+        <li><Icon name="boxes" size={18} stroke={1.3} /><span>Wholesale only</span></li>
+        <li><Icon name="world" size={18} stroke={1.3} /><span>India &amp; worldwide</span></li>
+      </ul>
+      <div class="story-btns">
         <a class="btn btn--light" href="/about">About Us</a>
         <a class="btn btn--ghost-light" href="/wholesale-enquiry">Wholesale Enquiry</a>
       </div>
@@ -264,12 +267,6 @@
     display: flex;
     justify-content: center;
     margin-top: clamp(28px, 4vw, 44px);
-  }
-  .btn-row {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
   }
   .eb-light {
     display: inline-flex;
@@ -542,26 +539,86 @@
     object-fit: cover;
   }
   .story-copy {
+    position: relative;
     text-align: center;
+    padding: clamp(28px, 5vw, 56px) clamp(16px, 4vw, 48px);
+    outline: 1px solid var(--ivory-20);
+    outline-offset: -1px;
+    overflow: hidden;
+    max-width: 860px;
+    margin: 0 auto;
   }
-  @media (min-width: 1000px) {
-    .story-grid:not(.solo) .story-copy {
-      text-align: left;
-    }
-    .story-grid:not(.solo) .btn-row {
-      justify-content: flex-start;
-    }
+  .story-copy::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid var(--ivory-20);
+    pointer-events: none;
+  }
+  .story-mark {
+    position: absolute;
+    right: -8%;
+    bottom: -14%;
+    width: min(70%, 460px);
+    height: auto;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+  .story-copy > :not(.story-mark) {
+    position: relative;
   }
   .story-copy h2 {
     color: var(--white);
     font-size: clamp(1.9rem, 3.4vw, 2.9rem);
     font-weight: 500;
-    margin: 14px 0 14px;
+    margin: 14px 0 12px;
   }
   .story-copy p {
     color: var(--ivory-70);
-    max-width: 60ch;
-    margin: 0 auto 24px;
-    font-size: 1.02rem;
+    max-width: 46ch;
+    margin: 0 auto 22px;
+    font-size: 1rem;
+  }
+  .facts {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto 26px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 520px;
+    border-top: 1px solid var(--ivory-20);
+    border-bottom: 1px solid var(--ivory-20);
+  }
+  .facts li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 4px;
+    color: var(--white);
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .facts li + li {
+    border-left: 1px solid var(--ivory-20);
+  }
+  .story-btns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 10px;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+  .story-btns .btn {
+    min-width: 0;
+    padding: 0 10px;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+  }
+  @media (min-width: 1000px) {
+    .story-grid:not(.solo) .story-copy {
+      text-align: left;
+    }
   }
 </style>

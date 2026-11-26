@@ -94,15 +94,14 @@
     </button>
 
     <nav class="nav nav-left" aria-label="Collections">
-      {@render dropdown('cat', 'Categories', productTypes, { href: '/collections', label: 'Shop all' })}
+      {@render dropdown('cat', 'Categories', [{ href: '/collections?show=new', label: 'New Arrivals' }, ...productTypes], { href: '/collections', label: 'All designs' })}
       {@render dropdown('style', 'Styles', styles, { href: '/categories', label: 'All categories' })}
-      <a href="/collections?show=new" class:active={active('/collections?show=new')}>New Arrivals</a>
     </nav>
 
     <div class="brand"><Logo src={settings.logo_url} light /></div>
 
     <nav class="nav nav-right" aria-label="Main">
-      <a href="/collections" class:active={active('/collections')}>Shop All</a>
+      <a href="/collections" class:active={active('/collections')}>All Designs</a>
       <a href="/wholesale-enquiry" class:active={active('/wholesale-enquiry')}>Wholesale Enquiry</a>
       <a href="/contact" class:active={active('/contact')}>Contact Us</a>
     </nav>
@@ -134,7 +133,7 @@
   {#if open}
     <nav id="mobile-nav" class="mobile" aria-label="Mobile">
       <a href="/">Home</a>
-      <a href="/collections">Shop All</a>
+      <a href="/collections">All Designs</a>
       <a href="/collections?show=new">New Arrivals</a>
       <span class="m-h">Categories</span>
       <div class="sub">{#each productTypes as l}<a href={l.href}>{l.label}</a>{/each}</div>

@@ -34,7 +34,7 @@
     <div>
       <h4>Product Categories</h4>
       <ul>
-        <li><a href="/collections">Shop All</a></li>
+        <li><a href="/collections">All Designs</a></li>
         {#each categories.slice(0, 8) as c}
           <li><a href={`/categories/${c.slug}`}>{c.name}</a></li>
         {/each}

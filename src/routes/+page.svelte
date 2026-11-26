@@ -13,7 +13,7 @@
   const loggedIn = $derived(!!data.user);
   const status = $derived(data.profile?.status);
   const wa = $derived(waLink(s.whatsapp_number, s.whatsapp_message));
-  const newDesignsWa = $derived(waLink(s.whatsapp_number, 'Hello Mehfeez Jewels, please share your latest new arrival designs for wholesale.'));
+  const newDesignsWa = $derived(waLink(s.whatsapp_number, 'Hello Mehfeez Jewels, please share your latest designs for wholesale.'));
 
 
   const bySlug = (slug: string) => data.categories.find((c) => c.slug === slug);
@@ -83,17 +83,17 @@
   </div>
 </section>
 
-<!-- New Arrivals: always shown above Shop by Category -->
-<section class="dark" id="new-arrivals">
+<!-- Latest Designs: always shown above Shop by Category -->
+<section class="dark" id="latest-designs">
   <div class="container">
-    <SectionHead eyebrow="Just added" title="New" accent="Arrivals" light />
+    <SectionHead eyebrow="Wholesale catalogue" title="Latest" accent="Designs" light />
     <div class="six six--products">
       {#each data.arrivals as p (p.id)}
         <ProductCard product={p} price={data.prices[p.id]} {loggedIn} {status} />
       {/each}
       <!-- Empty slots until 6 designs are online: clearly labelled, links to WhatsApp (no fake products). -->
       {#each Array(Math.max(0, 6 - data.arrivals.length)) as _, i}
-        <a class="soon-card" href={newDesignsWa} target="_blank" rel="noopener noreferrer" aria-label="Ask for new designs on WhatsApp">
+        <a class="soon-card" href={newDesignsWa} target="_blank" rel="noopener noreferrer" aria-label="Ask for the latest designs on WhatsApp">
           <span class="soon-media"><Icon name="gem" size={34} stroke={1.1} /></span>
           <span class="soon-body">
             <strong>New Design</strong>
@@ -103,7 +103,7 @@
         </a>
       {/each}
     </div>
-    <div class="center"><a class="btn btn--light" href={data.arrivalsAreNew ? '/collections?show=new' : '/collections'}>View All New Arrivals</a></div>
+    <div class="center"><a class="btn btn--light" href="/collections">View All Designs</a></div>
   </div>
 </section>
 

@@ -11,7 +11,7 @@
     exclusive: 'Exclusive Designs',
     traditional: 'Traditional Collection'
   };
-  const title = $derived(titles[data.show] ?? 'All Collections');
+  const title = $derived(titles[data.show] ?? 'All Designs');
 </script>
 
 <Seo

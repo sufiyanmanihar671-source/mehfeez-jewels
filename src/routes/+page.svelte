@@ -46,12 +46,12 @@
 
   // 10. Why Mehfeez.
   const why = [
-    { icon: 'gem', title: 'Manufacturer Direct' },
-    { icon: 'sparkle', title: 'Exclusive Designs' },
-    { icon: 'designs', title: 'Wide Variety' },
-    { icon: 'boxes', title: 'Wholesale Support' },
-    { icon: 'plane', title: 'Worldwide Shipping' },
-    { icon: 'headset', title: 'Personal Assistance' }
+    { icon: 'gem', title: 'Manufacturer Direct', text: 'Made in our Mumbai unit — no middlemen.' },
+    { icon: 'sparkle', title: 'Exclusive Designs', text: 'Our own designs, added regularly.' },
+    { icon: 'designs', title: 'Wide Variety', text: 'AD, Victorian, South Indian & bridal.' },
+    { icon: 'boxes', title: 'Wholesale Support', text: 'Help with MOQs, assortments & reorders.' },
+    { icon: 'plane', title: 'Worldwide Shipping', text: 'Supplying buyers in India & abroad.' },
+    { icon: 'headset', title: 'Personal Assistance', text: 'Talk to us on WhatsApp or video call.' }
   ] as const;
 
   const orgLd = $derived({
@@ -141,6 +141,7 @@
         <div class="why-item">
           <span class="wi"><Icon name={w.icon} size={22} stroke={1.3} /></span>
           <h3>{w.title}</h3>
+          <p>{w.text}</p>
         </div>
       {/each}
     </div>
@@ -468,6 +469,13 @@
     color: var(--white);
     background: var(--burgundy);
     box-shadow: 0 0 0 4px var(--white), 0 0 0 5px var(--burgundy-30);
+  }
+  .why-item p {
+    margin: -4px 0 0;
+    font-size: 0.82rem;
+    line-height: 1.45;
+    color: var(--muted);
+    max-width: 22ch;
   }
   .why-item h3 {
     margin: 0;

@@ -3,13 +3,14 @@
   import Icon from '../Icon.svelte';
   import { imageUrl } from '$lib/image';
   import type { HeroSlide } from '$lib/types';
+  import JewelleryArt from './JewelleryArt.svelte';
 
   type Fallback = { images: string[] };
   let { slides, fallback }: { slides: HeroSlide[]; fallback: Fallback } = $props();
 
   // Minimal copy: short heading, one short line.
   const DEFAULT = {
-    eyebrow: 'Mehfeez Jewels · Wholesale',
+    eyebrow: 'Wholesale only',
     title: 'Premium Artificial Jewellery, Direct from Manufacturers',
     subtitle: 'Discover exclusive jewellery collections crafted for retailers, boutiques and wholesale buyers.'
   };
@@ -35,8 +36,8 @@
     {#if first}<h1>{title}</h1>{:else}<h2 class="h1">{title}</h2>{/if}
     {#if subtitle}<p>{subtitle}</p>{/if}
     <div class="ctas">
-      <a class="btn btn--light" href={ctaHref || '/collections'}>{ctaLabel || 'Explore Collections'}</a>
-      <a class="btn btn--ghost-light" href="/wholesale-enquiry">Wholesale Enquiry</a>
+      <a class="btn btn--light" href={ctaHref || '/collections'}>{ctaLabel || 'View Designs'}</a>
+      <a class="btn btn--ghost-light" href="/wholesale-enquiry">Enquire Now</a>
     </div>
   </div>
 {/snippet}
@@ -83,17 +84,19 @@
       </div>
     {/if}
   {:else}
-    <!-- No slides uploaded yet: real product photos if any, otherwise a compact text-only hero (no logo block). -->
-    <div class="slide on" class:textonly={!fallback.images.length}>
-      {#if fallback.images.length}
-        <div class="media media--fallback">
+    <!-- No slides yet: real product photos if any, otherwise a line-art jewellery illustration. -->
+    <div class="slide on">
+      <div class="media media--fallback">
+        {#if fallback.images.length}
           <div class="collage n{Math.min(fallback.images.length, 3)}">
             {#each fallback.images.slice(0, 3) as src, i}
               <img src={imageUrl(src, 900)} alt="" loading={i === 0 ? 'eager' : 'lazy'} width="600" height="750" />
             {/each}
           </div>
-        </div>
-      {/if}
+        {:else}
+          <div class="artframe"><JewelleryArt /></div>
+        {/if}
+      </div>
       {@render copy(DEFAULT.eyebrow, DEFAULT.title, DEFAULT.subtitle, null, null, true)}
     </div>
   {/if}
@@ -192,9 +195,9 @@
     }
     .ctas .btn {
       min-width: 0;
-      padding: 8px 8px;
-      font-size: 0.66rem;
-      letter-spacing: 0.08em;
+      padding: 0 8px;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
       white-space: normal;
       line-height: 1.25;
       text-align: center;
@@ -207,7 +210,7 @@
   }
   @media (max-width: 759px) {
     .media--fallback {
-      aspect-ratio: 1;
+      aspect-ratio: 4 / 3;
     }
   }
   .collage {
@@ -229,17 +232,26 @@
   .collage img {
     transform: none !important;
   }
-  .textonly {
-    min-height: 0 !important;
-    grid-template-columns: 1fr !important;
+  .artframe {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(24px, 5vw, 64px);
+    background:
+      radial-gradient(70% 60% at 50% 40%, rgba(255, 255, 255, 0.07), transparent 70%),
+      var(--burgundy);
   }
-  .textonly .copy {
-    align-items: center !important;
-    text-align: center !important;
-    padding: clamp(48px, 8vw, 104px) var(--gutter) !important;
+  .artframe::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border: 1px solid var(--ivory-20);
+    pointer-events: none;
   }
-  .textonly .ctas {
-    justify-content: center !important;
+  .artframe :global(.art) {
+    max-width: 520px;
   }
 
   .arrow {

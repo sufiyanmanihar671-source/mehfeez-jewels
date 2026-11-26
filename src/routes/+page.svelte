@@ -46,12 +46,12 @@
 
   // 10. Why Mehfeez.
   const why = [
-    { icon: 'gem', title: 'Direct Manufacturer & Wholesale Supplier' },
-    { icon: 'sparkle', title: 'Exclusive Jewellery Designs' },
-    { icon: 'designs', title: 'Wide Variety of Collections' },
-    { icon: 'boxes', title: 'Wholesale Business Support' },
-    { icon: 'plane', title: 'International Shipping' },
-    { icon: 'headset', title: 'Personalised Customer Assistance' }
+    { icon: 'gem', title: 'Manufacturer Direct' },
+    { icon: 'sparkle', title: 'Exclusive Designs' },
+    { icon: 'designs', title: 'Wide Variety' },
+    { icon: 'boxes', title: 'Wholesale Support' },
+    { icon: 'plane', title: 'Worldwide Shipping' },
+    { icon: 'headset', title: 'Personal Assistance' }
   ] as const;
 
   const orgLd = $derived({
@@ -135,11 +135,11 @@
 <!-- 10. Why Mehfeez (ivory) -->
 <section class="white" id="why-mehfeez">
   <div class="container">
-    <SectionHead eyebrow="The Mehfeez promise" title="Why Choose" accent="Mehfeez Jewels?" />
+    <SectionHead eyebrow="The Mehfeez promise" title="Why" accent="Mehfeez?" />
     <div class="why">
       {#each why as w}
         <div class="why-item">
-          <span class="wi"><Icon name={w.icon} size={26} stroke={1.25} /></span>
+          <span class="wi"><Icon name={w.icon} size={22} stroke={1.3} /></span>
           <h3>{w.title}</h3>
         </div>
       {/each}
@@ -417,40 +417,67 @@
     color: var(--charcoal);
   }
 
-  /* why */
+  /* why — compact: 2 per row on phones, 3 on tablets, 6 in one row on desktop */
   .why {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: var(--burgundy-15);
-    border: 1px solid var(--burgundy-15);
+    gap: 12px;
+    max-width: 1100px;
+    margin: 0 auto;
   }
-  @media (min-width: 1000px) {
+  @media (min-width: 640px) {
     .why {
       grid-template-columns: repeat(3, 1fr);
     }
   }
+  @media (min-width: 1100px) {
+    .why {
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0;
+    }
+    .why-item + .why-item {
+      border-left: 1px solid var(--burgundy-15);
+    }
+    .why-item {
+      background: transparent !important;
+      border-top: 0 !important;
+      border-bottom: 0 !important;
+      border-right: 0 !important;
+    }
+    .why-item:first-child {
+      border-left: 0 !important;
+    }
+  }
   .why-item {
-    background: var(--white);
-    padding: clamp(22px, 3vw, 40px) 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 10px;
     text-align: center;
+    background: var(--ivory);
+    border: 1px solid var(--burgundy-15);
   }
   .wi {
     display: inline-flex;
-    width: 62px;
-    height: 62px;
+    width: 50px;
+    height: 50px;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    color: var(--burgundy);
-    border: 1px solid var(--burgundy-30);
-    outline: 1px solid var(--burgundy-15);
-    outline-offset: 4px;
-    margin-bottom: 14px;
+    color: var(--white);
+    background: var(--burgundy);
+    box-shadow: 0 0 0 4px var(--white), 0 0 0 5px var(--burgundy-30);
   }
   .why-item h3 {
-    font-size: clamp(1rem, 1.7vw, 1.3rem);
     margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1.35;
+    color: var(--charcoal);
   }
 
   /* gallery */

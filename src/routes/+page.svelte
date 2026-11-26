@@ -13,6 +13,7 @@
   const loggedIn = $derived(!!data.user);
   const status = $derived(data.profile?.status);
   const wa = $derived(waLink(s.whatsapp_number, s.whatsapp_message));
+  const newDesignsWa = $derived(waLink(s.whatsapp_number, 'Hello Mehfeez Jewels, please share your latest new arrival designs for wholesale.'));
 
 
   const bySlug = (slug: string) => data.categories.find((c) => c.slug === slug);
@@ -86,19 +87,23 @@
 <section class="dark" id="new-arrivals">
   <div class="container">
     <SectionHead eyebrow="Just added" title="New" accent="Arrivals" light />
-    {#if data.arrivals.length}
-      <div class="six six--products">
-        {#each data.arrivals as p (p.id)}
-          <ProductCard product={p} price={data.prices[p.id]} {loggedIn} {status} />
-        {/each}
-      </div>
-      <div class="center"><a class="btn btn--light" href={data.arrivalsAreNew ? '/collections?show=new' : '/collections'}>View All New Arrivals</a></div>
-    {:else}
-      <p class="soon">Ask us for this week's new designs on WhatsApp.</p>
-      <div class="btn-row">
-        <a class="btn btn--light" href={waLink(s.whatsapp_number, 'Hello Mehfeez Jewels, please share your latest new arrival designs for wholesale.')} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={16} /> Get New Arrivals</a>
-      </div>
-    {/if}
+    <div class="six six--products">
+      {#each data.arrivals as p (p.id)}
+        <ProductCard product={p} price={data.prices[p.id]} {loggedIn} {status} />
+      {/each}
+      <!-- Empty slots until 6 designs are online: clearly labelled, links to WhatsApp (no fake products). -->
+      {#each Array(Math.max(0, 6 - data.arrivals.length)) as _, i}
+        <a class="soon-card" href={newDesignsWa} target="_blank" rel="noopener noreferrer" aria-label="Ask for new designs on WhatsApp">
+          <span class="soon-media"><Icon name="gem" size={34} stroke={1.1} /></span>
+          <span class="soon-body">
+            <strong>New Design</strong>
+            <small>Coming soon</small>
+            <span class="soon-cta"><Icon name="whatsapp" size={13} /> Ask on WhatsApp</span>
+          </span>
+        </a>
+      {/each}
+    </div>
+    <div class="center"><a class="btn btn--light" href={data.arrivalsAreNew ? '/collections?show=new' : '/collections'}>View All New Arrivals</a></div>
   </div>
 </section>
 
@@ -202,10 +207,57 @@
     background: var(--burgundy-deep);
     color: var(--ivory);
   }
-  .soon {
+  .soon-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    border: 1px solid var(--burgundy-15);
+    padding: 8px;
+    text-decoration: none !important;
+    transition: box-shadow 0.3s, transform 0.3s;
+  }
+  .soon-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+  }
+  .soon-media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 4 / 5;
+    background: var(--ivory);
+    color: var(--burgundy-30);
+    outline: 1px solid var(--burgundy-15);
+    outline-offset: -10px;
+  }
+  .soon-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 14px 6px 8px;
     text-align: center;
-    color: var(--ivory-70);
-    margin: -6px 0 18px;
+  }
+  .soon-body strong {
+    font-family: var(--font-display);
+    font-size: 1.12rem;
+    font-weight: 600;
+    color: var(--charcoal);
+  }
+  .soon-body small {
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .soon-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--burgundy);
   }
   .center {
     display: flex;

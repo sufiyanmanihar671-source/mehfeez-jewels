@@ -161,19 +161,20 @@
   }
   h1,
   .h1 {
-    font-size: clamp(1.9rem, 3.4vw, 3.2rem);
+    font-size: clamp(1.45rem, 2.6vw, 2.5rem);
     font-weight: 600;
-    line-height: 1.12;
+    line-height: 1.18;
     color: var(--white);
-    margin: 14px 0 10px;
-    max-width: 17ch;
+    margin: 12px 0 8px;
+    max-width: 20ch;
   }
   .copy p {
     color: var(--ivory-70);
-    max-width: 40ch;
-    font-size: 0.95rem;
-    letter-spacing: 0.04em;
-    margin-bottom: 14px;
+    max-width: 38ch;
+    font-size: 0.84rem;
+    line-height: 1.6;
+    letter-spacing: 0.02em;
+    margin-bottom: 0;
   }
 
   .media--fallback {

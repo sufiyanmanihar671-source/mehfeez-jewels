@@ -82,20 +82,25 @@
   </div>
 </section>
 
-<!-- New Arrivals: 6 designs + View All -->
-{#if data.arrivals.length}
-  <section class="dark" id="new-arrivals">
-    <div class="container">
-      <SectionHead eyebrow="Just added" title="New" accent="Arrivals" light />
+<!-- New Arrivals: always shown above Shop by Category -->
+<section class="dark" id="new-arrivals">
+  <div class="container">
+    <SectionHead eyebrow="Just added" title="New" accent="Arrivals" light />
+    {#if data.arrivals.length}
       <div class="six six--products">
         {#each data.arrivals as p (p.id)}
           <ProductCard product={p} price={data.prices[p.id]} {loggedIn} {status} />
         {/each}
       </div>
       <div class="center"><a class="btn btn--light" href={data.arrivalsAreNew ? '/collections?show=new' : '/collections'}>View All New Arrivals</a></div>
-    </div>
-  </section>
-{/if}
+    {:else}
+      <p class="soon">Ask us for this week's new designs on WhatsApp.</p>
+      <div class="btn-row">
+        <a class="btn btn--light" href={waLink(s.whatsapp_number, 'Hello Mehfeez Jewels, please share your latest new arrival designs for wholesale.')} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={16} /> Get New Arrivals</a>
+      </div>
+    {/if}
+  </div>
+</section>
 
 <!-- Shop by Category: 6 boxes (2 per row on phones, 3 on desktop) + View All -->
 {#if shopCategories.length}
@@ -196,6 +201,11 @@
   .dark {
     background: var(--burgundy-deep);
     color: var(--ivory);
+  }
+  .soon {
+    text-align: center;
+    color: var(--ivory-70);
+    margin: -6px 0 18px;
   }
   .center {
     display: flex;

@@ -180,7 +180,14 @@ test('rate limit table is not directly accessible', async () => {
 
 test('default categories are seeded with type/style groups', async () => {
   const r = await as('anon', null, `select category_group g, count(*)::int n from public.categories group by 1 order by 1`);
-  assert.deepEqual(r.rows, [{ g: 'style', n: 6 }, { g: 'type', n: 7 }]);
+  assert.deepEqual(r.rows, [{ g: 'style', n: 6 }, { g: 'type', n: 8 }]);
+});
+
+test('product collection tags accept only known values', async () => {
+  await db.query(`update public.products set collections = '{trending,premium}' where sku = 'MJ-001'`);
+  const r = await as('anon', null, `select collections from public.products where collections @> '{premium}'`);
+  assert.equal(r.rows.length, 1);
+  await assert.rejects(db.query(`update public.products set collections = '{fake}' where sku = 'MJ-001'`), /check constraint/);
 });
 
 test('hero slides: public sees active only, only admins can write', async () => {

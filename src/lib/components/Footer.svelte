@@ -32,12 +32,12 @@
     </div>
 
     <div>
-      <h4>Collections</h4>
+      <h4>Product Categories</h4>
       <ul>
+        <li><a href="/collections">Shop All</a></li>
         {#each categories.slice(0, 8) as c}
           <li><a href={`/categories/${c.slug}`}>{c.name}</a></li>
         {/each}
-        <li><a href="/collections">View all designs</a></li>
       </ul>
     </div>
 
@@ -49,7 +49,8 @@
         <li><a href={waLink(settings.video_call_number, settings.video_call_message)} target="_blank" rel="noopener noreferrer">Book a Video Call</a></li>
         <li><a href="/register">Open a Wholesale Account</a></li>
         <li><a href="/about">About Us</a></li>
-        <li><a href="/contact">Contact</a></li>
+        <li><a href="/contact">Contact Us</a></li>
+        {#if settings.instagram_url}<li><a href={settings.instagram_url} target="_blank" rel="noopener noreferrer">Instagram</a></li>{/if}
       </ul>
     </div>
 
@@ -75,6 +76,7 @@
         <a href="/privacy">Privacy Policy</a>
         <a href="/terms">Terms &amp; Conditions</a>
         <a href="/shipping-policy">Shipping Policy</a>
+        <a href="/return-policy">Return Policy</a>
       </nav>
     </div>
   </div>
@@ -83,6 +85,7 @@
 <style>
   .footer {
     background: var(--burgundy-deep);
+    border-top: 1px solid var(--ivory-20);
     color: var(--ivory-70);
     padding-top: clamp(48px, 7vw, 84px);
     font-size: 0.92rem;

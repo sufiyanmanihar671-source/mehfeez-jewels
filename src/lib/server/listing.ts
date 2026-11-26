@@ -8,6 +8,7 @@ const FLAGS: Record<string, ProductQuery['flag']> = {
   new: 'is_new_arrival',
   bestsellers: 'is_bestseller'
 };
+export const COLLECTIONS = ['trending', 'premium', 'exclusive', 'traditional'];
 
 /** Shared loader for /collections and /categories/[slug]. */
 export async function loadListing(
@@ -23,6 +24,7 @@ export async function loadListing(
     categoryId,
     search: q || undefined,
     flag: FLAGS[show],
+    collection: COLLECTIONS.includes(show) ? show : undefined,
     sort,
     limit: PAGE_SIZE,
     offset: (page - 1) * PAGE_SIZE

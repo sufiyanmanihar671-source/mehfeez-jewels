@@ -104,6 +104,14 @@
     <label class="checkbox"><input type="checkbox" name="is_new_arrival" checked={flag('is_new_arrival')} /> New arrival</label>
     <label class="checkbox"><input type="checkbox" name="is_bestseller" checked={flag('is_bestseller')} /> Bestseller</label>
   </div>
+  <fieldset class="span-2 box">
+    <legend>Homepage collections</legend>
+    <div class="flags">
+      {#each [['trending', 'Trending Designs'], ['premium', 'Premium Collection'], ['exclusive', 'Exclusive Designs'], ['traditional', 'Traditional Collection']] as [k, label]}
+        <label class="checkbox"><input type="checkbox" name="collections" value={k} checked={(v.collections ?? []).includes(k)} /> {label}</label>
+      {/each}
+    </div>
+  </fieldset>
 
   <fieldset class="span-2 box">
     <legend>SEO (optional)</legend>

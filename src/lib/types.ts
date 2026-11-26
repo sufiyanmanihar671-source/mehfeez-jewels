@@ -84,6 +84,7 @@ export interface Product {
   meta_description: string | null;
   sort_order: number;
   created_at: string;
+  collections?: string[];
   category?: Pick<Category, 'id' | 'name' | 'slug'> | null;
   images?: ProductImage[];
   variants?: ProductVariant[];

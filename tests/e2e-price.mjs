@@ -129,7 +129,7 @@ for (const p of ['/admin', '/admin/customers', '/admin/products', '/admin/produc
     assert.equal(r.status, 200);
   });
 }
-for (const p of ['/about', '/contact', '/categories', '/wholesale-enquiry', '/login', '/register', '/forgot-password', '/privacy', '/terms', '/shipping-policy']) {
+for (const p of ['/about', '/contact', '/categories', '/wholesale-enquiry', '/login', '/register', '/forgot-password', '/privacy', '/terms', '/shipping-policy', '/return-policy', '/collections?show=trending']) {
   await check(`public page ${p} renders`, async () => {
     const r = await get(p);
     assert.equal(r.status, 200);
@@ -197,7 +197,7 @@ await check('CSP allows Google sign-in script and frame only', async () => {
 });
 await check('homepage: B2B sections, logo, catalogue + video-call CTAs', async () => {
   const r = await get('/');
-  for (const t of ['Our Featured', 'Why Choose', 'Wholesale Made', 'Get Catalogue', 'Book a Video Call', '/brand/mehfeez-burgundy.png', 'JEWELS']) {
+  for (const t of ['Featured', 'Why Choose', 'See Our Jewellery Collection', 'Book a Video Call', 'Shop by', 'Crafting Jewellery', 'Login to view price', 'View Details', '/brand/mehfeez-white.png', 'JEWELS']) {
     assert.ok(r.body.includes(t), `missing: ${t}`);
   }
   const wa = (r.body.match(/https:\/\/wa\.me\/[^"]+/g) ?? []).map((h) => decodeURIComponent(h.replace(/&amp;/g, '&')));

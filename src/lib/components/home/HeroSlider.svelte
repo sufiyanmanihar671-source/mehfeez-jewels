@@ -9,9 +9,9 @@
 
   // Minimal copy: short heading, one short line.
   const DEFAULT = {
-    eyebrow: 'Mehfeez Jewels',
-    title: 'Wholesale Artificial Jewellery',
-    subtitle: 'Direct from the manufacturer · Mumbai'
+    eyebrow: 'Mehfeez Jewels · Wholesale',
+    title: 'Premium Artificial Jewellery, Direct from Manufacturers',
+    subtitle: 'Discover exclusive jewellery collections crafted for retailers, boutiques and wholesale buyers.'
   };
 
   let index = $state(0);
@@ -35,8 +35,8 @@
     {#if first}<h1>{title}</h1>{:else}<h2 class="h1">{title}</h2>{/if}
     {#if subtitle}<p>{subtitle}</p>{/if}
     <div class="ctas">
-      <a class="btn" href={ctaHref || '/collections'}>{ctaLabel || 'Explore Collections'}</a>
-      <a class="btn btn--outline" href="/wholesale-enquiry?type=catalogue">Get Catalogue</a>
+      <a class="btn btn--light" href={ctaHref || '/collections'}>{ctaLabel || 'Explore Collections'}</a>
+      <a class="btn btn--ghost-light" href="/wholesale-enquiry">Wholesale Enquiry</a>
     </div>
   </div>
 {/snippet}
@@ -103,8 +103,8 @@
   .hero {
     position: relative;
     display: grid;
-    background: var(--ivory);
-    border-bottom: 1px solid var(--burgundy-15);
+    background: var(--burgundy-deep);
+    color: var(--ivory);
     overflow: hidden;
   }
   .slide {
@@ -123,7 +123,7 @@
     position: relative;
     aspect-ratio: 4 / 5;
     overflow: hidden;
-    background: var(--cream);
+    background: var(--burgundy);
   }
   .media img {
     width: 100%;
@@ -151,24 +151,24 @@
     font-weight: 500;
     letter-spacing: 0.34em;
     text-transform: uppercase;
-    color: var(--burgundy-accent);
+    color: var(--ivory-70);
   }
   .kicker .line {
     width: 38px;
     height: 1px;
-    background: var(--burgundy-30);
+    background: var(--ivory-20);
   }
   h1,
   .h1 {
     font-size: clamp(1.9rem, 3.4vw, 3.2rem);
     font-weight: 600;
     line-height: 1.12;
-    color: var(--burgundy);
-    margin: 14px 0 8px;
-    max-width: 16ch;
+    color: var(--white);
+    margin: 14px 0 10px;
+    max-width: 17ch;
   }
   .copy p {
-    color: var(--muted);
+    color: var(--ivory-70);
     max-width: 40ch;
     font-size: 0.95rem;
     letter-spacing: 0.04em;
@@ -208,7 +208,7 @@
     display: grid;
     gap: 6px;
     width: 100%;
-    background: var(--ivory);
+    background: var(--burgundy-deep);
   }
   .collage.n2 {
     grid-template-columns: 1fr 1fr;
@@ -245,9 +245,9 @@
     display: none;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--burgundy-15);
-    background: rgba(255, 249, 243, 0.92);
-    color: var(--burgundy);
+    border: 1px solid var(--ivory-20);
+    background: rgba(69, 16, 32, 0.6);
+    color: var(--ivory);
     cursor: pointer;
   }
   .arrow.prev {
@@ -272,13 +272,13 @@
     width: 9px;
     height: 9px;
     padding: 0;
-    border: 1px solid var(--burgundy);
+    border: 1px solid var(--ivory);
     background: transparent;
     transform: rotate(45deg);
     cursor: pointer;
   }
   .dots button.on {
-    background: var(--burgundy);
+    background: var(--ivory);
   }
 
   @media (min-width: 760px) {

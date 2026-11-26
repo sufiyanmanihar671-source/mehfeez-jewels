@@ -8,7 +8,7 @@ const FLAGS = ['is_published', 'is_featured', 'is_new_arrival', 'is_bestseller']
 
 /** Validates and saves product fields + base wholesale price. Returns the product id or an ActionFailure. */
 export async function saveProduct(supabase: SupabaseClient, form: FormData, id: string | null) {
-  const raw = formToObject(form, [], FLAGS);
+  const raw = formToObject(form, ['collections'], FLAGS);
   if (!raw.slug && typeof raw.name === 'string') raw.slug = slugify(raw.name);
   const parsed = productSchema.safeParse(raw);
   const priceParsed = priceSchema.safeParse({ price: raw.price, currency: raw.currency || 'INR', price_note: raw.price_note });
@@ -20,14 +20,18 @@ export async function saveProduct(supabase: SupabaseClient, form: FormData, id: 
   }
 
   let productId = id;
-  if (id) {
-    const { error } = await supabase.from('products').update(parsed.data).eq('id', id);
-    if (error) return dbFail(error, raw);
-  } else {
-    const { data, error } = await supabase.from('products').insert(parsed.data).select('id').single();
-    if (error) return dbFail(error, raw);
-    productId = data.id;
+  const write = async (row: Record<string, unknown>) =>
+    id
+      ? { ...(await supabase.from('products').update(row).eq('id', id)), data: { id } }
+      : await supabase.from('products').insert(row).select('id').single();
+  let res = await write(parsed.data);
+  if (res.error && res.error.message.includes('collections')) {
+    // Collections column not created yet (run supabase/setup/run-this-now.sql): save without it.
+    const { collections: _c, ...rest } = parsed.data;
+    res = await write(rest);
   }
+  if (res.error) return dbFail(res.error, raw);
+  productId = (res.data as { id: string }).id;
 
   const p = priceParsed.data;
   const err = await setPrice(supabase, productId!, null, p.price, p.currency, p.price_note);

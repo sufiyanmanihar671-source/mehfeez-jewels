@@ -1,28 +1,28 @@
 /* =====================================================================
-   MEHFEEZ JEWELS — design tokens (brand palette, Nov 2026)
-   Light, spacious surfaces (ivory / cream / white) with deep burgundy
-   accents. Burgundy backgrounds only for a few selected sections.
-   No blue, no gold/golden theme.
+   MEHFEEZ JEWELS — design tokens (brief of 26 Nov 2026)
+   Colour placement follows the reference: where it uses dark blue we use
+   deep burgundy, ivory stays ivory, white stays white. Light sections stay
+   light; dark sections are burgundy. No blue, gold, bright red or purple.
    ===================================================================== */
 :root {
-  --burgundy: #650d26; /* Deep Burgundy — primary */
-  --burgundy-deep: #480819; /* Dark Burgundy — hovers, dark sections */
-  --burgundy-accent: #8b1938; /* Burgundy Accent — highlights */
-  --ivory: #fff9f3; /* Warm Ivory — page background */
-  --cream: #f8f1e9; /* Soft Cream — alternate sections */
-  --charcoal: #302323; /* Main text */
-  --muted: #756666; /* Secondary text */
+  --burgundy: #641b32; /* Deep Burgundy — primary */
+  --burgundy-deep: #451020; /* Deeper Burgundy — dark sections */
+  --burgundy-accent: #7d2a43; /* lighter tint of the primary, for hovers/labels */
+  --ivory: #f5f0e6; /* Ivory — light sections */
+  --cream: #f5f0e6; /* (alias) */
+  --charcoal: #2e2326; /* Main text on light */
+  --muted: #6f6265; /* Secondary text */
   --white: #ffffff;
 
-  --burgundy-08: rgba(101, 13, 38, 0.08);
-  --burgundy-15: rgba(101, 13, 38, 0.15);
-  --burgundy-30: rgba(101, 13, 38, 0.3);
-  --charcoal-70: #756666;
-  --charcoal-50: rgba(48, 35, 35, 0.55);
-  --charcoal-15: rgba(48, 35, 35, 0.14);
-  --charcoal-08: rgba(48, 35, 35, 0.08);
-  --ivory-70: rgba(255, 249, 243, 0.78);
-  --ivory-20: rgba(255, 249, 243, 0.22);
+  --burgundy-08: rgba(100, 27, 50, 0.08);
+  --burgundy-15: rgba(100, 27, 50, 0.16);
+  --burgundy-30: rgba(100, 27, 50, 0.32);
+  --charcoal-70: #6f6265;
+  --charcoal-50: rgba(46, 35, 38, 0.55);
+  --charcoal-15: rgba(46, 35, 38, 0.14);
+  --charcoal-08: rgba(46, 35, 38, 0.08);
+  --ivory-70: rgba(245, 240, 230, 0.8);
+  --ivory-20: rgba(245, 240, 230, 0.24);
 
   --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
   --font-body: 'Jost', 'Segoe UI', system-ui, sans-serif;
@@ -30,7 +30,7 @@
   --radius: 2px;
   --radius-lg: 6px;
   --shadow: 0 10px 30px -14px rgba(48, 35, 35, 0.22);
-  --shadow-lg: 0 24px 60px -22px rgba(101, 13, 38, 0.32);
+  --shadow-lg: 0 24px 60px -22px rgba(69, 16, 32, 0.4);
   --container: 1280px;
   --gutter: clamp(16px, 4vw, 40px);
   --header-h: 84px;

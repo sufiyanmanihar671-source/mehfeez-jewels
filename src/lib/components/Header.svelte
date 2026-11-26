@@ -13,132 +13,157 @@
   }: { settings: SiteSettings; categories: Category[]; profile: Profile | null; loggedIn: boolean } = $props();
 
   let open = $state(false);
-  let catsOpen = $state(false);
+  let menu = $state<string | null>(null);
+  let searching = $state(false);
+  let searchInput = $state<HTMLInputElement>();
 
-  const left = [
-    { href: '/', label: 'Home' },
-    { href: '/collections', label: 'Collections', menu: true },
-    { href: '/about', label: 'About Us' },
-    { href: '/#why-mehfeez', label: 'Why Choose Us' }
-  ];
-  const right = [
-    { href: '/wholesale-enquiry', label: 'B2B Enquiry' },
-    { href: '/contact', label: 'Contact' }
-  ];
-  const types = $derived(categories.filter((c) => (c.category_group ?? 'type') === 'type'));
-  const styles = $derived(categories.filter((c) => c.category_group === 'style'));
+  const bySlug = (slug: string) => categories.find((c) => c.slug === slug);
+  const link = (slug: string, label: string) => ({ href: `/categories/${slug}`, label, exists: !!bySlug(slug) });
+
+  // Navigation as per the brief (only categories that exist are shown).
+  const productTypes = $derived(
+    [
+      link('earrings', 'Earrings'),
+      link('necklace-sets', 'Necklace Sets'),
+      link('choker-sets', 'Chokers'),
+      link('bangles', 'Bangles'),
+      link('bridal-jewellery', 'Bridal Jewellery'),
+      link('pendant-sets', 'Pendant Sets'),
+      link('complete-jewellery-sets', 'Complete Sets')
+    ].filter((l) => l.exists)
+  );
+  const styles = $derived(
+    [
+      link('american-diamond-jewellery', 'American Diamond'),
+      link('victorian-jewellery', 'Victorian Jewellery'),
+      link('south-indian-jewellery', 'South Indian Jewellery'),
+      link('heritage-jewellery', 'Heritage Jewellery'),
+      link('traditional-jewellery', 'Traditional'),
+      link('contemporary-jewellery', 'Contemporary')
+    ].filter((l) => l.exists)
+  );
   const wa = $derived(waLink(settings.whatsapp_number, settings.whatsapp_message));
+  const videoCall = $derived(waLink(settings.video_call_number, settings.video_call_message));
 
   function active(href: string) {
-    if (href.includes('#')) return false;
-    return href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(href);
+    const [path, q] = href.split('?');
+    if (q) return page.url.pathname === path && page.url.search === `?${q}`;
+    return href === '/' ? page.url.pathname === '/' : page.url.pathname.startsWith(path) && !page.url.search;
+  }
+
+  function toggleSearch() {
+    searching = !searching;
+    if (searching) setTimeout(() => searchInput?.focus(), 30);
   }
 
   $effect(() => {
-    page.url.pathname;
+    page.url.href;
     open = false;
-    catsOpen = false;
+    menu = null;
+    searching = false;
   });
 </script>
 
-<!-- Slim announcement / contact bar -->
+{#snippet dropdown(id: string, label: string, items: { href: string; label: string }[], viewAll: { href: string; label: string })}
+  <div class="dd" role="presentation" onmouseenter={() => (menu = id)} onmouseleave={() => (menu = null)}>
+    <button type="button" class="dd-btn" aria-expanded={menu === id} onclick={() => (menu = menu === id ? null : id)}>
+      {label} <span class="caret" aria-hidden="true">▾</span>
+    </button>
+    {#if menu === id}
+      <div class="dd-menu">
+        {#each items as it}<a href={it.href}>{it.label}</a>{/each}
+        <a class="all" href={viewAll.href}>{viewAll.label} →</a>
+      </div>
+    {/if}
+  </div>
+{/snippet}
+
 <div class="topbar">
   <div class="container topbar-inner">
-    <span class="tb-item"><Icon name="pin" size={13} /> Mumbai, India</span>
-    {#if settings.contact_email}
-      <a class="tb-item hide-sm" href={`mailto:${settings.contact_email}`}><Icon name="mail" size={13} /> {settings.contact_email}</a>
-    {/if}
-    <span class="tb-item hide-sm">Wholesale enquiries welcome · India &amp; international</span>
-    <a class="tb-item" href={wa} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={13} /> {settings.contact_phone}</a>
+    <span>Wholesale only</span><i aria-hidden="true">◆</i>
+    <span>Direct from the manufacturer</span><i aria-hidden="true" class="hide-sm">◆</i>
+    <span class="hide-sm">Shipping worldwide</span><i aria-hidden="true" class="hide-sm">◆</i>
+    <a class="hide-sm" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp {settings.contact_phone}</a>
   </div>
 </div>
 
 <header class="site-header">
   <div class="container bar">
-    <button class="burger" onclick={() => (open = !open)} aria-expanded={open} aria-controls="mobile-nav">
-      <Icon name={open ? 'close' : 'menu'} size={24} />
+    <button class="icon-btn burger" onclick={() => (open = !open)} aria-expanded={open} aria-controls="mobile-nav">
+      <Icon name={open ? 'close' : 'menu'} size={24} stroke={1.4} />
       <span class="sr-only">{open ? 'Close menu' : 'Open menu'}</span>
     </button>
 
-    <nav class="nav nav-left" aria-label="Main">
-      {#each left as l}
-        {#if l.menu}
-          <div class="dropdown" role="presentation" onmouseenter={() => (catsOpen = true)} onmouseleave={() => (catsOpen = false)}>
-            <a href={l.href} class:active={active(l.href)} aria-haspopup="true" aria-expanded={catsOpen}>{l.label} <span class="caret">▾</span></a>
-            {#if catsOpen && categories.length}
-              <div class="mega">
-                <div>
-                  <h4>By category</h4>
-                  {#each types as c}<a href={`/categories/${c.slug}`}>{c.name}</a>{/each}
-                </div>
-                {#if styles.length}
-                  <div>
-                    <h4>By jewellery style</h4>
-                    {#each styles as c}<a href={`/categories/${c.slug}`}>{c.name}</a>{/each}
-                  </div>
-                {/if}
-                <div>
-                  <h4>Highlights</h4>
-                  <a href="/collections?show=new">New arrivals</a>
-                  <a href="/collections?show=featured">Featured designs</a>
-                  <a href="/collections?show=bestsellers">Bestsellers</a>
-                  <a href="/collections">View all designs</a>
-                </div>
-              </div>
-            {/if}
-          </div>
-        {:else}
-          <a href={l.href} class:active={active(l.href)} aria-current={active(l.href) ? 'page' : undefined}>{l.label}</a>
-        {/if}
-      {/each}
+    <nav class="nav nav-left" aria-label="Collections">
+      {@render dropdown('cat', 'Categories', productTypes, { href: '/collections', label: 'Shop all' })}
+      {@render dropdown('style', 'Styles', styles, { href: '/categories', label: 'All categories' })}
+      <a href="/collections?show=new" class:active={active('/collections?show=new')}>New Arrivals</a>
     </nav>
 
-    <div class="brand"><Logo src={settings.logo_url} /></div>
+    <div class="brand"><Logo src={settings.logo_url} light /></div>
 
-    <nav class="nav nav-right" aria-label="Business">
-      {#each right as l}
-        <a href={l.href} class:active={active(l.href)} aria-current={active(l.href) ? 'page' : undefined}>{l.label}</a>
-      {/each}
+    <nav class="nav nav-right" aria-label="Main">
+      <a href="/collections" class:active={active('/collections')}>Shop All</a>
+      <a href="/wholesale-enquiry" class:active={active('/wholesale-enquiry')}>Wholesale Enquiry</a>
+      <a href="/contact" class:active={active('/contact')}>Contact Us</a>
     </nav>
 
     <div class="tools">
+      <button class="icon-btn" type="button" onclick={toggleSearch} aria-expanded={searching} aria-controls="site-search" aria-label="Search designs">
+        <Icon name="search" size={20} stroke={1.4} />
+      </button>
+      <a class="icon-btn" href={loggedIn ? '/account' : '/login'} aria-label={loggedIn ? 'My account' : 'Login or register'} title={loggedIn ? 'My account' : 'Login / Register'}>
+        <Icon name="user" size={21} stroke={1.4} />
+      </a>
       {#if profile?.role === 'admin'}
-        <a class="icon-link hide-sm" href="/admin" title="Admin panel" aria-label="Admin panel"><Icon name="lock" size={20} /></a>
+        <a class="icon-btn hide-sm" href="/admin" aria-label="Admin panel" title="Admin panel"><Icon name="lock" size={19} stroke={1.4} /></a>
       {/if}
-      <a class="icon-link" href={loggedIn ? '/account' : '/login'} title={loggedIn ? 'My account' : 'Login / Register'} aria-label={loggedIn ? 'My account' : 'Login or register'}>
-        <Icon name="user" size={21} />
-      </a>
-      <a class="wa-btn" href={wa} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp us">
-        <Icon name="whatsapp" size={18} /><span>WhatsApp</span>
-      </a>
+      <a class="icon-btn" href={wa} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp us" title="WhatsApp"><Icon name="whatsapp" size={20} /></a>
     </div>
   </div>
 
-  <!-- Mobile quick links (reference-style pill row) -->
-  <nav class="quick" aria-label="Quick links">
-    <a href="/collections" class:active={active('/collections')}>Collections</a>
-    <a href="/wholesale-enquiry" class:active={active('/wholesale-enquiry')}>B2B Enquiry</a>
-    <a href="/contact" class:active={active('/contact')}>Contact</a>
+  {#if searching}
+    <form id="site-search" class="search" action="/collections" method="GET" role="search">
+      <div class="container search-inner">
+        <Icon name="search" size={18} stroke={1.4} />
+        <input bind:this={searchInput} name="q" type="search" placeholder="Search designs or SKU…" aria-label="Search designs or SKU" />
+        <button class="btn btn--light btn--sm" type="submit">Search</button>
+      </div>
+    </form>
+  {/if}
+
+  <!-- Mobile: reference-style link row + 2×2 "shop by" grid -->
+  <nav class="m-row" aria-label="Quick links">
+    <a href="/collections">Shop All</a><i aria-hidden="true">◆</i>
+    <a href="/collections?show=new">New Arrivals</a><i aria-hidden="true">◆</i>
+    <a href="/contact">Contact</a>
+  </nav>
+  <nav class="m-grid" aria-label="Shop by">
+    <a href="/categories">Shop by <b>Category</b></a>
+    <a href="/categories#styles">Shop by <b>Style</b></a>
+    <a href="/wholesale-enquiry">Wholesale <b>Enquiry</b></a>
+    <a href={videoCall} target="_blank" rel="noopener noreferrer">Video <b>Call</b></a>
   </nav>
 
   {#if open}
     <nav id="mobile-nav" class="mobile" aria-label="Mobile">
       <a href="/">Home</a>
-      <a href="/collections">All collections</a>
-      <div class="sub">
-        {#each categories as c}<a href={`/categories/${c.slug}`}>{c.name}</a>{/each}
-      </div>
+      <a href="/collections">Shop All</a>
+      <a href="/collections?show=new">New Arrivals</a>
+      <span class="m-h">Categories</span>
+      <div class="sub">{#each productTypes as l}<a href={l.href}>{l.label}</a>{/each}</div>
+      <span class="m-h">Styles</span>
+      <div class="sub">{#each styles as l}<a href={l.href}>{l.label}</a>{/each}</div>
       <a href="/about">About Us</a>
-      <a href="/#why-mehfeez">Why Choose Us</a>
-      <a href="/wholesale-enquiry">B2B Enquiry</a>
-      <a href="/contact">Contact</a>
+      <a href="/wholesale-enquiry">Wholesale Enquiry</a>
+      <a href="/contact">Contact Us</a>
       {#if profile?.role === 'admin'}<a href="/admin">Admin panel</a>{/if}
       <div class="mobile-auth">
         {#if loggedIn}
-          <a class="btn btn--outline" href="/account">My account</a>
+          <a class="btn btn--light" href="/account">My account</a>
         {:else}
-          <a class="btn btn--outline" href="/login">Login</a>
-          <a class="btn" href="/register">Register</a>
+          <a class="btn btn--ghost-light" href="/login">Login</a>
+          <a class="btn btn--light" href="/register">Register</a>
         {/if}
       </div>
     </nav>
@@ -147,216 +172,264 @@
 
 <style>
   .topbar {
-    background: var(--burgundy-deep);
+    background: var(--burgundy);
     color: var(--ivory);
-    font-size: 0.76rem;
-    letter-spacing: 0.04em;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
   }
   .topbar-inner {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px 26px;
-    min-height: 34px;
+    gap: 14px;
+    min-height: 32px;
     flex-wrap: wrap;
   }
-  .tb-item {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--ivory);
-    opacity: 0.92;
+  .topbar i {
+    font-style: normal;
+    font-size: 0.5rem;
+    opacity: 0.7;
   }
-  a.tb-item:hover {
-    opacity: 1;
+  .topbar a {
+    color: var(--ivory);
   }
 
   .site-header {
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(255, 249, 243, 0.97);
-    backdrop-filter: saturate(1.3) blur(10px);
-    border-bottom: 1px solid var(--burgundy-15);
+    background: var(--burgundy-deep);
+    color: var(--ivory);
+    border-bottom: 1px solid var(--ivory-20);
   }
   .bar {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    gap: 12px;
-    min-height: 72px;
+    gap: 8px;
+    min-height: 76px;
   }
   .brand {
+    grid-column: 2;
     display: flex;
     justify-content: center;
   }
-  .nav {
-    display: none;
-    align-items: center;
-    gap: clamp(14px, 1.7vw, 30px);
+  .burger {
+    grid-column: 1;
+    justify-self: start;
   }
-  .nav a,
-  .dropdown > a {
-    position: relative;
-    color: var(--charcoal);
-    font-size: 0.74rem;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    padding: 30px 0;
-    text-decoration: none;
-  }
-  .nav a:hover,
-  .nav a.active {
-    color: var(--burgundy);
-  }
-  .nav a.active::after,
-  .nav > a:hover::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 22px;
-    height: 1px;
-    background: var(--burgundy);
-  }
-  .caret {
-    font-size: 0.6rem;
-  }
-  .dropdown {
-    position: relative;
-  }
-  .mega {
-    position: absolute;
-    top: 100%;
-    left: -24px;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(190px, 1fr));
-    gap: 28px;
-    padding: 26px 30px;
-    background: var(--white);
-    border: 1px solid var(--burgundy-15);
-    border-top: 2px solid var(--burgundy);
-    box-shadow: var(--shadow);
-  }
-  .mega h4 {
-    font-family: var(--font-body);
-    font-size: 0.68rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--burgundy-accent);
-    margin-bottom: 10px;
-  }
-  .mega a {
-    display: block;
-    padding: 6px 0;
-    color: var(--charcoal);
-    font-size: 0.92rem;
-    white-space: nowrap;
-  }
-  .mega a:hover {
-    color: var(--burgundy);
-  }
-
   .tools {
+    grid-column: 3;
     display: flex;
-    align-items: center;
     justify-content: flex-end;
-    gap: 6px;
+    align-items: center;
+    gap: 2px;
   }
-  .icon-link {
+  .icon-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 40px;
     height: 40px;
-    color: var(--charcoal);
-  }
-  .icon-link:hover {
-    color: var(--burgundy);
-  }
-  .wa-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    height: 40px;
-    padding: 0 16px;
-    margin-left: 6px;
-    background: var(--burgundy);
-    color: var(--white);
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    text-decoration: none !important;
-  }
-  .wa-btn:hover {
-    background: var(--burgundy-deep);
-  }
-  .burger {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
     border: 0;
     background: none;
-    color: var(--charcoal);
+    color: var(--ivory);
     cursor: pointer;
+    text-decoration: none !important;
+  }
+  .icon-btn:hover {
+    color: var(--white);
   }
 
-  .quick {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    border-top: 1px solid var(--burgundy-15);
+  .nav {
+    display: none;
+    align-items: center;
+    gap: clamp(14px, 1.8vw, 30px);
   }
-  .quick a {
-    text-align: center;
-    padding: 11px 4px;
+  .nav a,
+  .dd-btn {
+    position: relative;
+    color: var(--ivory);
+    font: inherit;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    padding: 32px 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .nav a:hover,
+  .nav a.active,
+  .dd-btn:hover {
+    color: var(--white);
+  }
+  .nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 24px;
+    height: 1px;
+    background: var(--ivory);
+    transform: scaleX(0);
+    transition: transform 0.25s;
+  }
+  .nav a:hover::after,
+  .nav a.active::after {
+    transform: scaleX(1);
+  }
+  .caret {
+    font-size: 0.6rem;
+    margin-left: 2px;
+  }
+  .dd {
+    position: relative;
+  }
+  .dd-menu {
+    position: absolute;
+    top: 100%;
+    left: -22px;
+    min-width: 240px;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 0;
+    background: var(--ivory);
+    border-top: 2px solid var(--burgundy);
+    box-shadow: var(--shadow);
+  }
+  .dd-menu a {
+    padding: 9px 22px;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: none;
+    color: var(--charcoal);
+  }
+  .dd-menu a::after {
+    display: none;
+  }
+  .dd-menu a:hover {
+    color: var(--burgundy);
+    background: var(--white);
+  }
+  .dd-menu .all {
+    color: var(--burgundy);
+    font-weight: 600;
+    border-top: 1px solid var(--burgundy-15);
+    margin-top: 6px;
+    padding-top: 12px;
+  }
+
+  .search {
+    background: var(--burgundy);
+    border-top: 1px solid var(--ivory-20);
+  }
+  .search-inner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .search input {
+    flex: 1;
+    min-height: 42px;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--ivory-20);
+    border-radius: 0;
+    color: var(--white);
+  }
+  .search input::placeholder {
+    color: var(--ivory-70);
+  }
+  .search input:focus {
+    box-shadow: none;
+    border-color: var(--ivory);
+  }
+
+  .m-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 8px;
+    border-top: 1px solid var(--ivory-20);
+  }
+  .m-row a {
+    color: var(--ivory);
     font-size: 0.7rem;
     font-weight: 500;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--charcoal);
-    border-left: 1px solid var(--burgundy-15);
   }
-  .quick a:first-child {
-    border-left: 0;
+  .m-row i {
+    font-style: normal;
+    font-size: 0.45rem;
+    color: var(--ivory-70);
   }
-  .quick a.active {
-    color: var(--burgundy);
+  .m-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--ivory-20);
+  }
+  .m-grid a {
+    text-align: center;
+    padding: 11px 4px;
+    color: var(--ivory-70);
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--ivory-20);
+  }
+  .m-grid a:nth-child(odd) {
+    border-right: 1px solid var(--ivory-20);
+  }
+  .m-grid b {
+    color: var(--white);
+    font-weight: 600;
   }
 
   .mobile {
     display: flex;
     flex-direction: column;
     padding: 6px var(--gutter) 24px;
-    background: var(--ivory);
-    border-top: 1px solid var(--burgundy-15);
-    max-height: calc(100vh - 140px);
+    background: var(--burgundy-deep);
+    border-top: 1px solid var(--ivory-20);
+    max-height: calc(100vh - 120px);
     overflow-y: auto;
   }
   .mobile > a {
-    padding: 14px 0;
-    border-bottom: 1px solid var(--charcoal-08);
-    color: var(--charcoal);
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--ivory-20);
+    color: var(--ivory);
     font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .m-h {
+    margin-top: 14px;
+    font-size: 0.66rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ivory-70);
   }
   .sub {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2px 12px;
-    padding: 8px 0 12px;
-    border-bottom: 1px solid var(--charcoal-08);
+    padding: 6px 0 10px;
+    border-bottom: 1px solid var(--ivory-20);
   }
   .sub a {
-    font-size: 0.88rem;
-    color: var(--muted);
     padding: 6px 0;
+    color: var(--ivory);
+    font-size: 0.9rem;
   }
   .mobile-auth {
     display: flex;
@@ -367,22 +440,23 @@
     flex: 1;
   }
 
+  /* Phones/tablets: the tall header (bar + link row + grid) scrolls away instead of covering the screen. */
+  @media (max-width: 1099px) {
+    .site-header {
+      position: relative;
+    }
+  }
   @media (max-width: 560px) {
     .hide-sm {
       display: none;
     }
-    .wa-btn span {
-      display: none;
-    }
-    .wa-btn {
-      padding: 0 11px;
-      margin-left: 0;
+    .icon-btn {
+      width: 36px;
     }
   }
   @media (min-width: 1100px) {
     .bar {
-      grid-template-columns: 1fr auto 1fr;
-      min-height: 84px;
+      min-height: 88px;
     }
     .nav {
       display: flex;
@@ -391,23 +465,18 @@
       grid-column: 1;
       grid-row: 1;
     }
-    .brand {
-      grid-column: 2;
-      grid-row: 1;
-    }
     .nav-right {
       grid-column: 3;
       grid-row: 1;
       justify-self: start;
-      padding-left: clamp(16px, 2vw, 34px);
+      padding-left: clamp(16px, 2.4vw, 40px);
     }
     .tools {
-      grid-column: 3;
       grid-row: 1;
-      justify-self: end;
     }
     .burger,
-    .quick,
+    .m-row,
+    .m-grid,
     .mobile {
       display: none;
     }

@@ -127,7 +127,8 @@ export const productSchema = z.object({
   is_bestseller: z.boolean(),
   meta_title: optionalText(70),
   meta_description: optionalText(170),
-  sort_order: z.coerce.number().int().min(0).max(100000).default(0)
+  sort_order: z.coerce.number().int().min(0).max(100000).default(0),
+  collections: z.array(z.enum(['trending', 'premium', 'exclusive', 'traditional'])).max(4).default([])
 });
 
 export const priceSchema = z.object({

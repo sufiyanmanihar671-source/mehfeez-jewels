@@ -50,6 +50,8 @@ export interface ProductQuery {
   categoryId?: string;
   search?: string;
   flag?: 'is_featured' | 'is_new_arrival' | 'is_bestseller';
+  /** product collection tag: trending | premium | exclusive | traditional */
+  collection?: string;
   limit?: number;
   offset?: number;
   sort?: 'newest' | 'name';
@@ -64,6 +66,7 @@ export async function listProducts(
   let query = supabase.from('products').select(PRODUCT_CARD_SELECT, { count: 'exact' }).eq('is_published', true);
   if (q.categoryId) query = query.eq('category_id', q.categoryId);
   if (q.flag) query = query.eq(q.flag, true);
+  if (q.collection) query = query.contains('collections', [q.collection]);
   if (q.search) {
     const s = q.search.replace(/[%_,()*\\]/g, ' ').trim().slice(0, 60);
     if (s) query = query.or(`name.ilike.%${s}%,sku.ilike.%${s}%`);

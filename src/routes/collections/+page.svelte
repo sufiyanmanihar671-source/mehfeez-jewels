@@ -2,7 +2,15 @@
   import Seo from '$lib/components/Seo.svelte';
   import ProductListing from '$lib/components/ProductListing.svelte';
   let { data } = $props();
-  const titles: Record<string, string> = { featured: 'Featured Collections', new: 'New Arrivals', bestsellers: 'Bestselling Designs' };
+  const titles: Record<string, string> = {
+    featured: 'Featured Wholesale Products',
+    new: 'New Arrivals',
+    bestsellers: 'Bestselling Collections',
+    trending: 'Trending Designs',
+    premium: 'Premium Collection',
+    exclusive: 'Exclusive Designs',
+    traditional: 'Traditional Collection'
+  };
   const title = $derived(titles[data.show] ?? 'All Collections');
 </script>
 

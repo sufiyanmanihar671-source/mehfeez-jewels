@@ -3,6 +3,10 @@
   import Icon from '$lib/components/Icon.svelte';
   import { imageUrl } from '$lib/image';
   let { data } = $props();
+  const groups = $derived([
+    { id: 'categories', title: 'Shop by Category', items: data.categories.filter((c) => c.category_group !== 'style') },
+    { id: 'styles', title: 'Shop by Jewellery Style', items: data.categories.filter((c) => c.category_group === 'style') }
+  ].filter((g) => g.items.length));
 </script>
 
 <Seo
@@ -21,8 +25,10 @@
 <section class="section">
   <div class="container">
     {#if data.categories.length}
+      {#each groups as g (g.id)}
+      <h2 class="gh" id={g.id}>{g.title}</h2>
       <div class="list">
-        {#each data.categories as c (c.id)}
+        {#each g.items as c (c.id)}
           <a class="item" href={`/categories/${c.slug}`}>
             <div class="thumb">
               {#if c.image_url}
@@ -32,13 +38,14 @@
               {/if}
             </div>
             <div class="txt">
-              <h2>{c.name}</h2>
+              <h3>{c.name}</h3>
               {#if c.description}<p>{c.description}</p>{/if}
               <span class="go">View designs <Icon name="arrow" size={14} /></span>
             </div>
           </a>
         {/each}
       </div>
+      {/each}
     {:else}
       <div class="empty">Categories will appear here once the catalogue is connected.</div>
     {/if}
@@ -46,6 +53,15 @@
 </section>
 
 <style>
+  .gh {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    color: var(--burgundy);
+    margin: 10px 0 20px;
+    scroll-margin-top: 140px;
+  }
+  .list + .gh {
+    margin-top: 56px;
+  }
   .list {
     display: grid;
     gap: 20px;
@@ -90,7 +106,7 @@
   .txt {
     padding: 20px;
   }
-  .txt h2 {
+  .txt h3 {
     font-size: 1.5rem;
     margin-bottom: 6px;
   }

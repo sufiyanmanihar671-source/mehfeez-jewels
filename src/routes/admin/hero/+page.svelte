@@ -25,7 +25,7 @@
 
 {#if data.missingTable}
   <div class="alert alert--error">
-    The slides table is not set up yet. Run <strong>supabase/setup/2026-11-24-redesign.sql</strong> in Supabase → SQL Editor, then
+    The slides table is not set up yet. Run <strong>supabase/setup/run-this-now.sql</strong> in Supabase → SQL Editor, then
     refresh this page.
   </div>
 {/if}

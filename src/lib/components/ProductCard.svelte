@@ -55,14 +55,18 @@
     <p class="meta"><span class="nw">SKU {product.sku}</span><span class="dot">·</span><span class="nw">MOQ {product.moq}</span></p>
     {#if price}
       <p class="price">{formatPrice(price.price, price.currency)} <span>wholesale</span></p>
-    {:else if loggedIn && status === 'pending'}
-      <p class="note">Price visible after approval</p>
+    {:else if loggedIn && status === 'approved'}
+      <p class="note">Price on request</p>
+    {:else if loggedIn}
+      <p class="note"><Icon name="lock" size={12} /> Price visible after approval</p>
+    {:else}
+      <a class="note note--link" href={`/login?next=${encodeURIComponent(page.url.pathname)}`}><Icon name="lock" size={12} /> Login to view price</a>
     {/if}
     <div class="actions">
-      <a class="btn btn--sm btn--block" href={wa} target="_blank" rel="noopener noreferrer">
-        <Icon name="whatsapp" size={15} /> {price ? 'Order on WhatsApp' : 'Request Price on WhatsApp'}
+      <a class="btn btn--sm" href={`/products/${product.slug}`}>View Details</a>
+      <a class="btn btn--sm btn--outline" href={wa} target="_blank" rel="noopener noreferrer" aria-label={`Wholesale enquiry for ${product.name} on WhatsApp`}>
+        <Icon name="whatsapp" size={14} /> Enquiry
       </a>
-      <a class="link" href={`/products/${product.slug}`}>Enquire <Icon name="arrow" size={13} /></a>
     </div>
   </div>
 </article>
@@ -173,32 +177,31 @@
     color: var(--muted);
   }
   .note {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     margin: 4px 0 0;
-    font-size: 0.78rem;
+    font-size: 0.74rem;
+    letter-spacing: 0.06em;
     color: var(--muted);
+  }
+  .note--link {
+    color: var(--burgundy);
+    font-weight: 500;
   }
   .actions {
     margin-top: auto;
     padding-top: 12px;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
   }
   .actions .btn {
-    letter-spacing: 0.06em;
-    text-transform: none;
-    font-size: 0.8rem;
-  }
-  .link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+    min-height: 38px;
+    padding: 0 6px;
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
   }
   @media (max-width: 480px) {
     .pc {
@@ -207,12 +210,8 @@
     h3 {
       font-size: 0.98rem;
     }
-    .actions .btn {
-      font-size: 0.7rem;
-      padding: 0 8px;
-      white-space: normal;
-      line-height: 1.2;
-      min-height: 40px;
+    .actions {
+      grid-template-columns: 1fr;
     }
   }
 </style>

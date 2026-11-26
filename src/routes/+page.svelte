@@ -13,7 +13,6 @@
   const loggedIn = $derived(!!data.user);
   const status = $derived(data.profile?.status);
   const wa = $derived(waLink(s.whatsapp_number, s.whatsapp_message));
-  const videoCall = $derived(waLink(s.video_call_number, s.video_call_message));
 
   let tab = $state(0);
   const current = $derived(data.tabs[Math.min(tab, data.tabs.length - 1)]);
@@ -92,21 +91,6 @@
     {#each trust as t}
       <div class="ti"><span class="ti-ic"><Icon name={t.icon} size={21} stroke={1.3} /></span><span class="ti-l">{t.label}</span></div>
     {/each}
-  </div>
-</section>
-
-<!-- 6. Video call + WhatsApp (dark panel on ivory) -->
-<section class="vc">
-  <div class="container">
-    <div class="vc-panel">
-      <span class="eb-light"><span></span>Shop from your store<span></span></span>
-      <h2>See Our Jewellery Collection <em>Live</em></h2>
-      <p>Connect with our team to explore jewellery designs, check product details and discuss wholesale requirements through a personal video call.</p>
-      <div class="btn-row">
-        <a class="btn btn--light" href={videoCall} target="_blank" rel="noopener noreferrer"><Icon name="video" size={16} /> Book a Video Call</a>
-        <a class="btn btn--ghost-light" href={wa} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={16} /> Chat on WhatsApp</a>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -347,32 +331,6 @@
     }
   }
 
-  /* video call panel */
-  .vc {
-    background: var(--ivory);
-    padding: clamp(32px, 5vw, 56px) 0;
-  }
-  .vc-panel {
-    max-width: 940px;
-    margin: 0 auto;
-    padding: clamp(28px, 4vw, 48px) clamp(18px, 4vw, 48px);
-    text-align: center;
-    background: var(--burgundy-deep);
-    color: var(--ivory);
-    outline: 1px solid var(--burgundy-30);
-    outline-offset: 6px;
-  }
-  .vc-panel h2 {
-    margin: 12px 0 10px;
-    color: var(--white);
-    font-size: clamp(1.7rem, 3.2vw, 2.5rem);
-    font-weight: 500;
-  }
-  .vc-panel p {
-    color: var(--ivory-70);
-    max-width: 58ch;
-    margin: 0 auto 20px;
-  }
   h2 em {
     font-style: italic;
     color: var(--ivory);

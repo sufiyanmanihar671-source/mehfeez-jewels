@@ -111,7 +111,7 @@
 {#if shopCategories.length}
   <section class="light">
     <div class="container">
-      <SectionHead eyebrow="Browse by category" title="Shop by" accent="Category" />
+      <SectionHead eyebrow="Our wholesale range" title="Explore by" accent="Category" />
       <div class="six">
         {#each shopCategories.slice(0, 6) as c (c.id)}
           {@const src = photo(c)}

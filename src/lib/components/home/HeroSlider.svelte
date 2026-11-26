@@ -35,10 +35,6 @@
     <span class="kicker"><span class="line"></span>{eyebrow}<span class="line"></span></span>
     {#if first}<h1>{title}</h1>{:else}<h2 class="h1">{title}</h2>{/if}
     {#if subtitle}<p>{subtitle}</p>{/if}
-    <div class="ctas">
-      <a class="btn btn--light" href={ctaHref || '/collections'}>{ctaLabel || 'View Designs'}</a>
-      <a class="btn btn--ghost-light" href="/wholesale-enquiry">Enquire Now</a>
-    </div>
   </div>
 {/snippet}
 
@@ -179,30 +175,6 @@
     letter-spacing: 0.04em;
     margin-bottom: 14px;
   }
-  .ctas {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-    margin-top: 10px;
-  }
-  @media (max-width: 559px) {
-    .ctas {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 8px;
-      width: 100%;
-    }
-    .ctas .btn {
-      min-width: 0;
-      padding: 0 8px;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      white-space: normal;
-      line-height: 1.25;
-      text-align: center;
-    }
-  }
 
   .media--fallback {
     display: flex;
@@ -317,9 +289,6 @@
       align-items: flex-start;
       text-align: left;
       padding: 48px clamp(32px, 4vw, 72px);
-    }
-    .ctas {
-      justify-content: flex-start;
     }
     .arrow {
       display: inline-flex;

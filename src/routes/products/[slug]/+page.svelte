@@ -5,7 +5,6 @@
   import Icon from '$lib/components/Icon.svelte';
   import ProductCard from '$lib/components/ProductCard.svelte';
   import EnquiryForm from '$lib/components/EnquiryForm.svelte';
-  import MobileBar from '$lib/components/MobileBar.svelte';
   import JewelleryArt from '$lib/components/home/JewelleryArt.svelte';
   import { imageUrl, srcset } from '$lib/image';
   import { STOCK_LABELS, formatPrice } from '$lib/format';
@@ -218,10 +217,10 @@
 
         <!-- Actions -->
         <div class="actions">
-          <a class="btn btn--block" href={chatLink} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={17} /> Chat on WhatsApp</a>
           {#if s.video_call_enabled}
-            <a class="btn btn--outline btn--block" href={videoLink} target="_blank" rel="noopener noreferrer"><Icon name="video" size={17} /> Video Call</a>
+            <a class="btn btn--outline btn--block" href={videoLink} target="_blank" rel="noopener noreferrer"><Icon name="video" size={16} /> Video Call</a>
           {/if}
+          <a class="btn btn--block" href={chatLink} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={16} /> Chat</a>
         </div>
         <button type="button" class="textlink" onclick={() => (showForm = !showForm)} aria-expanded={showForm}>
           {showForm ? 'Hide written enquiry' : 'Or send a written enquiry'}
@@ -278,8 +277,6 @@
   </section>
 {/if}
 
-<!-- Phones: the site bottom bar, with Video / WhatsApp prefilled for this product -->
-<MobileBar settings={s} product chatHref={chatLink} videoHref={videoLink} />
 
 <style>
   .pdp {
@@ -574,8 +571,11 @@
     margin-top: 6px;
   }
   .actions .btn {
-    min-height: 52px;
+    min-height: 46px;
     letter-spacing: 0.12em;
+  }
+  .actions .btn:only-child {
+    grid-column: 1 / -1;
   }
   .textlink {
     display: block;
@@ -656,12 +656,7 @@
     margin-bottom: 28px;
   }
 
-  @media (max-width: 759px) {
-    .related {
-      padding-bottom: 96px;
-    }
-  }
-  /* phones: compact layout, one set of action buttons (the sticky bar) */
+  /* phones: compact layout, small Video Call / Chat buttons under the quantity */
   @media (max-width: 759px) {
     .pdp { padding-top: 12px; }
     .breadcrumbs { margin-bottom: 10px; }
@@ -684,7 +679,8 @@
     .chips button { min-height: 32px; padding: 0 12px; font-size: 0.78rem; }
     .qty button { width: 34px; font-size: 1rem; }
     .qty input { width: 52px; min-height: 32px; font-size: 0.9rem; }
-    .actions { display: none; }
+    .actions { gap: 8px; margin-top: 2px; }
+    .actions .btn { min-height: 38px; padding: 0 10px; font-size: 0.66rem; letter-spacing: 0.1em; }
     .textlink { margin: 4px 0 0; font-size: 0.8rem; }
     .trust { margin: 14px 0; padding: 10px 0; }
     .trust li { font-size: 0.58rem; gap: 4px; }

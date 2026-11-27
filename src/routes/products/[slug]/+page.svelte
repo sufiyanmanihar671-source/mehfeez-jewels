@@ -5,6 +5,7 @@
   import Icon from '$lib/components/Icon.svelte';
   import ProductCard from '$lib/components/ProductCard.svelte';
   import EnquiryForm from '$lib/components/EnquiryForm.svelte';
+  import MobileBar from '$lib/components/MobileBar.svelte';
   import JewelleryArt from '$lib/components/home/JewelleryArt.svelte';
   import { imageUrl, srcset } from '$lib/image';
   import { STOCK_LABELS, formatPrice } from '$lib/format';
@@ -277,13 +278,8 @@
   </section>
 {/if}
 
-<!-- Phones: product actions always at hand -->
-<div class="sticky">
-  {#if s.video_call_enabled}
-    <a class="btn btn--ghost-light" href={videoLink} target="_blank" rel="noopener noreferrer"><Icon name="video" size={16} /> Video Call</a>
-  {/if}
-  <a class="btn btn--light" href={chatLink} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={16} /> Chat on WhatsApp</a>
-</div>
+<!-- Phones: the site bottom bar, with Video / WhatsApp prefilled for this product -->
+<MobileBar settings={s} product chatHref={chatLink} videoHref={videoLink} />
 
 <style>
   .pdp {
@@ -660,31 +656,6 @@
     margin-bottom: 28px;
   }
 
-  /* phones: sticky action bar replaces the site bottom bar on product pages */
-  .sticky {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 70;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-    gap: 8px;
-    padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
-    background: var(--burgundy-deep);
-    border-top: 1px solid var(--ivory-20);
-  }
-  .sticky .btn {
-    min-height: 42px;
-    padding: 0 8px;
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-  }
-  @media (min-width: 760px) {
-    .sticky {
-      display: none;
-    }
-  }
   @media (max-width: 759px) {
     .related {
       padding-bottom: 96px;

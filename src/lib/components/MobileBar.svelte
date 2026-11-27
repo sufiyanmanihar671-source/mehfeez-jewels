@@ -4,12 +4,21 @@
   import { waLink } from '$lib/whatsapp';
   import type { SiteSettings } from '$lib/types';
 
-  /** App-style bottom bar on phones with the key B2B actions. */
-  let { settings }: { settings: SiteSettings } = $props();
+  /**
+   * App-style bottom bar on phones with the key B2B actions.
+   * The layout renders the general bar; a product page renders its own copy with
+   * `product` set, so Video / WhatsApp open with that product's details prefilled.
+   */
+  let {
+    settings,
+    product = false,
+    chatHref = null,
+    videoHref = null
+  }: { settings: SiteSettings; product?: boolean; chatHref?: string | null; videoHref?: string | null } = $props();
   const path = $derived(page.url.pathname);
 </script>
 
-{#if !path.startsWith('/products/')}
+{#if product || !path.startsWith('/products/')}
 <nav class="mbar" aria-label="Quick actions">
   <a href="/" class:on={path === '/'}>
     <Icon name="gem" size={20} stroke={1.4} /><span>Home</span>
@@ -18,11 +27,11 @@
     <Icon name="designs" size={20} stroke={1.4} /><span>Designs</span>
   </a>
   {#if settings.video_call_enabled}
-    <a href={waLink(settings.video_call_number, settings.video_call_message)} target="_blank" rel="noopener noreferrer">
+    <a href={videoHref ?? waLink(settings.video_call_number, settings.video_call_message)} target="_blank" rel="noopener noreferrer">
       <Icon name="video" size={20} stroke={1.4} /><span>Video</span>
     </a>
   {/if}
-  <a class="wa" href={waLink(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">
+  <a class="wa" href={chatHref ?? waLink(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">
     <span class="wa-ic"><Icon name="whatsapp" size={22} /></span><span>WhatsApp</span>
   </a>
 </nav>

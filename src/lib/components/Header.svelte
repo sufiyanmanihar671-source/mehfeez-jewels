@@ -117,7 +117,6 @@
       {#if profile?.role === 'admin'}
         <a class="icon-btn hide-sm" href="/admin" aria-label="Admin panel" title="Admin panel"><Icon name="lock" size={19} stroke={1.4} /></a>
       {/if}
-      <a class="icon-btn" href={wa} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp us" title="WhatsApp"><Icon name="whatsapp" size={20} /></a>
     </div>
     </div>
   </div>

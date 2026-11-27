@@ -239,7 +239,7 @@
   .nav {
     display: none;
     align-items: center;
-    gap: clamp(14px, 1.8vw, 30px);
+    gap: clamp(14px, 1.6vw, 28px);
   }
   .nav a,
   .dd-btn {
@@ -397,10 +397,13 @@
       display: none;
     }
     .icon-btn {
-      width: 36px;
+      width: 32px;
+    }
+    .bar {
+      gap: 4px;
     }
   }
-  @media (min-width: 1100px) {
+  @media (min-width: 1280px) {
     .bar {
       min-height: 88px;
     }
@@ -414,7 +417,10 @@
     .right {
       grid-row: 1;
       justify-content: space-between;
-      padding-left: clamp(16px, 2.4vw, 40px);
+      padding-left: clamp(12px, 1.8vw, 36px);
+    }
+    .tools {
+      gap: 0;
     }
     .burger,
     .mobile {

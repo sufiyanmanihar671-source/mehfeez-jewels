@@ -38,6 +38,16 @@
   .lg {
     --h: 76px;
   }
+  @media (max-width: 480px) {
+    .md {
+      --h: 42px;
+    }
+  }
+  @media (max-width: 360px) {
+    .md {
+      --h: 36px;
+    }
+  }
   @media (min-width: 1100px) {
     .md {
       --h: 60px;

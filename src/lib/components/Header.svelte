@@ -44,6 +44,18 @@
   );
   const wa = $derived(waLink(settings.whatsapp_number, settings.whatsapp_message));
 
+  // B2B messages for the scrolling top bar (facts only — no invented numbers).
+  const ticker = [
+    'Wholesale only',
+    'Direct from the manufacturer',
+    'Bulk orders welcome',
+    'MOQ per design',
+    'New designs added regularly',
+    'Approved buyers see wholesale prices',
+    'Shipping across India & worldwide',
+    'Video call available'
+  ];
+
   function active(href: string) {
     const [path, q] = href.split('?');
     if (q) return page.url.pathname === path && page.url.search === `?${q}`;
@@ -77,12 +89,17 @@
   </div>
 {/snippet}
 
-<div class="topbar">
-  <div class="container topbar-inner">
-    <span class="hide-sm">Wholesale only</span><i aria-hidden="true" class="hide-sm">◆</i>
-    <span>Direct from the manufacturer</span><i aria-hidden="true" class="hide-sm">◆</i>
-    <span class="hide-sm">Shipping worldwide</span><i aria-hidden="true" class="hide-sm">◆</i>
-    <a class="hide-sm" href={wa} target="_blank" rel="noopener noreferrer">WhatsApp {settings.contact_phone}</a>
+<!-- Scrolling B2B announcement bar (pauses on hover; static for reduced-motion users) -->
+<div class="topbar" aria-label="Wholesale information">
+  <div class="marquee">
+    {#each [0, 1] as copy}
+      <div class="track" aria-hidden={copy === 1}>
+        {#each ticker as t}
+          <span>{t}</span><i aria-hidden="true">◆</i>
+        {/each}
+        <a href={wa} target="_blank" rel="noopener noreferrer" tabindex={copy === 1 ? -1 : 0}>WhatsApp {settings.contact_phone}</a><i aria-hidden="true">◆</i>
+      </div>
+    {/each}
   </div>
 </div>
 
@@ -163,14 +180,23 @@
     font-size: 0.68rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
+    overflow: hidden;
   }
-  .topbar-inner {
+  .marquee {
+    display: flex;
+    width: max-content;
+    animation: ticker 45s linear infinite;
+  }
+  .topbar:hover .marquee {
+    animation-play-state: paused;
+  }
+  .track {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 14px;
+    gap: 18px;
+    padding-right: 18px;
     min-height: 32px;
-    flex-wrap: wrap;
+    white-space: nowrap;
   }
   .topbar i {
     font-style: normal;
@@ -179,6 +205,19 @@
   }
   .topbar a {
     color: var(--ivory);
+  }
+  @keyframes ticker {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      animation: none;
+    }
   }
 
   .site-header {

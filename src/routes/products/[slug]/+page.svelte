@@ -61,22 +61,8 @@
     )
   );
 
-  const details = $derived(
-    [
-      ['Category', p.category?.name],
-      ['SKU', sku],
-      ['Minimum order', `${p.moq} ${p.moq === 1 ? 'piece / set' : 'pieces / sets'}`],
-      ['Availability', stock + (!variant && p.stock_quantity !== null && p.stock_status !== 'out_of_stock' ? ` · ${p.stock_quantity} available` : '')],
-      ['Colours', p.colors?.join(', ')],
-      ['Sizes', p.sizes?.join(', ')],
-      ['Base material', p.material],
-      ['Plating / finish', p.finish],
-      ['Stones', p.stone],
-      ['Approx. weight', p.weight],
-      ['Set includes', p.set_includes],
-      ['Size / dimensions', p.dimensions]
-    ].filter((r): r is [string, string] => !!r[1])
-  );
+  /** Minimum order value for every wholesale order (set by the business). */
+  const MIN_ORDER = '₹1,000';
 
   // Structured data deliberately contains NO price (prices are private to approved buyers).
   const ld = $derived({
@@ -160,7 +146,15 @@
       <div class="info">
         {#if p.category}<a class="cat" href={`/categories/${p.category.slug}`}>{p.category.name}</a>{/if}
         <h1>{p.name}</h1>
-        <p class="meta"><span>SKU {sku}</span><i></i><span>MOQ {p.moq}</span><i></i><span class:out={p.stock_status === 'out_of_stock'}>{stock}</span></p>
+        <p class="meta">
+          <span class:out={p.stock_status === 'out_of_stock'} class:ok={p.stock_status !== 'out_of_stock'}>{stock}</span>
+          {#if p.material}<i></i><span>{p.material}</span>{/if}
+          <i></i><span>Min. order {MIN_ORDER}</span>
+          <i></i><span class="sku">SKU {sku}</span>
+        </p>
+        {#if p.video_url}
+          <a class="video" href={p.video_url} target="_blank" rel="noopener noreferrer"><Icon name="video" size={15} /> Watch product video ↗</a>
+        {/if}
 
         <!-- Price -->
         <div class="pricebox">
@@ -258,19 +252,6 @@
           <li><Icon name="boxes" size={17} stroke={1.3} /> Wholesale pricing</li>
           <li><Icon name="plane" size={17} stroke={1.3} /> India &amp; worldwide</li>
         </ul>
-
-        <!-- Details -->
-        <div class="detailscard">
-          <h2>Product details</h2>
-          <dl>
-            {#each details as [k, val]}
-              <div><dt>{k}</dt><dd>{val}</dd></div>
-            {/each}
-          </dl>
-          {#if p.video_url}
-            <a class="video" href={p.video_url} target="_blank" rel="noopener noreferrer"><Icon name="video" size={16} /> Watch product video ↗</a>
-          {/if}
-        </div>
 
         {#if p.description}
           <div class="desc">
@@ -642,43 +623,24 @@
   .trust li :global(svg) {
     color: var(--burgundy);
   }
-  .detailscard {
-    background: var(--white);
-    border: 1px solid var(--burgundy-15);
-    padding: 20px 20px 16px;
-  }
-  .detailscard h2,
   .desc h2 {
     font-size: 1.4rem;
     margin: 0 0 10px;
   }
-  dl {
-    margin: 0;
+  .meta .ok {
+    color: #2f6b3a;
+    font-weight: 600;
   }
-  dl div {
-    display: grid;
-    grid-template-columns: 42% 58%;
-    gap: 10px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--charcoal-08);
-    font-size: 0.9rem;
-  }
-  dl div:last-child {
-    border-bottom: 0;
-  }
-  dt {
+  .meta .sku {
     color: var(--muted);
-  }
-  dd {
-    margin: 0;
-    color: var(--charcoal);
-    font-weight: 500;
+    opacity: 0.8;
   }
   .video {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    margin-top: 10px;
+    gap: 6px;
+    margin: -8px 0 14px;
+    font-size: 0.85rem;
     font-weight: 500;
   }
   .desc {
@@ -755,9 +717,7 @@
     .textlink { margin: 4px 0 0; font-size: 0.8rem; }
     .trust { margin: 14px 0; padding: 10px 0; }
     .trust li { font-size: 0.58rem; gap: 4px; }
-    .detailscard { padding: 14px 14px 8px; }
-    .detailscard h2, .desc h2 { font-size: 1.15rem; margin-bottom: 4px; }
-    dl div { padding: 7px 0; font-size: 0.82rem; }
+    .desc h2 { font-size: 1.15rem; margin-bottom: 4px; }
     .desc { margin-top: 16px; }
     .desc p { font-size: 0.88rem; }
   }

@@ -100,6 +100,7 @@
 
     <div class="brand"><Logo src={settings.logo_url} light /></div>
 
+    <div class="right">
     <nav class="nav nav-right" aria-label="Main">
       <a href="/collections" class:active={active('/collections')}>All Designs</a>
       <a href="/wholesale-enquiry" class:active={active('/wholesale-enquiry')}>Wholesale Enquiry</a>
@@ -117,6 +118,7 @@
         <a class="icon-btn hide-sm" href="/admin" aria-label="Admin panel" title="Admin panel"><Icon name="lock" size={19} stroke={1.4} /></a>
       {/if}
       <a class="icon-btn" href={wa} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp us" title="WhatsApp"><Icon name="whatsapp" size={20} /></a>
+    </div>
     </div>
   </div>
 
@@ -204,8 +206,15 @@
     grid-column: 1;
     justify-self: start;
   }
-  .tools {
+  .right {
     grid-column: 3;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    min-width: 0;
+  }
+  .tools {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -402,14 +411,10 @@
       grid-column: 1;
       grid-row: 1;
     }
-    .nav-right {
-      grid-column: 3;
+    .right {
       grid-row: 1;
-      justify-self: start;
+      justify-content: space-between;
       padding-left: clamp(16px, 2.4vw, 40px);
-    }
-    .tools {
-      grid-row: 1;
     }
     .burger,
     .mobile {

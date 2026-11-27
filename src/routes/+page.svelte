@@ -178,7 +178,7 @@
       </div>
     {/if}
     <div class="story-copy">
-      <img class="story-mark" src="/brand/mehfeez-white.png" alt="" aria-hidden="true" width="1104" height="418" loading="lazy" />
+      <img class="story-mark" src="/brand/mehfeez-jewels-white.png" alt="" aria-hidden="true" width="1184" height="536" loading="lazy" />
       <span class="eb-light"><span></span>Our story<span></span></span>
       <h2>Crafting Jewellery. <em>Building Partnerships.</em></h2>
       <p>Distinctive artificial jewellery designs with wholesale expertise — for retailers, boutiques and jewellery businesses.</p>

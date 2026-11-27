@@ -1,76 +1,46 @@
 <script lang="ts">
   /**
-   * Official Mehfeez wordmark (from the brand's own logo file, unchanged
-   * lettering) with "JEWELS" set beneath it. An admin-uploaded logo in
-   * Settings overrides it.
+   * Official Mehfeez Jewels logo ("Mehfeez" with "Jewels" beneath), from the
+   * brand's own logo file — lettering unchanged, only the background removed.
+   * An admin-uploaded logo in Settings overrides it.
    */
   let {
     src = null,
     light = false,
     size = 'md'
   }: { src?: string | null; light?: boolean; size?: 'sm' | 'md' | 'lg' } = $props();
-  const mark = $derived(light ? '/brand/mehfeez-white.png' : '/brand/mehfeez-burgundy.png');
+  const mark = $derived(light ? '/brand/mehfeez-jewels-white.png' : '/brand/mehfeez-jewels-burgundy.png');
 </script>
 
-<a href="/" class="logo {size}" class:light aria-label="Mehfeez Jewels — Home">
-  {#if src}
-    <img class="custom" {src} alt="Mehfeez Jewels" />
-  {:else}
-    <span class="lockup">
-      <img class="mark" src={mark} alt="Mehfeez" width="1104" height="418" />
-      <span class="jewels">JEWELS</span>
-    </span>
-  {/if}
+<a href="/" class="logo {size}" aria-label="Mehfeez Jewels — Home">
+  <img src={src || mark} alt="Mehfeez Jewels" width="1184" height="536" />
 </a>
 
 <style>
   .logo {
     display: inline-flex;
     align-items: center;
+    line-height: 0;
     text-decoration: none !important;
-    color: var(--burgundy);
-    line-height: 1;
   }
-  .light {
-    color: var(--white);
-  }
-  .custom {
-    height: 52px;
-    width: auto;
-    object-fit: contain;
-  }
-  .lockup {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .mark {
+  img {
     display: block;
     height: var(--h);
     width: auto;
-  }
-  .jewels {
-    font-family: var(--font-body);
-    font-weight: 500;
-    letter-spacing: 0.62em;
-    /* letter-spacing adds trailing space; pull it back so the word stays centred */
-    margin-right: -0.62em;
-    font-size: var(--fs);
-    margin-top: var(--gap);
+    object-fit: contain;
   }
   .sm {
-    --h: 30px;
-    --fs: 0.5rem;
-    --gap: 3px;
+    --h: 40px;
   }
   .md {
-    --h: 40px;
-    --fs: 0.6rem;
-    --gap: 4px;
+    --h: 52px;
   }
   .lg {
-    --h: 56px;
-    --fs: 0.78rem;
-    --gap: 6px;
+    --h: 76px;
+  }
+  @media (min-width: 1100px) {
+    .md {
+      --h: 60px;
+    }
   }
 </style>

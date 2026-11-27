@@ -12,8 +12,8 @@
     <!-- stones along the necklace -->
     {#each Array(13) as _, i}
       {@const t = i / 12}
-      {@const x = 110 + 200 * t}
-      {@const y = 40 + 110 * Math.sin(Math.PI * t) * (0.55 + 0.45 * Math.sin(Math.PI * t))}
+      {@const x = Math.round((110 + 200 * t) * 10) / 10}
+      {@const y = Math.round((40 + 110 * Math.sin(Math.PI * t) * (0.55 + 0.45 * Math.sin(Math.PI * t))) * 10) / 10}
       <circle cx={x} cy={y} r={i % 2 ? 3.2 : 4.6} stroke-width="1.2" />
       {#if i > 0 && i < 12 && i % 2 === 0}
         <path d={`M${x} ${y + 5}v10`} stroke-width="1" />

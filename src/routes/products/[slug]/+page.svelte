@@ -176,11 +176,7 @@
             <span class="pmsg">Prices visible after account approval.</span>
           {:else}
             <span class="pl"><Icon name="lock" size={13} /> Wholesale price</span>
-            <span class="pmsg">Login or Register to View Wholesale Prices</span>
-            <div class="plinks">
-              <a class="btn btn--sm" href={`/login?next=${encodeURIComponent(page.url.pathname)}`}>Login</a>
-              <a class="btn btn--sm btn--outline" href="/register">Register</a>
-            </div>
+            <a class="btn btn--sm loginbtn" href={`/login?next=${encodeURIComponent(page.url.pathname)}`}><Icon name="lock" size={14} /> Login to see price</a>
           {/if}
         </div>
 
@@ -510,10 +506,9 @@
     font-size: 0.9rem;
     color: var(--charcoal);
   }
-  .plinks {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
+  .loginbtn {
+    align-self: flex-start;
+    margin-top: 6px;
   }
   .opt {
     margin-bottom: 18px;
@@ -747,8 +742,7 @@
     .pricebox .pl { flex-basis: 100%; font-size: 0.62rem; }
     .pmsg { font-size: 0.82rem; flex: 1 1 auto; }
     .amount { font-size: 1.6rem; }
-    .plinks { margin-top: 0; gap: 6px; }
-    .plinks .btn { min-height: 32px; padding: 0 12px; font-size: 0.62rem; }
+    .loginbtn { min-height: 34px; padding: 0 14px; font-size: 0.64rem; margin-top: 2px; }
     .opt { margin-bottom: 12px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; }
     .ol { margin-bottom: 0; font-size: 0.62rem; min-width: 74px; }
     .ol b { display: none; }

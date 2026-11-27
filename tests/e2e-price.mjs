@@ -54,7 +54,7 @@ for (const p of pages) {
 
 await check('guest product page shows login prompt', async () => {
   const r = await get('/products/royal-kundan-bridal-set');
-  assert.match(r.body, /Login or Register to View Wholesale Prices/);
+  assert.match(r.body, /Login to see price/);
   assert.match(r.body, /MJ-BR-001/);
   assert.match(r.body, /MOQ|Minimum order/);
 });

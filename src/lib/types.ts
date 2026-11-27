@@ -85,6 +85,15 @@ export interface Product {
   sort_order: number;
   created_at: string;
   collections?: string[];
+  colors?: string[];
+  sizes?: string[];
+  material?: string | null;
+  finish?: string | null;
+  stone?: string | null;
+  weight?: string | null;
+  set_includes?: string | null;
+  dimensions?: string | null;
+  video_url?: string | null;
   category?: Pick<Category, 'id' | 'name' | 'slug'> | null;
   images?: ProductImage[];
   variants?: ProductVariant[];

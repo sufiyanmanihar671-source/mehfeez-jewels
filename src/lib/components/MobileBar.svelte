@@ -9,15 +9,13 @@
   const path = $derived(page.url.pathname);
 </script>
 
+{#if !path.startsWith('/products/')}
 <nav class="mbar" aria-label="Quick actions">
   <a href="/" class:on={path === '/'}>
     <Icon name="gem" size={20} stroke={1.4} /><span>Home</span>
   </a>
   <a href="/collections" class:on={path.startsWith('/collections') || path.startsWith('/categories') || path.startsWith('/products')}>
     <Icon name="designs" size={20} stroke={1.4} /><span>Designs</span>
-  </a>
-  <a href="/wholesale-enquiry" class:on={path.startsWith('/wholesale-enquiry')}>
-    <Icon name="mail" size={20} stroke={1.4} /><span>Enquiry</span>
   </a>
   {#if settings.video_call_enabled}
     <a href={waLink(settings.video_call_number, settings.video_call_message)} target="_blank" rel="noopener noreferrer">
@@ -28,6 +26,7 @@
     <span class="wa-ic"><Icon name="whatsapp" size={22} /></span><span>WhatsApp</span>
   </a>
 </nav>
+{/if}
 
 <style>
   .mbar {

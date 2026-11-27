@@ -190,6 +190,13 @@ test('product collection tags accept only known values', async () => {
   await assert.rejects(db.query(`update public.products set collections = '{fake}' where sku = 'MJ-001'`), /check constraint/);
 });
 
+test('product detail fields: saved, public-readable, video link must be https', async () => {
+  await db.query(`update public.products set colors = '{Ruby,Emerald}', sizes = '{2.4,2.6}', material = 'Brass', video_url = 'https://youtu.be/x' where sku = 'MJ-001'`);
+  const r = await as('anon', null, `select colors, sizes, material from public.products where sku = 'MJ-001'`);
+  assert.deepEqual(r.rows[0], { colors: ['Ruby', 'Emerald'], sizes: ['2.4', '2.6'], material: 'Brass' });
+  await assert.rejects(db.query(`update public.products set video_url = 'javascript:alert(1)' where sku = 'MJ-001'`), /check constraint/);
+});
+
 test('hero slides: public sees active only, only admins can write', async () => {
   await as('authenticated', ADMIN, `insert into public.hero_slides (image_url, title, is_active) values ('https://x.supabase.co/a.webp', 'Live', true), ('https://x.supabase.co/b.webp', 'Draft', false)`);
   const pub = await as('anon', null, `select title from public.hero_slides`);

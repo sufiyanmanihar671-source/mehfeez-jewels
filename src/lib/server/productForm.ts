@@ -24,11 +24,16 @@ export async function saveProduct(supabase: SupabaseClient, form: FormData, id: 
     id
       ? { ...(await supabase.from('products').update(row).eq('id', id)), data: { id } }
       : await supabase.from('products').insert(row).select('id').single();
-  let res = await write(parsed.data);
-  if (res.error && res.error.message.includes('collections')) {
-    // Collections column not created yet (run supabase/setup/run-this-now.sql): save without it.
-    const { collections: _c, ...rest } = parsed.data;
-    res = await write(rest);
+  // If newer columns don't exist yet (supabase/setup/run-this-now.sql not run), drop them and retry
+  // so the product still saves.
+  let row: Record<string, unknown> = { ...parsed.data };
+  let res = await write(row);
+  for (let i = 0; i < 12 && res.error; i++) {
+    const m = /'([a-z_]+)' column/.exec(res.error.message) ?? /column (?:[a-z_]+\.)?"?([a-z_]+)"? does not exist/.exec(res.error.message);
+    if (!m || !(m[1] in row)) break;
+    const { [m[1]]: _drop, ...rest } = row;
+    row = rest;
+    res = await write(row);
   }
   if (res.error) return dbFail(res.error, raw);
   productId = (res.data as { id: string }).id;

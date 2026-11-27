@@ -8,6 +8,20 @@ const trimmed = (min: number, max: number, label: string) =>
     .min(min, `${label} must be at least ${min} characters`)
     .max(max, `${label} must be at most ${max} characters`);
 
+/** "Ruby, Emerald,  Pink" -> ["Ruby","Emerald","Pink"] (max 20 items, 40 chars each). */
+const listField = (label: string) =>
+  z
+    .string()
+    .optional()
+    .transform((v) =>
+      (v ?? '')
+        .split(',')
+        .map((x) => x.trim())
+        .filter(Boolean)
+        .filter((x, i, a) => a.findIndex((y) => y.toLowerCase() === x.toLowerCase()) === i)
+    )
+    .refine((a) => a.length <= 20 && a.every((x) => x.length <= 40), `${label}: up to 20 values, 40 characters each`);
+
 const optionalText = (max: number) =>
   z
     .string()
@@ -128,7 +142,23 @@ export const productSchema = z.object({
   meta_title: optionalText(70),
   meta_description: optionalText(170),
   sort_order: z.coerce.number().int().min(0).max(100000).default(0),
-  collections: z.array(z.enum(['trending', 'premium', 'exclusive', 'traditional'])).max(4).default([])
+  collections: z.array(z.enum(['trending', 'premium', 'exclusive', 'traditional'])).max(4).default([]),
+  // Product details (comma-separated lists in the admin form)
+  colors: listField('Colours'),
+  sizes: listField('Sizes'),
+  material: optionalText(120),
+  finish: optionalText(120),
+  stone: optionalText(120),
+  weight: optionalText(60),
+  set_includes: optionalText(300),
+  dimensions: optionalText(160),
+  video_url: z
+    .string()
+    .trim()
+    .max(400)
+    .optional()
+    .transform((v) => (v ? v : null))
+    .refine((v) => v === null || /^https:\/\/[^\s]+$/.test(v), 'Video link must start with https://')
 });
 
 export const priceSchema = z.object({

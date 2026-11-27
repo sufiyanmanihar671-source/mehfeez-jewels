@@ -17,6 +17,7 @@
   } = $props();
 
   const v = $derived(values ?? { ...(product ?? {}), price: price?.price ?? '', currency: price?.currency ?? 'INR', price_note: price?.price_note ?? '' });
+  const list = (x: unknown) => (Array.isArray(x) ? x.join(', ') : typeof x === 'string' ? x : '');
   const flag = (k: string, def = false) => (values ? !!values[k] : ((product as Record<string, unknown> | null)?.[k] as boolean | undefined) ?? def);
   let name = $state('');
   let slug = $state('');
@@ -104,6 +105,53 @@
     <label class="checkbox"><input type="checkbox" name="is_new_arrival" checked={flag('is_new_arrival')} /> New arrival</label>
     <label class="checkbox"><input type="checkbox" name="is_bestseller" checked={flag('is_bestseller')} /> Bestseller</label>
   </div>
+  <fieldset class="span-2 box">
+    <legend>Product details (shown on the product page)</legend>
+    <div class="form-grid form-grid--2">
+      <div class="field">
+        <label for="p-colors">Colours</label>
+        <input id="p-colors" name="colors" value={list(v.colors)} placeholder="Ruby, Emerald, White, Pink" aria-invalid={!!errors.colors} />
+        <span class="hint">Separate with commas. Buyers can pick one on the product page.</span>
+        {#if errors.colors}<span class="field-error">{errors.colors}</span>{/if}
+      </div>
+      <div class="field">
+        <label for="p-sizes">Sizes</label>
+        <input id="p-sizes" name="sizes" value={list(v.sizes)} placeholder="2.4, 2.6, 2.8 or Free size" aria-invalid={!!errors.sizes} />
+        <span class="hint">Separate with commas (e.g. bangle sizes).</span>
+        {#if errors.sizes}<span class="field-error">{errors.sizes}</span>{/if}
+      </div>
+      <div class="field">
+        <label for="p-material">Base material</label>
+        <input id="p-material" name="material" value={v.material ?? ''} placeholder="Brass / Copper alloy" />
+      </div>
+      <div class="field">
+        <label for="p-finish">Plating / finish</label>
+        <input id="p-finish" name="finish" value={v.finish ?? ''} placeholder="Rhodium / Matte / Antique" />
+      </div>
+      <div class="field">
+        <label for="p-stone">Stones</label>
+        <input id="p-stone" name="stone" value={v.stone ?? ''} placeholder="American Diamond (CZ), Kundan, Pearls" />
+      </div>
+      <div class="field">
+        <label for="p-weight">Approx. weight</label>
+        <input id="p-weight" name="weight" value={v.weight ?? ''} placeholder="85 g per set" />
+      </div>
+      <div class="field span-2">
+        <label for="p-set">Set includes</label>
+        <input id="p-set" name="set_includes" value={v.set_includes ?? ''} placeholder="1 Necklace, 2 Earrings, 1 Maang Tikka" />
+      </div>
+      <div class="field">
+        <label for="p-dim">Size / dimensions</label>
+        <input id="p-dim" name="dimensions" value={v.dimensions ?? ''} placeholder="Necklace length 16 in, adjustable" />
+      </div>
+      <div class="field">
+        <label for="p-video">Product video link</label>
+        <input id="p-video" name="video_url" value={v.video_url ?? ''} placeholder="https://youtube.com/… or Instagram reel link" aria-invalid={!!errors.video_url} />
+        {#if errors.video_url}<span class="field-error">{errors.video_url}</span>{/if}
+      </div>
+    </div>
+  </fieldset>
+
   <fieldset class="span-2 box">
     <legend>Homepage collections</legend>
     <div class="flags">

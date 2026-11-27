@@ -187,10 +187,6 @@
         <li><Icon name="boxes" size={18} stroke={1.3} /><span>Wholesale only</span></li>
         <li><Icon name="world" size={18} stroke={1.3} /><span>India &amp; worldwide</span></li>
       </ul>
-      <div class="story-btns">
-        <a class="btn btn--light" href="/about">About Us</a>
-        <a class="btn btn--ghost-light" href="/wholesale-enquiry">Wholesale Enquiry</a>
-      </div>
     </div>
   </div>
 </section>
@@ -582,7 +578,7 @@
   .facts {
     list-style: none;
     padding: 0;
-    margin: 0 auto 26px;
+    margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     max-width: 520px;
@@ -602,19 +598,6 @@
   }
   .facts li + li {
     border-left: 1px solid var(--ivory-20);
-  }
-  .story-btns {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 10px;
-    max-width: 440px;
-    margin: 0 auto;
-  }
-  .story-btns .btn {
-    min-width: 0;
-    padding: 0 10px;
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
   }
   @media (min-width: 1000px) {
     .story-grid:not(.solo) .story-copy {

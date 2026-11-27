@@ -32,6 +32,12 @@
 </div>
 
 <style>
+  /* Phones use the bottom bar instead (MobileBar). */
+  @media (max-width: 759px) {
+    .floating {
+      display: none !important;
+    }
+  }
   .floating {
     position: fixed;
     right: max(16px, env(safe-area-inset-right));

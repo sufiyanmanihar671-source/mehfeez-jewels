@@ -4,6 +4,7 @@
   import Header from '$lib/components/Header.svelte';
   import Footer from '$lib/components/Footer.svelte';
   import FloatingActions from '$lib/components/FloatingActions.svelte';
+  import MobileBar from '$lib/components/MobileBar.svelte';
 
   let { data, children } = $props();
   const isAdmin = $derived(page.url.pathname.startsWith('/admin'));
@@ -26,6 +27,7 @@
 {#if !isAdmin}
   <Footer settings={data.settings} categories={data.categories} />
   <FloatingActions settings={data.settings} />
+  <MobileBar settings={data.settings} />
 {/if}
 
 <style>

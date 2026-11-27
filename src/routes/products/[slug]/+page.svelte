@@ -21,7 +21,6 @@
   let variantId = $state<string | null>(null);
   let color = $state<string | null>(null);
   let size = $state<string | null>(null);
-  let qty = $state(1);
   let showForm = $state(false);
   let touchX = 0;
 
@@ -31,7 +30,6 @@
     variantId = null;
     color = p.colors?.[0] ?? null;
     size = p.sizes?.[0] ?? null;
-    qty = Math.max(1, p.moq);
   });
 
   const go = (i: number) => (active = (i + images.length) % images.length);
@@ -46,7 +44,7 @@
 
   // Selection summary sent with every enquiry.
   const selection = $derived(
-    [variant && `Variation: ${variant.name}`, color && `Colour: ${color}`, size && `Size: ${size}`, `Quantity: ${qty}`].filter(Boolean).join('\n')
+    [variant && `Variation: ${variant.name}`, color && `Colour: ${color}`, size && `Size: ${size}`].filter(Boolean).join('\n')
   );
   const chatLink = $derived(
     waLink(
@@ -144,14 +142,16 @@
 
       <!-- Info -->
       <div class="info">
-        {#if p.category}<a class="cat" href={`/categories/${p.category.slug}`}>{p.category.name}</a>{/if}
+        <div class="eyebrow">
+          {#if p.category}<a class="cat" href={`/categories/${p.category.slug}`}>{p.category.name}</a>{/if}
+          <span class="sku">SKU {sku}</span>
+        </div>
         <h1>{p.name}</h1>
-        <p class="meta">
-          <span class:out={p.stock_status === 'out_of_stock'} class:ok={p.stock_status !== 'out_of_stock'}>{stock}</span>
-          {#if p.material}<i></i><span>{p.material}</span>{/if}
-          <i></i><span>Min. order {MIN_ORDER}</span>
-          <i></i><span class="sku">SKU {sku}</span>
-        </p>
+        <ul class="facts">
+          <li class="stock" class:out={p.stock_status === 'out_of_stock'}><span class="dot"></span>{stock}</li>
+          {#if p.material}<li><Icon name="gem" size={14} stroke={1.5} />{p.material}</li>{/if}
+          <li><Icon name="boxes" size={14} stroke={1.5} />Min. order {MIN_ORDER}</li>
+        </ul>
         {#if p.video_url}
           <a class="video" href={p.video_url} target="_blank" rel="noopener noreferrer"><Icon name="video" size={15} /> Watch product video ↗</a>
         {/if}
@@ -206,14 +206,6 @@
             </div>
           </div>
         {/if}
-        <div class="opt">
-          <span class="ol">Quantity <small>(minimum {p.moq})</small></span>
-          <div class="qty">
-            <button type="button" onclick={() => (qty = Math.max(p.moq, qty - 1))} aria-label="Decrease quantity" disabled={qty <= p.moq}>−</button>
-            <input type="number" min={p.moq} bind:value={qty} onblur={() => (qty = Math.max(p.moq, Math.floor(Number(qty) || p.moq)))} aria-label="Quantity" />
-            <button type="button" onclick={() => (qty = qty + 1)} aria-label="Increase quantity">+</button>
-          </div>
-        </div>
 
         <!-- Actions -->
         <div class="actions">
@@ -240,7 +232,7 @@
                 email: data.profile?.email ?? '',
                 whatsapp: data.profile?.whatsapp ?? '',
                 country: data.profile?.country ?? '',
-                estimated_quantity: String(qty),
+                estimated_quantity: '',
                 message: `I am interested in ${p.name} (SKU ${sku}).\n${selection}\nPlease share wholesale pricing and availability.`
               }}
             />
@@ -428,26 +420,58 @@
     color: var(--charcoal);
     margin: 8px 0 8px;
   }
-  .meta {
+  .eyebrow {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .eyebrow .sku {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .facts {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px;
     display: flex;
     flex-wrap: wrap;
+    gap: 8px;
+  }
+  .facts li {
+    display: inline-flex;
     align-items: center;
-    gap: 6px 10px;
-    font-size: 0.74rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 18px;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid var(--burgundy-15);
+    border-radius: 999px;
+    background: var(--white);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--charcoal);
+    white-space: nowrap;
   }
-  .meta i {
-    width: 4px;
-    height: 4px;
-    background: var(--burgundy-30);
-    transform: rotate(45deg);
-  }
-  .meta .out {
+  .facts li :global(svg) {
     color: var(--burgundy);
+  }
+  .facts .stock {
+    background: #eef6ef;
+    border-color: #cfe5d3;
+    color: #2f6b3a;
     font-weight: 600;
+  }
+  .facts .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .facts .stock.out {
+    background: #F8F1E9;
+    border-color: var(--burgundy-30);
+    color: var(--burgundy);
   }
   .pricebox {
     display: flex;
@@ -503,10 +527,6 @@
     font-size: 0.85rem;
     margin-left: 6px;
   }
-  .ol small {
-    text-transform: none;
-    letter-spacing: 0;
-  }
   .chips {
     display: flex;
     flex-wrap: wrap;
@@ -530,39 +550,6 @@
     background: var(--burgundy);
     border-color: var(--burgundy);
     color: var(--white);
-  }
-  .qty {
-    display: inline-flex;
-    align-items: stretch;
-    border: 1px solid var(--burgundy-30);
-    background: var(--white);
-  }
-  .qty button {
-    width: 42px;
-    border: 0;
-    background: none;
-    font-size: 1.2rem;
-    color: var(--burgundy);
-    cursor: pointer;
-  }
-  .qty button:disabled {
-    opacity: 0.3;
-    cursor: default;
-  }
-  .qty input {
-    width: 70px;
-    min-height: 42px;
-    border: 0;
-    border-left: 1px solid var(--burgundy-15);
-    border-right: 1px solid var(--burgundy-15);
-    border-radius: 0;
-    text-align: center;
-    padding: 0;
-    -moz-appearance: textfield;
-    appearance: textfield;
-  }
-  .qty input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
   }
   .actions {
     display: grid;
@@ -623,14 +610,6 @@
     font-size: 1.4rem;
     margin: 0 0 10px;
   }
-  .meta .ok {
-    color: #2f6b3a;
-    font-weight: 600;
-  }
-  .meta .sku {
-    color: var(--muted);
-    opacity: 0.8;
-  }
   .video {
     display: inline-flex;
     align-items: center;
@@ -665,7 +644,8 @@
     .thumbs { margin-top: 10px; gap: 8px; }
     .thumbs button { flex-basis: 52px; height: 52px; }
     h1 { font-size: 1.45rem; margin: 4px 0 6px; }
-    .meta { font-size: 0.66rem; margin-bottom: 12px; }
+    .facts { gap: 6px; margin-bottom: 14px; }
+    .facts li { padding: 5px 10px; font-size: 0.74rem; }
     .pricebox { padding: 10px 12px; margin-bottom: 14px; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
     .pricebox .pl { flex-basis: 100%; font-size: 0.62rem; }
     .pmsg { font-size: 0.82rem; flex: 1 1 auto; }
@@ -674,11 +654,8 @@
     .opt { margin-bottom: 12px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; }
     .ol { margin-bottom: 0; font-size: 0.62rem; min-width: 74px; }
     .ol b { display: none; }
-    .ol small { display: none; }
-    .chips { gap: 6px; }
+      .chips { gap: 6px; }
     .chips button { min-height: 32px; padding: 0 12px; font-size: 0.78rem; }
-    .qty button { width: 34px; font-size: 1rem; }
-    .qty input { width: 52px; min-height: 32px; font-size: 0.9rem; }
     .actions { gap: 8px; margin-top: 2px; }
     .actions .btn { min-height: 38px; padding: 0 10px; font-size: 0.66rem; letter-spacing: 0.1em; }
     .textlink { margin: 4px 0 0; font-size: 0.8rem; }

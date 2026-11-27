@@ -718,7 +718,7 @@
     border-top: 1px solid var(--ivory-20);
   }
   .sticky .btn {
-    min-height: 46px;
+    min-height: 42px;
     padding: 0 8px;
     font-size: 0.7rem;
     letter-spacing: 0.1em;
@@ -733,9 +733,38 @@
       padding-bottom: 96px;
     }
   }
-  @media (max-width: 420px) {
-    .actions {
-      grid-template-columns: 1fr;
-    }
+  /* phones: compact layout, one set of action buttons (the sticky bar) */
+  @media (max-width: 759px) {
+    .pdp { padding-top: 12px; }
+    .breadcrumbs { margin-bottom: 10px; }
+    .grid2 { gap: 18px; }
+    .main { aspect-ratio: 1 / 1; outline-offset: 4px; }
+    .thumbs { margin-top: 10px; gap: 8px; }
+    .thumbs button { flex-basis: 52px; height: 52px; }
+    h1 { font-size: 1.45rem; margin: 4px 0 6px; }
+    .meta { font-size: 0.66rem; margin-bottom: 12px; }
+    .pricebox { padding: 10px 12px; margin-bottom: 14px; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+    .pricebox .pl { flex-basis: 100%; font-size: 0.62rem; }
+    .pmsg { font-size: 0.82rem; flex: 1 1 auto; }
+    .amount { font-size: 1.6rem; }
+    .plinks { margin-top: 0; gap: 6px; }
+    .plinks .btn { min-height: 32px; padding: 0 12px; font-size: 0.62rem; }
+    .opt { margin-bottom: 12px; display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; }
+    .ol { margin-bottom: 0; font-size: 0.62rem; min-width: 74px; }
+    .ol b { display: none; }
+    .ol small { display: none; }
+    .chips { gap: 6px; }
+    .chips button { min-height: 32px; padding: 0 12px; font-size: 0.78rem; }
+    .qty button { width: 34px; font-size: 1rem; }
+    .qty input { width: 52px; min-height: 32px; font-size: 0.9rem; }
+    .actions { display: none; }
+    .textlink { margin: 4px 0 0; font-size: 0.8rem; }
+    .trust { margin: 14px 0; padding: 10px 0; }
+    .trust li { font-size: 0.58rem; gap: 4px; }
+    .detailscard { padding: 14px 14px 8px; }
+    .detailscard h2, .desc h2 { font-size: 1.15rem; margin-bottom: 4px; }
+    dl div { padding: 7px 0; font-size: 0.82rem; }
+    .desc { margin-top: 16px; }
+    .desc p { font-size: 0.88rem; }
   }
 </style>

@@ -21,7 +21,7 @@
   </a>
   {#if settings.video_call_enabled}
     <a href={waLink(settings.video_call_number, settings.video_call_message)} target="_blank" rel="noopener noreferrer">
-      <Icon name="video" size={20} stroke={1.4} /><span>Video Call</span>
+      <Icon name="video" size={20} stroke={1.4} /><span>Video</span>
     </a>
   {/if}
   <a class="wa" href={waLink(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">
@@ -57,6 +57,7 @@
     font-weight: 500;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    white-space: nowrap;
     text-decoration: none !important;
   }
   a.on {

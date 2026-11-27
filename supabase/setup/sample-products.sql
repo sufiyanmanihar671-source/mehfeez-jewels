@@ -7,8 +7,8 @@
 -- * 6 sample designs, names start with "Sample –", SKUs start with "SAMPLE-".
 -- * Prices are TEST prices (note "Sample price") — only approved
 --   customers and admins can see them, exactly like real prices.
--- * No photos (the page shows "Photos coming soon"); add photos in
---   Admin > Products if you want.
+-- * Illustrated sample images (labelled "SAMPLE IMAGE") served from the
+--   website itself (static/samples/). Replace with real photos in Admin.
 -- * To remove all samples later, run supabase/setup/remove-sample-products.sql
 --   (or delete them one by one in Admin > Products).
 -- Safe to run more than once.
@@ -57,6 +57,21 @@ from (values
 ) as v(name, slug, sku, description, cat, moq, stock, qty, featured, best, sort,
        collections, colors, sizes, material, finish, stone, set_includes)
 on conflict (slug) do nothing;
+
+-- Illustrated sample images (served by the website from /samples/).
+insert into public.product_images (product_id, url, alt, sort_order)
+select p.id, v.url, v.alt, v.ord
+from (values
+  ('sample-kundan-bridal-necklace-set', '/samples/kundan-bridal-set.webp', 'Sample image – kundan bridal necklace set', 0),
+  ('sample-kundan-bridal-necklace-set', '/samples/kundan-bridal-earrings.webp', 'Sample image – matching kundan jhumkas', 1),
+  ('sample-american-diamond-choker', '/samples/ad-choker.webp', 'Sample image – American diamond choker', 0),
+  ('sample-temple-jhumka-earrings', '/samples/temple-jhumka.webp', 'Sample image – temple jhumka earrings', 0),
+  ('sample-victorian-bangles-set', '/samples/victorian-bangles.webp', 'Sample image – Victorian bangles set', 0),
+  ('sample-pearl-pendant-set', '/samples/pearl-pendant-set.webp', 'Sample image – pearl pendant set', 0),
+  ('sample-heritage-long-haar', '/samples/heritage-long-haar.webp', 'Sample image – heritage long haar', 0)
+) as v(slug, url, alt, ord)
+join public.products p on p.slug = v.slug
+where not exists (select 1 from public.product_images i where i.product_id = p.id and i.url = v.url);
 
 -- One sample variation (with its own test price) on the bridal set.
 insert into public.product_variants (product_id, name, sku, stock_status, sort_order)

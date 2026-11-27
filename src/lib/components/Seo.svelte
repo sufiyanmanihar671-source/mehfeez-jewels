@@ -34,7 +34,7 @@
   <meta property="og:description" content={description.slice(0, 200)} />
   <meta property="og:type" content={type} />
   <meta property="og:url" content={canonical} />
-  {#if image}<meta property="og:image" content={image} />{/if}
+  {#if image}<meta property="og:image" content={image.startsWith('/') ? site + image : image} />{/if}
   <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
   <!-- eslint-disable-next-line svelte/no-at-html-tags -->
   {@html ld}

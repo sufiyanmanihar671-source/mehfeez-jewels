@@ -12,8 +12,9 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   const find = (cols: string) =>
     locals.supabase.from('products').select(cols).eq('slug', params.slug).eq('is_published', true).maybeSingle();
 
-  let { data, error: err } = await find(`${BASE}, ${DETAILS}`);
-  // Detail columns not created yet (supabase/setup/run-this-now.sql not run): load without them.
+  // Newest columns first; fall back if a migration (supabase/setup/run-this-now.sql) is not applied yet.
+  let { data, error: err } = await find(`${BASE}, ${DETAILS}, color_stock`);
+  if (err) ({ data, error: err } = await find(`${BASE}, ${DETAILS}`));
   if (err) ({ data, error: err } = await find(BASE));
   if (err) console.error('product', err.message);
   if (!data) error(404, 'Product not found');
@@ -22,6 +23,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   product.variants = [...(product.variants ?? [])].sort((a, b) => a.sort_order - b.sort_order);
   product.colors ??= [];
   product.sizes ??= [];
+  product.color_stock ??= [];
 
   // Prices are requested with the visitor's own session: RLS returns rows only for approved customers.
   const prices = (await getPrices(locals.supabase, locals.canSeePrices, [product.id]))[product.id] ?? [];

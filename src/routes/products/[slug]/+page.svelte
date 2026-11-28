@@ -54,7 +54,10 @@
   const site = $derived((env.PUBLIC_SITE_URL || page.url.origin).replace(/\/$/, ''));
   const productUrl = $derived(`${site}/products/${p.slug}`);
   const sku = $derived(variant?.sku || p.sku);
-  const stock = $derived(STOCK_LABELS[variant?.stock_status ?? p.stock_status]);
+  // Stock follows the chosen variation, else the chosen colour (if colours have their own stock).
+  const colorStock = (c: string | null) => p.color_stock?.find((x) => x.name === c) ?? null;
+  const stockStatus = $derived(variant?.stock_status ?? colorStock(color)?.status ?? p.stock_status);
+  const stock = $derived(STOCK_LABELS[stockStatus]);
 
   // Selection summary sent with every enquiry.
   const selection = $derived(
@@ -158,7 +161,7 @@
         </div>
         <h1>{p.name}</h1>
         <ul class="facts">
-          <li class="stock" class:out={p.stock_status === 'out_of_stock'}><span class="dot"></span>{stock}</li>
+          <li class="stock" class:out={stockStatus === 'out_of_stock'}><span class="dot"></span>{stock}</li>
           {#if p.material}<li><Icon name="gem" size={15} stroke={2} /><span class="fl">Material:</span>{p.material}</li>{/if}
           <li><Icon name="boxes" size={15} stroke={2} />Min. order {MIN_ORDER}</li>
         </ul>
@@ -201,7 +204,8 @@
             <span class="ol">Colour <b>{color}</b></span>
             <div class="chips">
               {#each p.colors as c}
-                <button type="button" class:on={color === c} onclick={() => (color = c)}>{c}</button>
+                {@const na = colorStock(c)?.status === 'out_of_stock'}
+                <button type="button" class:on={color === c} class:na onclick={() => (color = c)} title={na ? 'Out of stock' : undefined}>{c}</button>
               {/each}
             </div>
           </div>
@@ -522,6 +526,11 @@
   }
   .chips button:hover {
     border-color: var(--burgundy);
+  }
+  .chips button.na {
+    color: var(--muted);
+    text-decoration: line-through;
+    border-style: dashed;
   }
   .chips button.on {
     background: var(--burgundy);

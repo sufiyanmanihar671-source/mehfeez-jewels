@@ -1,6 +1,7 @@
 <script lang="ts">
   import { STOCK_LABELS, slugify } from '$lib/format';
-  import type { Price, Product } from '$lib/types';
+  import { compressImages } from '$lib/compress';
+  import type { ColorStock, Price, Product, StockStatus } from '$lib/types';
 
   /**
    * Product form, grouped the way the website shows a product:
@@ -13,13 +14,16 @@
     price = null,
     categories,
     values = null,
-    errors = {}
+    errors = {},
+    withPhotos = false
   }: {
     product?: Partial<Product> | null;
     price?: Price | null;
     categories: { id: string; name: string }[];
     values?: Record<string, any> | null;
     errors?: Record<string, string>;
+    /** "Add product" page: pick photos in the same form (uploaded when saving). */
+    withPhotos?: boolean;
   } = $props();
 
   const v = $derived(values ?? { ...(product ?? {}), price: price?.price ?? '', currency: price?.currency ?? 'INR', price_note: price?.price_note ?? '' });
@@ -33,6 +37,28 @@
     slug = v.slug ?? '';
     slugTouched = !!v.slug;
   });
+
+  // Colours with their own stock. Older products only have a colour list: start those
+  // colours with the product's overall availability.
+  type Row = { name: string; status: StockStatus; qty: string };
+  let rows = $state<Row[]>([]);
+  $effect.pre(() => {
+    const cs = (v.color_stock ?? []) as ColorStock[];
+    const legacy: string[] = Array.isArray(v.colors) ? v.colors : typeof v.colors === 'string' && v.colors ? v.colors.split(',') : [];
+    rows = cs.length
+      ? cs.map((c) => ({ name: c.name, status: c.status, qty: c.qty === null || c.qty === undefined ? '' : String(c.qty) }))
+      : legacy.map((n) => ({ name: n.trim(), status: (v.stock_status ?? 'in_stock') as StockStatus, qty: '' })).filter((r) => r.name);
+  });
+  const addRow = () => (rows = [...rows, { name: '', status: 'in_stock', qty: '' }]);
+  const removeRow = (i: number) => (rows = rows.filter((_, j) => j !== i));
+
+  // Photo picker previews (Add product page)
+  let previews = $state<string[]>([]);
+  function showPreviews(e: Event) {
+    previews.forEach((u) => URL.revokeObjectURL(u));
+    const files = (e.currentTarget as HTMLInputElement).files;
+    previews = files ? [...files].slice(0, 10).map((f) => URL.createObjectURL(f)) : [];
+  }
 </script>
 
 <section class="sec">
@@ -63,8 +89,24 @@
   </div>
 </section>
 
+{#if withPhotos}
+  <section class="sec">
+    <h3><span>2</span> Photos</h3>
+    <label class="picker">
+      <input name="images" type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif" onchange={showPreviews} use:compressImages />
+      <span>Choose photos (gallery or camera)</span>
+    </label>
+    {#if previews.length}
+      <div class="pv">{#each previews as src, i}<img {src} alt={`Photo ${i + 1}`} />{/each}</div>
+      <p class="hint">First photo will be the cover. You can add or remove photos later too.</p>
+    {:else}
+      <p class="hint">Add 2–5 clear photos. JPG, PNG or WebP — they are optimised automatically.</p>
+    {/if}
+  </section>
+{/if}
+
 <section class="sec">
-  <h3><span>2</span> Wholesale price <small>only approved buyers see it</small></h3>
+  <h3><span>{withPhotos ? 3 : 2}</span> Wholesale price <small>only approved buyers see it</small></h3>
   <div class="form-grid form-grid--2">
     <div class="field">
       <label for="p-price">Price per piece / set</label>
@@ -84,14 +126,8 @@
 </section>
 
 <section class="sec">
-  <h3><span>3</span> Shown on the product page</h3>
+  <h3><span>{withPhotos ? 4 : 3}</span> Shown on the product page</h3>
   <div class="form-grid form-grid--2">
-    <div class="field">
-      <label for="p-colors">Colours</label>
-      <input id="p-colors" name="colors" value={list(v.colors)} placeholder="Ruby, Emerald, White, Pink" aria-invalid={!!errors.colors} />
-      <span class="hint">Separate with commas — buyers tap one.</span>
-      {#if errors.colors}<span class="field-error">{errors.colors}</span>{/if}
-    </div>
     <div class="field">
       <label for="p-sizes">Sizes</label>
       <input id="p-sizes" name="sizes" value={list(v.sizes)} placeholder="2.4, 2.6, 2.8 or Free size" aria-invalid={!!errors.sizes} />
@@ -103,39 +139,56 @@
       <input id="p-material" name="material" value={v.material ?? ''} placeholder="Brass / Copper alloy" />
       <span class="hint">Shown as “Material: …” under the name.</span>
     </div>
-    <div class="field">
+    <div class="field span-2">
       <label for="p-video">Product video link (optional)</label>
       <input id="p-video" name="video_url" type="url" value={v.video_url ?? ''} placeholder="https://… YouTube or Instagram reel" aria-invalid={!!errors.video_url} />
       {#if errors.video_url}<span class="field-error">{errors.video_url}</span>{/if}
     </div>
   </div>
-  <p class="hint note">Photos are added after saving (on the product’s edit screen). “Min. order ₹1,000” is shown on every product automatically.</p>
+  <p class="hint note">“Min. order ₹1,000” is shown on every product automatically.</p>
 </section>
 
 <section class="sec">
-  <h3><span>4</span> Stock</h3>
-  <div class="form-grid form-grid--3">
-    <div class="field">
-      <label for="p-stock">Availability</label>
-      <select id="p-stock" name="stock_status">
-        {#each Object.entries(STOCK_LABELS) as [k, label]}<option value={k} selected={(v.stock_status ?? 'in_stock') === k}>{label}</option>{/each}
-      </select>
+  <h3><span>{withPhotos ? 5 : 4}</span> Colours &amp; stock</h3>
+  {#if rows.length}
+    <div class="crow chead" aria-hidden="true"><span>Colour</span><span>Availability</span><span>Qty</span><span></span></div>
+    {#each rows as r, i (i)}
+      <div class="crow">
+        <input name="cs_name" bind:value={r.name} placeholder="e.g. Ruby" aria-label={`Colour ${i + 1} name`} maxlength="40" />
+        <select name="cs_status" bind:value={r.status} aria-label={`Colour ${i + 1} availability`}>
+          {#each Object.entries(STOCK_LABELS) as [k, label]}<option value={k}>{label}</option>{/each}
+        </select>
+        <input name="cs_qty" type="number" inputmode="numeric" min="0" bind:value={r.qty} placeholder="—" aria-label={`Colour ${i + 1} quantity`} />
+        <button type="button" class="rm" onclick={() => removeRow(i)} aria-label={`Remove colour ${r.name || i + 1}`}>✕</button>
+      </div>
+    {/each}
+    <p class="hint">Overall stock is worked out from the colours. Buyers see the stock of the colour they choose.</p>
+  {:else}
+    <div class="form-grid form-grid--2">
+      <div class="field">
+        <label for="p-stock">Availability</label>
+        <select id="p-stock" name="stock_status">
+          {#each Object.entries(STOCK_LABELS) as [k, label]}<option value={k} selected={(v.stock_status ?? 'in_stock') === k}>{label}</option>{/each}
+        </select>
+      </div>
+      <div class="field">
+        <label for="p-qty">Quantity in stock (optional)</label>
+        <input id="p-qty" name="stock_quantity" type="number" inputmode="numeric" min="0" value={v.stock_quantity ?? ''} aria-invalid={!!errors.stock_quantity} />
+        {#if errors.stock_quantity}<span class="field-error">{errors.stock_quantity}</span>{/if}
+      </div>
     </div>
-    <div class="field">
-      <label for="p-qty">Quantity in stock (optional)</label>
-      <input id="p-qty" name="stock_quantity" type="number" inputmode="numeric" min="0" value={v.stock_quantity ?? ''} aria-invalid={!!errors.stock_quantity} />
-      {#if errors.stock_quantity}<span class="field-error">{errors.stock_quantity}</span>{/if}
-    </div>
-    <div class="field">
-      <label for="p-moq">MOQ (pieces / sets) *</label>
-      <input id="p-moq" name="moq" type="number" inputmode="numeric" min="1" required value={v.moq ?? 1} aria-invalid={!!errors.moq} />
-      {#if errors.moq}<span class="field-error">{errors.moq}</span>{/if}
-    </div>
+  {/if}
+  <button type="button" class="btn btn--sm btn--outline addc" onclick={addRow}>+ Add colour</button>
+  {#if errors.color_stock}<span class="field-error">{errors.color_stock}</span>{/if}
+  <div class="field moq">
+    <label for="p-moq">MOQ (pieces / sets) *</label>
+    <input id="p-moq" name="moq" type="number" inputmode="numeric" min="1" required value={v.moq ?? 1} aria-invalid={!!errors.moq} />
+    {#if errors.moq}<span class="field-error">{errors.moq}</span>{/if}
   </div>
 </section>
 
 <section class="sec">
-  <h3><span>5</span> Show on website</h3>
+  <h3><span>{withPhotos ? 6 : 5}</span> Show on website</h3>
   <div class="toggles">
     <label class="tg"><input type="checkbox" name="is_published" checked={flag('is_published', true)} /><span><b>Published</b><small>Visible on the website. Newest designs appear first in “Latest Designs” on the homepage. Untick to keep it as a draft.</small></span></label>
   </div>
@@ -194,14 +247,76 @@
   .note {
     margin: 10px 0 0;
   }
-  .form-grid--3 {
-    display: grid;
-    gap: 14px;
+  .picker {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 64px;
+    border: 1.5px dashed var(--burgundy-30);
+    background: var(--ivory);
+    color: var(--burgundy);
+    font-weight: 600;
+    cursor: pointer;
   }
-  @media (min-width: 700px) {
-    .form-grid--3 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+  .picker input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .pv {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    overflow-x: auto;
+  }
+  .pv img {
+    flex: none;
+    width: 72px;
+    height: 90px;
+    object-fit: cover;
+    border: 1px solid var(--burgundy-15);
+  }
+  .pv img:first-child {
+    outline: 2px solid var(--burgundy);
+    outline-offset: -2px;
+  }
+  .crow {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.2fr) 74px 36px;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .crow input,
+  .crow select {
+    min-height: 44px;
+    padding: 6px 10px;
+    font-size: 0.92rem;
+  }
+  .chead {
+    margin-bottom: 4px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .rm {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--burgundy-15);
+    background: var(--white);
+    color: var(--burgundy);
+    cursor: pointer;
+  }
+  .addc {
+    margin-top: 6px;
+  }
+  .moq {
+    margin-top: 14px;
+    max-width: 260px;
   }
   .toggles {
     display: grid;

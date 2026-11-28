@@ -197,6 +197,15 @@ test('product detail fields: saved, public-readable, video link must be https', 
   await assert.rejects(db.query(`update public.products set video_url = 'javascript:alert(1)' where sku = 'MJ-001'`), /check constraint/);
 });
 
+test('stock per colour: saved as a list, public-readable, must be an array of max 20', async () => {
+  await db.query(`update public.products set color_stock = '[{"name":"Ruby","status":"in_stock","qty":40},{"name":"Emerald","status":"out_of_stock","qty":0}]' where sku = 'MJ-001'`);
+  const r = await as('anon', null, `select color_stock from public.products where sku = 'MJ-001'`);
+  assert.deepEqual(r.rows[0].color_stock.map((c) => c.status), ['in_stock', 'out_of_stock']);
+  await assert.rejects(db.query(`update public.products set color_stock = '{"name":"x"}' where sku = 'MJ-001'`), /check constraint/);
+  const many = JSON.stringify(Array.from({ length: 21 }, (_, i) => ({ name: 'C' + i, status: 'in_stock', qty: 1 })));
+  await assert.rejects(db.query(`update public.products set color_stock = $1 where sku = 'MJ-001'`, [many]), /check constraint/);
+});
+
 test('hero slides: public sees active only, only admins can write', async () => {
   await as('authenticated', ADMIN, `insert into public.hero_slides (image_url, title, is_active) values ('https://x.supabase.co/a.webp', 'Live', true), ('https://x.supabase.co/b.webp', 'Draft', false)`);
   const pub = await as('anon', null, `select title from public.hero_slides`);

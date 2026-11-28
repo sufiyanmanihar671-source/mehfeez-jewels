@@ -1,6 +1,6 @@
 import { error, fail, redirect } from '@sveltejs/kit';
 import { dbFail, requireAdmin, setPrice, uploadImage } from '$lib/server/admin';
-import { saveProduct } from '$lib/server/productForm';
+import { addProductImages, formImages, saveProduct } from '$lib/server/productForm';
 import { fieldErrors, formToObject, variantSchema } from '$lib/server/validation';
 import type { Price, Product } from '$lib/types';
 import type { Actions, PageServerLoad } from './$types';
@@ -34,18 +34,11 @@ export const actions: Actions = {
   uploadImages: async ({ locals, request, params }) => {
     const supabase = requireAdmin(locals);
     const form = await request.formData();
-    const files = form.getAll('images').filter((f): f is File => f instanceof File && f.size > 0);
-    if (!files.length) return fail(400, { imageMessage: 'Choose one or more images to upload.' });
-    if (files.length > 10) return fail(400, { imageMessage: 'Upload up to 10 images at a time.' });
-    const { count } = await supabase.from('product_images').select('id', { count: 'exact', head: true }).eq('product_id', params.id);
+    const files = formImages(form);
+    if (!files.length) return fail(400, { imageMessage: 'Choose one or more photos to upload.' });
     const alt = String(form.get('alt') ?? '').trim().slice(0, 200) || null;
-    let order = count ?? 0;
-    for (const file of files) {
-      const up = await uploadImage(supabase, 'product-images', file, `products/${params.id}`);
-      if ('error' in up) return fail(400, { imageMessage: up.error });
-      const { error: e } = await supabase.from('product_images').insert({ product_id: params.id, url: up.url, storage_path: up.path, alt, sort_order: order++ });
-      if (e) return dbFail(e);
-    }
+    const err = await addProductImages(supabase, params.id, files, alt);
+    if (err) return fail(400, { imageMessage: err });
     return { imagesSaved: files.length };
   },
 

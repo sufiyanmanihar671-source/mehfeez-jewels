@@ -1,5 +1,12 @@
 export type CustomerStatus = 'pending' | 'approved' | 'rejected';
 export type StockStatus = 'in_stock' | 'low_stock' | 'out_of_stock' | 'made_to_order';
+/** Stock of one colour of a product (products.color_stock). */
+export interface ColorStock {
+  name: string;
+  status: StockStatus;
+  qty: number | null;
+}
+
 export type EnquiryStatus = 'new' | 'in_progress' | 'responded' | 'closed';
 
 export interface Profile {
@@ -96,6 +103,7 @@ export interface Product {
   set_includes?: string | null;
   dimensions?: string | null;
   video_url?: string | null;
+  color_stock?: ColorStock[];
   category?: Pick<Category, 'id' | 'name' | 'slug'> | null;
   images?: ProductImage[];
   variants?: ProductVariant[];

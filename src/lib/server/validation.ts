@@ -163,7 +163,18 @@ export const productSchema = z.object({
     .max(400)
     .optional()
     .transform((v) => (v ? v : null))
-    .refine((v) => v === null || /^https:\/\/[^\s]+$/.test(v), 'Video link must start with https://')
+    .refine((v) => v === null || /^https:\/\/[^\s]+$/.test(v), 'Video link must start with https://'),
+  // Stock per colour (built from the colour rows in the admin form; see productForm.ts)
+  color_stock: z
+    .array(
+      z.object({
+        name: z.string().trim().min(1).max(40, 'Colour names: up to 40 characters'),
+        status: stock,
+        qty: z.number().int().min(0).max(1_000_000).nullable()
+      })
+    )
+    .max(20, 'Up to 20 colours')
+    .default([])
 });
 
 export const priceSchema = z.object({

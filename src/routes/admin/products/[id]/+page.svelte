@@ -18,9 +18,59 @@
 
 <p class="crumbs"><a href="/admin/products">← All products</a><a href={`/products/${p.slug}`} target="_blank">View on website ↗</a></p>
 <h1>{p.name}</h1>
-{#if page.url.searchParams.get('created')}<div class="alert alert--success">Product created. Add images and variations below.</div>{/if}
+{#if page.url.searchParams.get('created')}<div class="alert alert--success">Product created{page.url.searchParams.get('photo_error') ? '' : ' with its photos'}. You can add more photos below.</div>{/if}
+{#if page.url.searchParams.get('photo_error')}<div class="alert alert--error">The product was saved, but some photos could not be uploaded. Please add them again below.</div>{/if}
 {#if form?.message}<div class="alert alert--error">{form.message}</div>{/if}
 {#if form?.saved}<div class="alert alert--success">Product details saved.</div>{/if}
+
+  <section class="card photos">
+    <h2>Photos</h2>
+    <p class="muted small">First photo is the cover. Add 2–5 clear photos on a plain background.</p>
+    {#if form?.imageMessage}<div class="alert alert--error">{form.imageMessage}</div>{/if}
+    {#if p.images?.length}
+      <div class="imgs">
+        {#each p.images as img, i (img.id)}
+          <div class="img">
+            <img src={img.url} alt={img.alt ?? ''} loading="lazy" width="120" height="150" />
+            {#if i === 0}<span class="badge badge--solid cover">Cover</span>{/if}
+            <div class="img-acts">
+              {#if i > 0}
+                <form method="POST" action="?/coverImage" use:enhance><input type="hidden" name="image_id" value={img.id} /><button type="submit">Make cover</button></form>
+              {/if}
+              <form method="POST" action="?/deleteImage" use:enhance={({ cancel }) => { if (!confirm('Delete this image?')) cancel(); }}>
+                <input type="hidden" name="image_id" value={img.id} /><button type="submit">Delete</button>
+              </form>
+            </div>
+          </div>
+        {/each}
+      </div>
+    {:else}<p class="muted">No images yet.</p>{/if}
+    <form
+      method="POST"
+      action="?/uploadImages"
+      enctype="multipart/form-data"
+      use:enhance={() => {
+        uploading = true;
+        return async ({ update }) => {
+          await update();
+          uploading = false;
+        };
+      }}
+    >
+      <div class="field">
+        <label for="imgs">Add photos (from gallery or camera)</label>
+        <input id="imgs" name="images" type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif" use:compressImages={{ onbusy: (b) => (compressing = b) }} />
+        <span class="hint">JPG, PNG or WebP. Photos are optimised automatically before upload.</span>
+      </div>
+      <div class="field" style="margin-top: 10px">
+        <label for="alt">Photo description (for Google)</label>
+        <input id="alt" name="alt" value={p.name} />
+      </div>
+      <button class="btn btn--sm btn--block" type="submit" disabled={uploading || compressing} style="margin-top: 12px">
+        {compressing ? 'Optimising…' : uploading ? 'Uploading…' : 'Upload photos'}
+      </button>
+    </form>
+  </section>
 
 <div class="layout">
   <form class="card" method="POST" action="?/save" novalidate use:enhance={keep}>
@@ -33,54 +83,6 @@
   </form>
 
   <div class="side">
-    <section class="card">
-      <h2>Photos</h2>
-      <p class="muted small">First photo is the cover. Add 2–5 clear photos on a plain background.</p>
-      {#if form?.imageMessage}<div class="alert alert--error">{form.imageMessage}</div>{/if}
-      {#if p.images?.length}
-        <div class="imgs">
-          {#each p.images as img, i (img.id)}
-            <div class="img">
-              <img src={img.url} alt={img.alt ?? ''} loading="lazy" width="120" height="150" />
-              {#if i === 0}<span class="badge badge--solid cover">Cover</span>{/if}
-              <div class="img-acts">
-                {#if i > 0}
-                  <form method="POST" action="?/coverImage" use:enhance><input type="hidden" name="image_id" value={img.id} /><button type="submit">Make cover</button></form>
-                {/if}
-                <form method="POST" action="?/deleteImage" use:enhance={({ cancel }) => { if (!confirm('Delete this image?')) cancel(); }}>
-                  <input type="hidden" name="image_id" value={img.id} /><button type="submit">Delete</button>
-                </form>
-              </div>
-            </div>
-          {/each}
-        </div>
-      {:else}<p class="muted">No images yet.</p>{/if}
-      <form
-        method="POST"
-        action="?/uploadImages"
-        enctype="multipart/form-data"
-        use:enhance={() => {
-          uploading = true;
-          return async ({ update }) => {
-            await update();
-            uploading = false;
-          };
-        }}
-      >
-        <div class="field">
-          <label for="imgs">Add photos (from gallery or camera)</label>
-          <input id="imgs" name="images" type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif" use:compressImages={{ onbusy: (b) => (compressing = b) }} />
-          <span class="hint">JPG, PNG or WebP. Photos are optimised automatically before upload.</span>
-        </div>
-        <div class="field" style="margin-top: 10px">
-          <label for="alt">Photo description (for Google)</label>
-          <input id="alt" name="alt" value={p.name} />
-        </div>
-        <button class="btn btn--sm btn--block" type="submit" disabled={uploading || compressing} style="margin-top: 12px">
-          {compressing ? 'Optimising…' : uploading ? 'Uploading…' : 'Upload photos'}
-        </button>
-      </form>
-    </section>
 
     <section class="card">
       <h2>Variations</h2>
@@ -127,6 +129,8 @@
 
 <style>
   .layout { display: grid; gap: 20px; }
+  .photos { margin-bottom: 20px; }
+  .photos .imgs { grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); }
   .crumbs { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.9rem; }
   .savebar { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-top: 18px; }
   .savebar .ok { color: #2f6b3a; font-weight: 600; font-size: 0.9rem; }

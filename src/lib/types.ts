@@ -33,6 +33,8 @@ export interface Category {
   is_active: boolean;
   /** 'type' = Necklace Sets, Earrings…  'style' = American Diamond, Victorian… */
   category_group?: 'type' | 'style';
+  /** Display photo (own image or a product photo); filled in the root layout. */
+  photo?: string | null;
 }
 
 export interface HeroSlide {

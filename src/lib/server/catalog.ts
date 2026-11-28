@@ -34,6 +34,27 @@ export async function listCategories(supabase: SupabaseClient, configured: boole
   }));
 }
 
+/**
+ * category id -> first photo of its newest published product.
+ * Only public product photos are read (never prices).
+ */
+export async function categoryPhotoMap(supabase: SupabaseClient, configured: boolean): Promise<Record<string, string>> {
+  const first: Record<string, string> = {};
+  if (!configured) return first;
+  const { data, error } = await supabase
+    .from('products')
+    .select('category_id, images:product_images(url, sort_order)')
+    .eq('is_published', true)
+    .order('created_at', { ascending: false })
+    .limit(150);
+  if (error) return first;
+  for (const p of (data ?? []) as { category_id: string | null; images?: { url: string; sort_order: number }[] }[]) {
+    const img = [...(p.images ?? [])].sort((a, b) => a.sort_order - b.sort_order)[0]?.url;
+    if (p.category_id && img && !first[p.category_id]) first[p.category_id] = img;
+  }
+  return first;
+}
+
 export async function listHeroSlides(supabase: SupabaseClient, configured: boolean) {
   if (!configured) return [];
   const { data, error } = await supabase

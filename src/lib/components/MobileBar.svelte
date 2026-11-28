@@ -2,26 +2,25 @@
   import { page } from '$app/state';
   import Icon from './Icon.svelte';
   import { waLink } from '$lib/whatsapp';
+  import { imageUrl } from '$lib/image';
   import type { Category, SiteSettings } from '$lib/types';
 
   /**
    * App-style bottom bar on phones with the key B2B actions.
-   * "Discover" opens a sheet listing the categories. Hidden on product pages,
-   * which have their own Video Call / Chat buttons.
+   * "Discover" opens a sheet of category boxes (same look as the homepage).
+   * Hidden on product pages, which have their own Video Call / Chat buttons.
    */
   let {
     settings,
     categories = [],
     product = false,
     chatHref = null,
-    videoHref = null,
     loggedIn = false
   }: {
     settings: SiteSettings;
     categories?: Category[];
     product?: boolean;
     chatHref?: string | null;
-    videoHref?: string | null;
     loggedIn?: boolean;
   } = $props();
   const path = $derived(page.url.pathname);
@@ -40,6 +39,25 @@
   });
 </script>
 
+{#snippet tiles(list: Category[])}
+  <ul class="tiles">
+    {#each list as c (c.id)}
+      <li>
+        <a href={`/categories/${c.slug}`} class:on={path === `/categories/${c.slug}`}>
+          <span class="frame" class:noimg={!c.photo}>
+            {#if c.photo}
+              <img src={imageUrl(c.photo, 300)} alt="" loading="lazy" decoding="async" width="150" height="188" />
+            {:else}
+              <span class="fname">{c.name.replace(/ Jewellery$/, '')}</span>
+            {/if}
+          </span>
+          <strong>{c.name}</strong>
+        </a>
+      </li>
+    {/each}
+  </ul>
+{/snippet}
+
 <svelte:window onkeydown={(e) => e.key === 'Escape' && (open = false)} />
 
 {#if product || !path.startsWith('/products/')}
@@ -57,19 +75,11 @@
       </div>
       {#if types.length}
         <h3>Categories</h3>
-        <ul class="cats">
-          {#each types as c (c.id)}
-            <li><a href={`/categories/${c.slug}`} class:on={path === `/categories/${c.slug}`}>{c.name}<Icon name="arrow" size={14} /></a></li>
-          {/each}
-        </ul>
+        {@render tiles(types)}
       {/if}
       {#if styles.length}
         <h3>Styles</h3>
-        <ul class="cats">
-          {#each styles as c (c.id)}
-            <li><a href={`/categories/${c.slug}`} class:on={path === `/categories/${c.slug}`}>{c.name}<Icon name="arrow" size={14} /></a></li>
-          {/each}
-        </ul>
+        {@render tiles(styles)}
       {/if}
     </div>
   {/if}
@@ -91,11 +101,6 @@
     <a class="it wa" href={chatHref ?? waLink(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">
       <span class="wa-ic"><Icon name="whatsapp" size={24} /></span><span>WhatsApp</span>
     </a>
-    {#if settings.video_call_enabled}
-      <a class="it" href={videoHref ?? waLink(settings.video_call_number, settings.video_call_message)} target="_blank" rel="noopener noreferrer">
-        <Icon name="video" size={20} stroke={1.4} /><span>Video Call</span>
-      </a>
-    {/if}
     {#if loggedIn}
       <a class="it" href="/account" class:on={path.startsWith('/account')}>
         <Icon name="user" size={20} stroke={1.5} /><span>Account</span>
@@ -269,37 +274,62 @@
     text-transform: uppercase;
     color: var(--muted);
   }
-  .cats {
+  .tiles {
     list-style: none;
     margin: 0;
     padding: 0;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px 10px;
   }
-  .cats a {
+  .tiles a {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
     gap: 6px;
-    min-height: 46px;
-    padding: 8px 12px;
-    background: var(--white);
-    border: 1px solid var(--burgundy-15);
-    color: var(--charcoal);
-    font-size: 0.86rem;
-    font-weight: 500;
-    line-height: 1.25;
+    text-align: center;
     text-decoration: none !important;
   }
-  .cats a :global(svg) {
-    flex: none;
-    color: var(--burgundy);
+  .frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    padding: 4px;
+    background: var(--white);
+    border: 1px solid var(--burgundy-15);
   }
-  .cats a.on {
-    border-color: var(--burgundy);
-    color: var(--burgundy);
+  .frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .frame.noimg {
+    background: var(--burgundy-deep);
+    outline: 1px solid var(--ivory-20);
+    outline-offset: -6px;
+  }
+  .fname {
+    font-family: var(--font-display);
+    font-size: 0.98rem;
+    line-height: 1.15;
+    color: var(--ivory);
+    padding: 0 8px;
+  }
+  .tiles strong {
+    font-family: var(--font-display);
+    font-size: 0.86rem;
     font-weight: 600;
+    line-height: 1.2;
+    color: var(--charcoal);
+  }
+  .tiles a.on .frame {
+    border: 2px solid var(--burgundy);
+  }
+  .tiles a.on strong {
+    color: var(--burgundy);
   }
   @media (min-width: 760px) {
     .mbar,

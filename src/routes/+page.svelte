@@ -72,7 +72,7 @@
 />
 
 <!-- 4. Hero (dark, like the reference) -->
-<HeroSlider slides={data.slides} fallback={{ images: data.gallery.map((g) => g.url) }} />
+<HeroSlider slides={data.slides} />
 
 <!-- 5. Trust highlights (ivory strip) -->
 <section class="trust" aria-label="Highlights">

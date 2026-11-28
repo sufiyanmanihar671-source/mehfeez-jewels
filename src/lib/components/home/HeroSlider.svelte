@@ -3,10 +3,8 @@
   import Icon from '../Icon.svelte';
   import { imageUrl } from '$lib/image';
   import type { HeroSlide } from '$lib/types';
-  import JewelleryArt from './JewelleryArt.svelte';
 
-  type Fallback = { images: string[] };
-  let { slides, fallback }: { slides: HeroSlide[]; fallback: Fallback } = $props();
+  let { slides }: { slides: HeroSlide[] } = $props();
 
   // Minimal copy: short heading, one short line.
   const DEFAULT = {
@@ -80,18 +78,23 @@
       </div>
     {/if}
   {:else}
-    <!-- No slides yet: real product photos if any, otherwise a line-art jewellery illustration. -->
-    <div class="slide on">
-      <div class="media media--fallback">
-        {#if fallback.images.length}
-          <div class="collage n{Math.min(fallback.images.length, 3)}">
-            {#each fallback.images.slice(0, 3) as src, i}
-              <img src={imageUrl(src, 900)} alt="" loading={i === 0 ? 'eager' : 'lazy'} width="600" height="750" />
-            {/each}
-          </div>
-        {:else}
-          <div class="artframe"><JewelleryArt /></div>
-        {/if}
+    <!-- No admin slides yet: the brand hero photo (static/hero/), text over the curtain on desktop. -->
+    <div class="slide on slide--brand">
+      <div class="media media--brand">
+        <picture>
+          <source media="(max-width: 759px)" srcset="/hero/bridal-portrait-mobile.webp" type="image/webp" />
+          <img
+            src="/hero/bridal-portrait-1672.webp"
+            srcset="/hero/bridal-portrait-1200.webp 1200w, /hero/bridal-portrait-1672.webp 1672w"
+            sizes="100vw"
+            alt="Bride wearing an American diamond choker set with matching earrings, ring and bracelet"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            width="1672"
+            height="878"
+          />
+        </picture>
       </div>
       {@render copy(DEFAULT.eyebrow, DEFAULT.title, DEFAULT.subtitle, null, null, true)}
     </div>
@@ -177,54 +180,57 @@
     margin-bottom: 0;
   }
 
-  .media--fallback {
-    display: flex;
-    align-items: stretch;
+  /* brand hero photo */
+  .media--brand {
+    aspect-ratio: 4 / 5;
   }
-  @media (max-width: 759px) {
-    .media--fallback {
-      aspect-ratio: 4 / 3;
+  .media--brand img {
+    object-position: 50% 30%;
+  }
+  @media (min-width: 760px) {
+    .media--brand {
+      aspect-ratio: 1672 / 878;
     }
   }
-  .collage {
-    display: grid;
-    gap: 6px;
-    width: 100%;
-    background: var(--burgundy-deep);
-  }
-  .collage.n2 {
-    grid-template-columns: 1fr 1fr;
-  }
-  .collage.n3 {
-    grid-template-columns: 1.3fr 1fr;
-    grid-template-rows: 1fr 1fr;
-  }
-  .collage.n3 img:first-child {
-    grid-row: span 2;
-  }
-  .collage img {
-    transform: none !important;
-  }
-  .artframe {
-    position: relative;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: clamp(24px, 5vw, 64px);
-    background:
-      radial-gradient(70% 60% at 50% 40%, rgba(255, 255, 255, 0.07), transparent 70%),
-      var(--burgundy);
-  }
-  .artframe::before {
-    content: '';
-    position: absolute;
-    inset: 12px;
-    border: 1px solid var(--ivory-20);
-    pointer-events: none;
-  }
-  .artframe :global(.art) {
-    max-width: 520px;
+  /* Desktop: full-width photo, copy over the empty curtain on the left */
+  @media (min-width: 1000px) {
+    .slide.slide--brand {
+      grid-template-columns: minmax(0, 1fr);
+      min-height: 0;
+    }
+    .slide--brand > * {
+      grid-area: 1 / 1;
+    }
+    .slide--brand .media.media--brand {
+      aspect-ratio: auto;
+      width: 100%;
+      height: clamp(460px, 46vw, min(720px, calc(100vh - 140px)));
+      min-height: 0;
+    }
+    .slide--brand .media--brand img {
+      object-position: 70% 30%;
+    }
+    .slide--brand .media--brand::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(46, 4, 16, 0.82) 0%, rgba(46, 4, 16, 0.55) 30%, rgba(46, 4, 16, 0) 52%);
+      pointer-events: none;
+    }
+    .slide--brand .copy.copy {
+      position: relative;
+      z-index: 1;
+      align-self: center;
+      max-width: min(560px, 46%);
+      padding: 48px clamp(40px, 5vw, 88px);
+    }
+    .slide--brand h1 {
+      font-size: clamp(1.9rem, 2.7vw, 2.8rem);
+      max-width: 15ch;
+    }
+    .slide--brand .copy p {
+      font-size: 0.95rem;
+    }
   }
 
   .arrow {

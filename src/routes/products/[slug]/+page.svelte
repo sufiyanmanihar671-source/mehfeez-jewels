@@ -149,8 +149,8 @@
         <h1>{p.name}</h1>
         <ul class="facts">
           <li class="stock" class:out={p.stock_status === 'out_of_stock'}><span class="dot"></span>{stock}</li>
-          {#if p.material}<li><Icon name="gem" size={14} stroke={1.5} />{p.material}</li>{/if}
-          <li><Icon name="boxes" size={14} stroke={1.5} />Min. order {MIN_ORDER}</li>
+          {#if p.material}<li><Icon name="gem" size={15} stroke={2} />{p.material}</li>{/if}
+          <li><Icon name="boxes" size={15} stroke={2} />Min. order {MIN_ORDER}</li>
         </ul>
         {#if p.video_url}
           <a class="video" href={p.video_url} target="_blank" rel="noopener noreferrer"><Icon name="video" size={15} /> Watch product video ↗</a>
@@ -445,11 +445,11 @@
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
-    border: 1px solid var(--burgundy-15);
+    border: 1px solid var(--burgundy-30);
     border-radius: 999px;
     background: var(--white);
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-size: 0.82rem;
+    font-weight: 600;
     color: var(--charcoal);
     white-space: nowrap;
   }
@@ -645,7 +645,7 @@
     .thumbs button { flex-basis: 52px; height: 52px; }
     h1 { font-size: 1.45rem; margin: 4px 0 6px; }
     .facts { gap: 6px; margin-bottom: 14px; }
-    .facts li { padding: 5px 10px; font-size: 0.74rem; }
+    .facts li { padding: 5px 10px; font-size: 0.78rem; }
     .pricebox { padding: 10px 12px; margin-bottom: 14px; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
     .pricebox .pl { flex-basis: 100%; font-size: 0.62rem; }
     .pmsg { font-size: 0.82rem; flex: 1 1 auto; }

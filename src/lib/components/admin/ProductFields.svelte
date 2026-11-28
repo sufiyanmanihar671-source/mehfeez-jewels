@@ -4,8 +4,8 @@
 
   /**
    * Product form, grouped the way the website shows a product:
-   * basics → wholesale price → what buyers see on the product page → stock → labels,
-   * with rarely used fields folded into "More options".
+   * basics → wholesale price → what buyers see on the product page → stock → publish.
+   * Kept deliberately short; fields not shown on the website are carried as hidden inputs.
    * Field names are unchanged (see productSchema in $lib/server/validation).
    */
   let {
@@ -33,8 +33,6 @@
     slug = v.slug ?? '';
     slugTouched = !!v.slug;
   });
-  // Open "More options" automatically if one of its fields has an error.
-  const moreHasError = $derived(['slug', 'sort_order', 'meta_title', 'meta_description', 'collections'].some((k) => !!errors[k]));
 </script>
 
 <section class="sec">
@@ -44,6 +42,7 @@
       <label for="p-name">Product name *</label>
       <input id="p-name" name="name" required bind:value={name} oninput={() => { if (!slugTouched) slug = slugify(name); }} aria-invalid={!!errors.name} placeholder="e.g. Kundan Bridal Necklace Set" />
       {#if errors.name}<span class="field-error">{errors.name}</span>{/if}
+      {#if errors.slug}<span class="field-error">This name is already used by another product — please change it slightly.</span>{/if}
     </div>
     <div class="field">
       <label for="p-sku">SKU / design code *</label>
@@ -138,66 +137,20 @@
 <section class="sec">
   <h3><span>5</span> Show on website</h3>
   <div class="toggles">
-    <label class="tg"><input type="checkbox" name="is_published" checked={flag('is_published', true)} /><span><b>Published</b><small>Visible in the catalogue. Untick to keep it as a draft.</small></span></label>
-    <label class="tg"><input type="checkbox" name="is_new_arrival" checked={flag('is_new_arrival')} /><span><b>New arrival</b><small>Shown in “Latest Designs” on the homepage with a “New” tag.</small></span></label>
-    <label class="tg"><input type="checkbox" name="is_bestseller" checked={flag('is_bestseller')} /><span><b>Bestseller</b><small>Adds a “Bestseller” tag on the photo.</small></span></label>
+    <label class="tg"><input type="checkbox" name="is_published" checked={flag('is_published', true)} /><span><b>Published</b><small>Visible on the website. Newest designs appear first in “Latest Designs” on the homepage. Untick to keep it as a draft.</small></span></label>
   </div>
 </section>
 
-<details class="sec more" open={moreHasError}>
-  <summary>More options (optional)</summary>
-  <p class="hint">Saved with the product for your records. These are not shown on the website at the moment.</p>
-  <div class="form-grid form-grid--2">
-    <div class="field">
-      <label for="p-finish">Plating / finish</label>
-      <input id="p-finish" name="finish" value={v.finish ?? ''} placeholder="Rhodium / Matte / Antique" />
-    </div>
-    <div class="field">
-      <label for="p-stone">Stones</label>
-      <input id="p-stone" name="stone" value={v.stone ?? ''} placeholder="American Diamond (CZ), Kundan, Pearls" />
-    </div>
-    <div class="field">
-      <label for="p-weight">Approx. weight</label>
-      <input id="p-weight" name="weight" value={v.weight ?? ''} placeholder="85 g per set" />
-    </div>
-    <div class="field">
-      <label for="p-dim">Size / dimensions</label>
-      <input id="p-dim" name="dimensions" value={v.dimensions ?? ''} placeholder="Necklace length 16 in" />
-    </div>
-    <div class="field span-2">
-      <label for="p-set">Set includes</label>
-      <input id="p-set" name="set_includes" value={v.set_includes ?? ''} placeholder="1 Necklace, 2 Earrings, 1 Maang Tikka" />
-    </div>
-    <div class="field">
-      <label for="p-slug">Web address (URL)</label>
-      <input id="p-slug" name="slug" bind:value={slug} oninput={() => (slugTouched = true)} aria-invalid={!!errors.slug} />
-      <span class="hint">/products/{slug || '…'} — filled automatically from the name.</span>
-      {#if errors.slug}<span class="field-error">{errors.slug}</span>{/if}
-    </div>
-    <div class="field">
-      <label for="p-sort">Sort order</label>
-      <input id="p-sort" name="sort_order" type="number" inputmode="numeric" min="0" value={v.sort_order ?? 0} />
-      <span class="hint">Lower numbers show first.</span>
-    </div>
-    <div class="field span-2">
-      <span class="lbl">Collections &amp; featured</span>
-      <div class="flags">
-        <label class="checkbox"><input type="checkbox" name="is_featured" checked={flag('is_featured')} /> Featured</label>
-        {#each [['trending', 'Trending'], ['premium', 'Premium'], ['exclusive', 'Exclusive'], ['traditional', 'Traditional']] as [k, label]}
-          <label class="checkbox"><input type="checkbox" name="collections" value={k} checked={(v.collections ?? []).includes(k)} /> {label}</label>
-        {/each}
-      </div>
-    </div>
-    <div class="field">
-      <label for="p-mt">Google title (max 70)</label>
-      <input id="p-mt" name="meta_title" maxlength="70" value={v.meta_title ?? ''} />
-    </div>
-    <div class="field">
-      <label for="p-md">Google description (max 170)</label>
-      <textarea id="p-md" name="meta_description" maxlength="170" rows="2">{v.meta_description ?? ''}</textarea>
-    </div>
-  </div>
-</details>
+<!-- Not shown in the form (kept simple). Hidden inputs keep existing values when a product is saved. -->
+<input type="hidden" name="slug" value={slug} />
+<input type="hidden" name="sort_order" value={v.sort_order ?? 0} />
+{#each ['finish', 'stone', 'weight', 'dimensions', 'set_includes', 'meta_title', 'meta_description'] as k}
+  <input type="hidden" name={k} value={v[k] ?? ''} />
+{/each}
+{#each v.collections ?? [] as c}<input type="hidden" name="collections" value={c} />{/each}
+{#each ['is_featured', 'is_new_arrival', 'is_bestseller'] as k}
+  {#if flag(k)}<input type="hidden" name={k} value="on" />{/if}
+{/each}
 
 <style>
   .sec {
@@ -278,31 +231,5 @@
   .tg small {
     color: var(--muted);
     font-size: 0.8rem;
-  }
-  .more {
-    border-bottom: 0;
-  }
-  .more summary {
-    cursor: pointer;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--burgundy);
-    padding: 4px 0;
-  }
-  .more[open] summary {
-    margin-bottom: 8px;
-  }
-  .lbl {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 0.85rem;
-    font-weight: 500;
-  }
-  .flags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 20px;
   }
 </style>

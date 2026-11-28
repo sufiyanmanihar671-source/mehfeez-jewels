@@ -138,10 +138,6 @@
           {:else}
             <div class="art"><JewelleryArt /><span>Photos coming soon</span></div>
           {/if}
-          <span class="tags">
-            {#if p.is_new_arrival}<span class="tag">New</span>{/if}
-            {#if p.is_bestseller}<span class="tag tag--dark">Bestseller</span>{/if}
-          </span>
         </div>
         {#if images.length > 1}
           <div class="thumbs" role="tablist" aria-label="Choose image">
@@ -356,25 +352,6 @@
     font-size: 0.72rem;
     background: rgba(69, 16, 32, 0.75);
     color: var(--white);
-  }
-  .tags {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    display: flex;
-    gap: 6px;
-  }
-  .tag {
-    padding: 4px 10px;
-    font-size: 0.62rem;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    background: var(--burgundy);
-    color: var(--white);
-  }
-  .tag--dark {
-    background: var(--charcoal);
   }
   .thumbs {
     display: flex;

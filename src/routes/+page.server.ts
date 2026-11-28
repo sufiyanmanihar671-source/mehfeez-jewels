@@ -5,11 +5,7 @@ export const load: PageServerLoad = async ({ locals }) => {
   const { supabase, configured, canSeePrices } = locals;
   const q = (o: Parameters<typeof listProducts>[2]) => listProducts(supabase, configured, o);
 
-  const [slides, fresh, recent] = await Promise.all([
-    listHeroSlides(supabase, configured),
-    q({ flag: 'is_new_arrival', limit: 6 }),
-    q({ limit: 60 })
-  ]);
+  const [slides, recent] = await Promise.all([listHeroSlides(supabase, configured), q({ limit: 60 })]);
 
   // One real product photo per category (used when a category has no image of its own).
   const categoryPhoto: Record<string, string> = {};
@@ -21,9 +17,9 @@ export const load: PageServerLoad = async ({ locals }) => {
     if (gallery.length < 8) gallery.push({ url: img, name: p.name, slug: p.slug });
   }
 
-  // New Arrivals grid: 6 designs (tagged new arrivals, otherwise the latest designs).
-  const arrivals = (fresh.products.length ? fresh.products : recent.products).slice(0, 6);
+  // "Latest Designs": simply the 6 newest published designs.
+  const arrivals = recent.products.slice(0, 6);
 
   const prices = await withCardPrices(supabase, canSeePrices, arrivals);
-  return { slides, arrivals, arrivalsAreNew: fresh.products.length > 0, prices, categoryPhoto, gallery };
+  return { slides, arrivals, prices, categoryPhoto, gallery };
 };

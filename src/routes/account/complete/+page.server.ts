@@ -16,13 +16,15 @@ export const actions: Actions = {
     const form = await request.formData();
     const raw = formToObject(form);
     if (form.get('terms') !== 'on') {
-      return fail(400, { values: raw, errors: { terms: 'Please confirm you are registering as a business buyer.' } });
+      return fail(400, { values: raw, errors: { terms: 'Please tick this box to continue.' } });
     }
     const parsed = businessProfileSchema.safeParse(raw);
     if (!parsed.success) return fail(400, { values: raw, errors: fieldErrors(parsed.error) });
 
     // RLS: only the user's own row; the DB trigger blocks status/role changes.
-    const { error } = await locals.supabase.from('profiles').update(parsed.data).eq('id', locals.user.id);
+    // Only the quick-signup fields are on this form; leave optional details untouched.
+    const { full_name, company_name, whatsapp, country } = parsed.data;
+    const { error } = await locals.supabase.from('profiles').update({ full_name, company_name, whatsapp, country }).eq('id', locals.user.id);
     if (error) {
       console.error('complete profile', error.message);
       return fail(400, { values: raw, message: 'Could not save your details. Please try again.' });

@@ -14,12 +14,12 @@ export const actions: Actions = {
     if (isBot(form)) return { success: true, email: '' };
     if (!locals.configured) return fail(503, { values: safeValues(raw), message: 'Registration is unavailable until Supabase is connected.' });
     if (form.get('terms') !== 'on') {
-      return fail(400, { values: safeValues(raw), errors: { terms: 'Please confirm you are registering as a business buyer.' } });
+      return fail(400, { values: safeValues(raw), errors: { terms: 'Please tick this box to continue.' } });
     }
 
     const parsed = registerSchema.safeParse(raw);
     if (!parsed.success) return fail(400, { values: safeValues(raw), errors: fieldErrors(parsed.error) });
-    const { email, password, confirm_password: _c, ...business } = parsed.data;
+    const { email, password, ...business } = parsed.data;
 
     const { data, error } = await locals.supabase.auth.signUp({
       email,

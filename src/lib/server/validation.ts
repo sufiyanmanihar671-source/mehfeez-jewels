@@ -30,6 +30,15 @@ const optionalText = (max: number) =>
     .optional()
     .transform((v) => (v ? v : null));
 
+/** Optional text stored as '' (for NOT NULL text columns such as profiles.city). */
+const optionalPlain = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .optional()
+    .transform((v) => v ?? '');
+
 const phonePattern = /^\+?[0-9 ()-]{7,20}$/;
 
 export const whatsappSchema = z
@@ -55,29 +64,25 @@ const gstSchema = z
   .transform((v) => (v ? v : null))
   .refine((v) => v === null || /^[0-9A-Z]{15}$/.test(v), 'GST number must be 15 letters/digits');
 
+// Only name, business name, WhatsApp and country are required, so registering is quick.
+// City, address, business type etc. are optional (customers can add them later).
 export const businessProfileSchema = z.object({
-  full_name: trimmed(2, 120, 'Full name'),
-  company_name: trimmed(2, 160, 'Business / company name'),
+  full_name: trimmed(2, 120, 'Your name'),
+  company_name: trimmed(2, 160, 'Business / shop name'),
   whatsapp: whatsappSchema,
   country: trimmed(2, 80, 'Country'),
-  city: trimmed(2, 80, 'City'),
-  address: trimmed(5, 400, 'Business address'),
-  business_type: trimmed(2, 80, 'Business type'),
+  city: optionalPlain(80),
+  address: optionalPlain(400),
+  business_type: optionalPlain(80),
   gst_number: gstSchema,
   website: optionalText(200),
   additional_info: optionalText(2000)
 });
 
-export const registerSchema = businessProfileSchema
-  .extend({
-    email: emailSchema,
-    password: passwordSchema,
-    confirm_password: z.string()
-  })
-  .refine((d) => d.password === d.confirm_password, {
-    path: ['confirm_password'],
-    message: 'Passwords do not match'
-  });
+export const registerSchema = businessProfileSchema.extend({
+  email: emailSchema,
+  password: passwordSchema
+});
 
 export const enquirySchema = z.object({
   full_name: trimmed(2, 120, 'Full name'),

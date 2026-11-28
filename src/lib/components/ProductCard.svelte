@@ -40,9 +40,6 @@
     {:else}
       <JewelPlaceholder label={product.name} />
     {/if}
-    {#if product.is_bestseller || product.is_new_arrival}
-      <span class="tag" class:tag--dark={product.is_bestseller}>{product.is_bestseller ? 'Bestseller' : 'New'}</span>
-    {/if}
   </a>
   <div class="body">
     <h3><a href={`/products/${product.slug}`}>{product.name}</a></h3>
@@ -94,21 +91,6 @@
   }
   .pc:hover .media .main {
     transform: scale(1.04);
-  }
-  .tag {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    padding: 3px 8px;
-    font-size: 0.56rem;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    background: var(--burgundy);
-    color: var(--white);
-  }
-  .tag--dark {
-    background: var(--charcoal);
   }
   .body {
     display: flex;

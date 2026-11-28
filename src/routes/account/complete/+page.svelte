@@ -30,9 +30,9 @@
     }}
   >
     <input type="hidden" name="next" value={data.next} />
-    <BusinessFields {values} errors={e} />
+    <BusinessFields {values} errors={e} minimal />
     <div class="field" style="margin-top: 18px">
-      <label class="checkbox"><input type="checkbox" name="terms" /> I am registering on behalf of a business for wholesale purchases.</label>
+      <label class="checkbox"><input type="checkbox" name="terms" /> <span>I am a business buyer and agree to the <a href="/privacy" target="_blank">Privacy Policy</a>.</span></label>
       {#if e.terms}<span class="field-error">{e.terms}</span>{/if}
     </div>
     <button class="btn" type="submit" disabled={busy} style="margin-top: 22px">{busy ? 'Saving…' : 'Submit for approval'}</button>

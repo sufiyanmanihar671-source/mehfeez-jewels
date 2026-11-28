@@ -73,6 +73,7 @@
 
 <style>
   .pc {
+    min-width: 0;
     display: flex;
     flex-direction: column;
     background: var(--white);
@@ -112,7 +113,9 @@
     position: absolute;
     top: 10px;
     left: 10px;
+    right: 10px;
     display: flex;
+    flex-wrap: wrap;
     gap: 6px;
   }
   .tag {
@@ -207,8 +210,37 @@
     .pc {
       padding: 5px;
     }
+    .tags {
+      top: 6px;
+      left: 6px;
+      right: 6px;
+      gap: 4px;
+    }
+    .tag {
+      padding: 3px 6px;
+      font-size: 0.52rem;
+      letter-spacing: 0.1em;
+    }
+    .body {
+      padding: 10px 4px 4px;
+      gap: 3px;
+    }
     h3 {
-      font-size: 0.98rem;
+      font-size: 0.95rem;
+      overflow-wrap: anywhere;
+    }
+    .meta {
+      font-size: 0.64rem;
+      letter-spacing: 0.04em;
+    }
+    .note {
+      font-size: 0.68rem;
+      letter-spacing: 0.02em;
+    }
+    .actions .btn {
+      min-height: 34px;
+      font-size: 0.6rem;
+      letter-spacing: 0.06em;
     }
     .actions {
       grid-template-columns: 1fr;

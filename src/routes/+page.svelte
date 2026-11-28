@@ -347,14 +347,17 @@
   }
 
   /* 6-box grids: 2 per row on phones, 3 per row from tablets up */
+  .six > :global(*) {
+    min-width: 0;
+  }
   .six {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(12px, 2vw, 24px);
   }
   @media (min-width: 760px) {
     .six {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
   @media (min-width: 1100px) {

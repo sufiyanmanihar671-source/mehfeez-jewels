@@ -4,8 +4,7 @@
   import Icon from './Icon.svelte';
   import { imageUrl, srcset } from '$lib/image';
   import { formatPrice } from '$lib/format';
-  import { productEnquiryMessage, waLink } from '$lib/whatsapp';
-  import type { Price, Product, SiteSettings } from '$lib/types';
+  import type { Price, Product } from '$lib/types';
 
   let {
     product,
@@ -21,10 +20,6 @@
 
   const img = $derived(product.images?.[0]);
   const img2 = $derived(product.images?.[1]);
-  const settings = $derived(page.data.settings as SiteSettings);
-  const wa = $derived(
-    waLink(settings?.whatsapp_number ?? '', productEnquiryMessage({ name: product.name, sku: product.sku }, `${page.url.origin}/products/${product.slug}`))
-  );
 </script>
 
 <article class="pc">
@@ -58,14 +53,8 @@
     {:else if loggedIn}
       <p class="note"><Icon name="lock" size={11} /> Price after approval</p>
     {:else}
-      <a class="note note--link" href={`/login?next=${encodeURIComponent(page.url.pathname)}`}><Icon name="lock" size={11} /> Login to view price</a>
+      <a class="btn btn--sm login" href={`/login?next=${encodeURIComponent(page.url.pathname)}`}><Icon name="lock" size={13} /> Login to see price</a>
     {/if}
-    <div class="actions">
-      <a class="btn btn--sm view" href={`/products/${product.slug}`}>View Details</a>
-      <a class="wa" href={wa} target="_blank" rel="noopener noreferrer" aria-label={`Wholesale enquiry for ${product.name} on WhatsApp`} title="Enquire on WhatsApp">
-        <Icon name="whatsapp" size={17} />
-      </a>
-    </div>
   </div>
 </article>
 
@@ -164,6 +153,15 @@
     text-transform: uppercase;
     color: var(--muted);
   }
+  .login {
+    margin-top: auto;
+    width: 100%;
+    min-height: 38px;
+    padding: 0 8px;
+    gap: 6px;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+  }
   .note {
     display: inline-flex;
     align-items: center;
@@ -172,42 +170,6 @@
     font-size: 0.72rem;
     letter-spacing: 0.04em;
     color: var(--muted);
-  }
-  .note--link {
-    color: var(--burgundy);
-    font-weight: 500;
-  }
-  .actions {
-    margin-top: auto;
-    padding-top: 10px;
-    width: 100%;
-    display: flex;
-    gap: 6px;
-  }
-  .view {
-    flex: 1;
-    min-width: 0;
-    min-height: 36px;
-    padding: 0 8px;
-    font-size: 0.62rem;
-    letter-spacing: 0.12em;
-  }
-  .wa {
-    flex: none;
-    width: 36px;
-    height: 36px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--burgundy-30);
-    color: var(--burgundy);
-    background: var(--white);
-    text-decoration: none !important;
-    transition: background 0.2s, color 0.2s;
-  }
-  .wa:hover {
-    background: var(--burgundy);
-    color: var(--white);
   }
   @media (max-width: 480px) {
     .body {
@@ -219,14 +181,10 @@
     .note {
       font-size: 0.66rem;
     }
-    .view {
-      min-height: 34px;
-      font-size: 0.58rem;
+    .login {
+      min-height: 36px;
+      font-size: 0.56rem;
       letter-spacing: 0.08em;
     }
-    .wa {
-      width: 34px;
-      height: 34px;
-    }
-  }
+      }
 </style>

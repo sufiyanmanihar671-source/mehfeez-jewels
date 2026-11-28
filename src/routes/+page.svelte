@@ -148,35 +148,19 @@
   </div>
 </section>
 
-<!-- 11. Instagram-style gallery (real photos only) -->
-{#if data.gallery.length >= 4 || s.instagram_url}
+<!-- 11. Instagram link (only when set in Admin > Settings) -->
+{#if s.instagram_url}
   <section class="light">
     <div class="container">
       <SectionHead eyebrow="New collection previews" title="Follow" accent="Mehfeez Jewels" />
-      {#if data.gallery.length >= 4}
-        <div class="gallery">
-          {#each data.gallery.slice(0, 8) as g}
-            <a href={`/products/${g.slug}`} class="gi" aria-label={g.name}>
-              <img src={imageUrl(g.url, 500)} alt={g.name} loading="lazy" decoding="async" width="400" height="500" />
-            </a>
-          {/each}
-        </div>
-      {/if}
-      {#if s.instagram_url}
-        <div class="center"><a class="btn" href={s.instagram_url} target="_blank" rel="noopener noreferrer"><Icon name="instagram" size={16} /> Follow on Instagram</a></div>
-      {/if}
+      <div class="center"><a class="btn" href={s.instagram_url} target="_blank" rel="noopener noreferrer"><Icon name="instagram" size={16} /> Follow on Instagram</a></div>
     </div>
   </section>
 {/if}
 
-<!-- 12. Brand story (dark) -->
+<!-- 12. Brand story (dark, text only) -->
 <section class="dark story">
-  <div class="container story-grid" class:solo={!data.gallery[0]}>
-    {#if data.gallery[0]}
-      <div class="story-media">
-        <img src={imageUrl(data.gallery[0].url, 900)} alt="Mehfeez Jewels design" loading="lazy" decoding="async" width="700" height="820" />
-      </div>
-    {/if}
+  <div class="container story-grid solo">
     <div class="story-copy">
       <img class="story-mark" src="/brand/mehfeez-jewels-white.png" alt="" aria-hidden="true" width="1184" height="536" loading="lazy" />
       <span class="eb-light"><span></span>Our story<span></span></span>
@@ -484,33 +468,6 @@
     color: var(--charcoal);
   }
 
-  /* gallery */
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-  }
-  @media (min-width: 760px) {
-    .gallery {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-  .gi {
-    display: block;
-    aspect-ratio: 4 / 5;
-    overflow: hidden;
-    background: var(--ivory);
-  }
-  .gi img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.7s ease;
-  }
-  .gi:hover img {
-    transform: scale(1.05);
-  }
-
   /* story */
   .story-grid {
     display: grid;
@@ -525,17 +482,6 @@
     .story-grid.solo {
       grid-template-columns: 1fr;
     }
-  }
-  .story-media {
-    aspect-ratio: 7 / 8;
-    overflow: hidden;
-    outline: 1px solid var(--ivory-20);
-    outline-offset: 8px;
-  }
-  .story-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
   .story-copy {
     position: relative;

@@ -9,6 +9,7 @@
   import { imageUrl, srcset } from '$lib/image';
   import { STOCK_LABELS, formatPrice } from '$lib/format';
   import { waLink } from '$lib/whatsapp';
+  import { cart, itemKey } from '$lib/cart.svelte';
 
   let { data, form } = $props();
   const p = $derived(data.product);
@@ -34,6 +35,21 @@
 
   const go = (i: number) => (active = (i + images.length) % images.length);
   const variant = $derived(p.variants?.find((v) => v.id === variantId) ?? null);
+
+  // Enquiry cart (browser-only list sent on WhatsApp from /cart; never holds prices).
+  const inCart = $derived(cart.has(itemKey(p.id, variant?.name ?? null, color, size)));
+  function addToCart() {
+    cart.add({
+      productId: p.id,
+      slug: p.slug,
+      name: p.name,
+      sku: variant?.sku || p.sku,
+      image: images[0]?.url ?? null,
+      variant: variant?.name ?? null,
+      color,
+      size
+    });
+  }
   const price = $derived(
     (variantId && data.prices.find((x) => x.variant_id === variantId)) || data.prices.find((x) => x.variant_id === null) || null
   );
@@ -208,6 +224,11 @@
         {/if}
 
         <!-- Actions -->
+        {#if inCart}
+          <a class="btn btn--block cartbtn added" href="/cart"><Icon name="check" size={17} /> Added — View Enquiry Cart ({cart.count})</a>
+        {:else}
+          <button class="btn btn--block cartbtn" type="button" onclick={addToCart}><Icon name="bag" size={17} /> Add to Enquiry Cart</button>
+        {/if}
         <div class="actions">
           {#if s.video_call_enabled}
             <a class="btn btn--outline btn--block" href={videoLink} target="_blank" rel="noopener noreferrer"><Icon name="video" size={16} /> Video Call</a>
@@ -569,6 +590,19 @@
   .actions .btn:only-child {
     grid-column: 1 / -1;
   }
+  .cartbtn {
+    min-height: 50px;
+    margin-top: 6px;
+    margin-bottom: 10px;
+    letter-spacing: 0.12em;
+    background: var(--burgundy-deep);
+    border-color: var(--burgundy-deep);
+  }
+  .cartbtn.added {
+    background: var(--white);
+    color: var(--burgundy);
+    border: 1px solid var(--burgundy);
+  }
   .textlink {
     display: block;
     margin: 12px auto 0;
@@ -661,6 +695,7 @@
     .ol b { display: none; }
       .chips { gap: 6px; }
     .chips button { min-height: 32px; padding: 0 12px; font-size: 0.78rem; }
+    .cartbtn { min-height: 44px; font-size: 0.7rem; margin-bottom: 8px; }
     .actions { gap: 8px; margin-top: 2px; }
     .actions .btn { min-height: 38px; padding: 0 10px; font-size: 0.66rem; letter-spacing: 0.1em; }
     .textlink { margin: 4px 0 0; font-size: 0.8rem; }

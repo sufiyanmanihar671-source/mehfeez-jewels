@@ -6,7 +6,7 @@ B2B wholesale catalogue for an artificial jewellery manufacturer. SvelteKit 2 (S
 - Palette (Nov 2026 brand update): Deep Burgundy #650D26 (primary), Dark Burgundy #480819, Burgundy Accent #8B1938, Warm Ivory #FFF9F3, Soft Cream #F8F1E9, text #302323 / #756666, white. Mostly light surfaces; burgundy for buttons, icons, links and a few selected sections only. Never blue, never a gold/golden theme.
 - Logo: use the official "Mehfeez / Jewels" files `static/brand/mehfeez-jewels-*.png` (from the brand logo, lettering unchanged) — never redraw or generate a different logo.
 - Homepage structure follows the reference ganeshbridal.com layout (hero slider, trust strip, video-call band, arched collections, featured designs, category scroller, styles, B2B band, why-us, showcase, story, CTA) with original Mehfeez content — never copy the reference's text, photos or branding.
-- No payment gateway, cart, checkout, COD, coupons or retail discounts. Orders are discussed on WhatsApp.
+- No payment gateway, checkout, COD, coupons or retail discounts. Orders are discussed on WhatsApp. The only cart is the browser-only **Enquiry Cart** (`src/lib/cart.svelte.ts`, `/cart`): a list of designs sent as one WhatsApp message — it never stores or shows prices or totals.
 - Wholesale prices live only in `product_prices`, protected by RLS (approved customers + admins). Always query prices with the visitor's own Supabase session (`locals.supabase`). Never add a service-role key, never fetch prices with elevated privileges, never put prices in JSON-LD, meta tags or public endpoints.
 - Dynamic pages must never be shared-cacheable (see `src/hooks.server.ts`); the Cloudflare edge cache keys only on URL.
 - Every admin load AND action calls `requireAdmin(locals)`.

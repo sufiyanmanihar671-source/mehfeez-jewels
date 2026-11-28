@@ -208,9 +208,21 @@ await check('Request Catalogue prefills the enquiry form', async () => {
   assert.match(r.body, /Request Wholesale Catalogue/);
   assert.match(r.body, /Please share your latest wholesale catalogue/);
 });
-await check('no payment gateway / cart code', async () => {
-  const r = await get('/');
-  assert.doesNotMatch(r.body, /razorpay|stripe|paypal|add to cart|checkout/i);
+await check('no payment gateway / checkout code', async () => {
+  for (const p of ['/', '/cart', '/products/royal-kundan-bridal-set']) {
+    const r = await get(p, 'approved-token');
+    assert.doesNotMatch(r.body, /razorpay|stripe|paypal|checkout|pay now|cash on delivery/i, `${p} must not have payment/checkout`);
+  }
+});
+
+await check('enquiry cart: page works, product page offers it, no prices on the cart page', async () => {
+  const c = await get('/cart', 'approved-token');
+  assert.equal(c.status, 200);
+  assert.match(c.body, /Enquiry Cart/);
+  assert.match(c.body, /noindex/);
+  assert.ok(!c.body.includes('4,850') && !c.body.includes('4850'), 'cart page must not contain prices');
+  const p = await get('/products/royal-kundan-bridal-set');
+  assert.match(p.body, /Add to Enquiry Cart/);
 });
 
 console.log(failures ? `\n${failures} check(s) failed` : '\nAll end-to-end checks passed');

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { cart } from '$lib/cart.svelte';
   import { page } from '$app/state';
   import Logo from './Logo.svelte';
   import Icon from './Icon.svelte';
@@ -128,6 +129,10 @@
       <button class="icon-btn" type="button" onclick={toggleSearch} aria-expanded={searching} aria-controls="site-search" aria-label="Search designs">
         <Icon name="search" size={20} stroke={1.4} />
       </button>
+      <a class="icon-btn cart-btn" href="/cart" aria-label={`Enquiry cart, ${cart.count} ${cart.count === 1 ? 'design' : 'designs'}`} title="Enquiry cart">
+        <Icon name="bag" size={20} stroke={1.4} />
+        {#if cart.count}<span class="cart-count">{cart.count > 9 ? '9+' : cart.count}</span>{/if}
+      </a>
       <a class="icon-btn" href={loggedIn ? '/account' : '/login'} aria-label={loggedIn ? 'My account' : 'Login or register'} title={loggedIn ? 'My account' : 'Login / Register'}>
         <Icon name="user" size={21} stroke={1.4} />
       </a>
@@ -251,6 +256,30 @@
     justify-content: flex-end;
     gap: 12px;
     min-width: 0;
+  }
+  .cart-btn {
+    position: relative;
+  }
+  .cart-count {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--ivory);
+    color: var(--burgundy);
+    font-size: 0.58rem;
+    font-weight: 700;
+  }
+  @media (max-width: 759px) {
+    .icon-btn.cart-btn {
+      display: none;
+    }
   }
   .tools {
     display: flex;

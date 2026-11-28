@@ -3,23 +3,22 @@
   import Icon from './Icon.svelte';
   import { waLink } from '$lib/whatsapp';
   import { imageUrl } from '$lib/image';
+  import { cart } from '$lib/cart.svelte';
   import type { Category, SiteSettings } from '$lib/types';
 
   /**
    * App-style bottom bar on phones with the key B2B actions.
+   * Home · Discover · WhatsApp (centre) · Enquiry Cart · Login/Account.
    * "Discover" opens a sheet of category boxes (same look as the homepage).
-   * Hidden on product pages, which have their own Video Call / Chat buttons.
    */
   let {
     settings,
     categories = [],
-    product = false,
     chatHref = null,
     loggedIn = false
   }: {
     settings: SiteSettings;
     categories?: Category[];
-    product?: boolean;
     chatHref?: string | null;
     loggedIn?: boolean;
   } = $props();
@@ -60,7 +59,6 @@
 
 <svelte:window onkeydown={(e) => e.key === 'Escape' && (open = false)} />
 
-{#if product || !path.startsWith('/products/')}
   {#if open}
     <button class="backdrop" type="button" aria-label="Close categories" onclick={() => (open = false)}></button>
     <div class="sheet" id="discover-sheet" role="dialog" aria-modal="true" aria-label="Discover designs">
@@ -101,6 +99,13 @@
     <a class="it wa" href={chatHref ?? waLink(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">
       <span class="wa-ic"><Icon name="whatsapp" size={24} /></span><span>WhatsApp</span>
     </a>
+    <a class="it" href="/cart" class:on={path === '/cart'} aria-label={`Enquiry cart, ${cart.count} ${cart.count === 1 ? 'design' : 'designs'}`}>
+      <span class="ic">
+        <Icon name="bag" size={20} stroke={1.5} />
+        {#if cart.count}<span class="badge">{cart.count > 9 ? '9+' : cart.count}</span>{/if}
+      </span>
+      <span>Cart</span>
+    </a>
     {#if loggedIn}
       <a class="it" href="/account" class:on={path.startsWith('/account')}>
         <Icon name="user" size={20} stroke={1.5} /><span>Account</span>
@@ -111,7 +116,6 @@
       </a>
     {/if}
   </nav>
-{/if}
 
 <style>
   .mbar {
@@ -156,6 +160,28 @@
   }
   .wa {
     color: var(--white);
+  }
+  .ic {
+    position: relative;
+    display: inline-flex;
+  }
+  .badge {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: var(--ivory);
+    color: var(--burgundy);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    box-shadow: 0 0 0 2px var(--burgundy-deep);
   }
   .wa-ic {
     display: inline-flex;

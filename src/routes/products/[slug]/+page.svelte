@@ -4,14 +4,13 @@
   import Seo from '$lib/components/Seo.svelte';
   import Icon from '$lib/components/Icon.svelte';
   import ProductCard from '$lib/components/ProductCard.svelte';
-  import EnquiryForm from '$lib/components/EnquiryForm.svelte';
   import JewelleryArt from '$lib/components/home/JewelleryArt.svelte';
   import { imageUrl, srcset } from '$lib/image';
   import { STOCK_LABELS, formatPrice } from '$lib/format';
   import { waLink } from '$lib/whatsapp';
   import { cart, itemKey } from '$lib/cart.svelte';
 
-  let { data, form } = $props();
+  let { data } = $props();
   const p = $derived(data.product);
   const s = $derived(data.settings);
   const images = $derived(p.images ?? []);
@@ -22,7 +21,6 @@
   let variantId = $state<string | null>(null);
   let color = $state<string | null>(null);
   let size = $state<string | null>(null);
-  let showForm = $state(false);
   let touchX = 0;
 
   $effect(() => {
@@ -235,30 +233,6 @@
           {/if}
           <a class="btn btn--block" href={chatLink} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" size={16} /> Chat</a>
         </div>
-        <button type="button" class="textlink" onclick={() => (showForm = !showForm)} aria-expanded={showForm}>
-          {showForm ? 'Hide written enquiry' : 'Or send a written enquiry'}
-        </button>
-        {#if showForm || form?.errors || form?.message || form?.success}
-          <div class="formcard">
-            <EnquiryForm
-              categories={data.categories}
-              {form}
-              action="?/enquiry"
-              productId={p.id}
-              productLabel={`${p.name} (SKU ${sku})`}
-              compact
-              defaults={{
-                full_name: data.profile?.full_name ?? '',
-                business_name: data.profile?.company_name ?? '',
-                email: data.profile?.email ?? '',
-                whatsapp: data.profile?.whatsapp ?? '',
-                country: data.profile?.country ?? '',
-                estimated_quantity: '',
-                message: `I am interested in ${p.name} (SKU ${sku}).\n${selection}\nPlease share wholesale pricing and availability.`
-              }}
-            />
-          </div>
-        {/if}
 
         <ul class="trust">
           <li><Icon name="gem" size={17} stroke={1.3} /> Direct from manufacturer</li>
@@ -603,25 +577,6 @@
     color: var(--burgundy);
     border: 1px solid var(--burgundy);
   }
-  .textlink {
-    display: block;
-    margin: 12px auto 0;
-    padding: 4px;
-    border: 0;
-    background: none;
-    color: var(--burgundy);
-    font: inherit;
-    font-size: 0.85rem;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    cursor: pointer;
-  }
-  .formcard {
-    margin-top: 16px;
-    padding: 20px;
-    background: var(--white);
-    border: 1px solid var(--burgundy-15);
-  }
   .trust {
     list-style: none;
     padding: 14px 0;
@@ -702,8 +657,7 @@
     .cartbtn { min-height: 44px; font-size: 0.7rem; margin-bottom: 8px; }
     .actions { gap: 8px; margin-top: 2px; }
     .actions .btn { min-height: 38px; padding: 0 10px; font-size: 0.66rem; letter-spacing: 0.1em; }
-    .textlink { margin: 4px 0 0; font-size: 0.8rem; }
-    .trust { margin: 14px 0; padding: 10px 0; }
+      .trust { margin: 14px 0; padding: 10px 0; }
     .trust li { font-size: 0.58rem; gap: 4px; }
     .desc h2 { font-size: 1.15rem; margin-bottom: 4px; }
     .desc { margin-top: 16px; }

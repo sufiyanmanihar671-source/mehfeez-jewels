@@ -1,8 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { getPrices, listProducts, sortImages, withCardPrices } from '$lib/server/catalog';
-import { submitEnquiry } from '$lib/server/enquiry';
 import type { Product } from '$lib/types';
-import type { Actions, PageServerLoad } from './$types';
+import type { PageServerLoad } from './$types';
 
 const BASE =
   'id, name, slug, sku, description, category_id, moq, stock_status, stock_quantity, is_published, is_featured, is_new_arrival, is_bestseller, meta_title, meta_description, sort_order, created_at, category:categories(id, name, slug), images:product_images(id, url, alt, sort_order), variants:product_variants(id, name, sku, stock_status, sort_order)';
@@ -37,4 +36,3 @@ export const load: PageServerLoad = async ({ locals, params }) => {
   return { product, prices, related, relatedPrices };
 };
 
-export const actions: Actions = { enquiry: submitEnquiry };

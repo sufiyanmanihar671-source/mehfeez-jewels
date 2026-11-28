@@ -77,7 +77,7 @@
   );
 
   /** Minimum order value for every wholesale order (set by the business). */
-  const MIN_ORDER = '₹1,000';
+  const MIN_ORDER = '₹5,000';
 
   // Structured data deliberately contains NO price (prices are private to approved buyers).
   const ld = $derived({
@@ -163,7 +163,7 @@
         <ul class="facts">
           <li class="stock" class:out={stockStatus === 'out_of_stock'}><span class="dot"></span>{stock}</li>
           {#if p.material}<li><Icon name="gem" size={15} stroke={2} /><span class="fl">Material:</span>{p.material}</li>{/if}
-          <li><Icon name="boxes" size={15} stroke={2} />Min. order {MIN_ORDER}</li>
+          <li><Icon name="boxes" size={15} stroke={2} />Mix designs · Min. {MIN_ORDER}</li>
         </ul>
         {#if p.video_url}
           <a class="video" href={p.video_url} target="_blank" rel="noopener noreferrer"><Icon name="video" size={15} /> Watch product video ↗</a>

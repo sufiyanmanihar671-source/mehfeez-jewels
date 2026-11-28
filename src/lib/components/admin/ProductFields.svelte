@@ -145,7 +145,7 @@
       {#if errors.video_url}<span class="field-error">{errors.video_url}</span>{/if}
     </div>
   </div>
-  <p class="hint note">“Min. order ₹1,000” is shown on every product automatically.</p>
+  <p class="hint note">“Mix designs · Min. ₹5,000” is shown on every product automatically.</p>
 </section>
 
 <section class="sec">

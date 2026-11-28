@@ -10,7 +10,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   video_call_enabled: true,
   contact_phone: '+91 93212 45814',
   contact_email: null,
-  address: 'Room No. 4, Malad West, Chincholi Bunder Road, Opposite Vivanta Hospital, Mumbai – 400064, Maharashtra, India.',
+  address: 'Room No. 4, Moriya Niwas, Malad West, Chincholi Bunder Road, Opposite Vivanta Hospital, Mumbai – 400064, Maharashtra, India.',
   business_hours: null,
   instagram_url: null,
   facebook_url: null,

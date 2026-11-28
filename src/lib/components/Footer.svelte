@@ -57,7 +57,7 @@
     <div>
       <h4>Contact</h4>
       <ul class="contact">
-        <li><Icon name="pin" size={17} /><span>{settings.address}</span></li>
+        <li><Icon name="pin" size={17} /><span>{settings.address}<br /><a class="maplink" href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(settings.address)}`} target="_blank" rel="noopener noreferrer">View on map ↗</a></span></li>
         <li><Icon name="whatsapp" size={17} /><a href={wa} target="_blank" rel="noopener noreferrer">{settings.contact_phone}</a></li>
         {#if settings.contact_email}
           <li><Icon name="mail" size={17} /><a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a></li>
@@ -132,6 +132,13 @@
   }
   a {
     color: var(--ivory);
+  }
+  .maplink {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 0.82rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
   .contact li {
     display: grid;

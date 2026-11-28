@@ -112,7 +112,7 @@
     <li><strong>Supabase</strong> — database, user accounts, login and image storage.</li>
     <li><strong>Cloudflare</strong> — website hosting, security and domain services.</li>
     <li><strong>Resend</strong> — sending account emails such as email verification and password reset.</li>
-    <li><strong>Google</strong> — optional “Continue with Google” sign-in.</li>
+    <li><strong>Google</strong> — optional “Continue with Google” sign-in, and the map on our Contact page (loaded from Google Maps when you open that page).</li>
     <li><strong>WhatsApp (Meta)</strong> — only when you choose to contact us on WhatsApp; your chat is then also subject to WhatsApp’s own privacy policy.</li>
   </ul>
   <p>We may also disclose data where required by law or by a lawful order of a court or government authority.</p>

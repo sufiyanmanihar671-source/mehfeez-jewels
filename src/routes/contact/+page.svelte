@@ -4,7 +4,10 @@
   import { waLink } from '$lib/whatsapp';
   let { data } = $props();
   const s = $derived(data.settings);
-  const mapQuery = $derived(encodeURIComponent('Mehfeez Jewels, ' + s.address));
+  // Map pin from the address in Admin > Settings (no API key needed for the embed).
+  const mapQuery = $derived(encodeURIComponent(s.address));
+  const mapEmbed = $derived(`https://www.google.com/maps?q=${mapQuery}&z=16&output=embed`);
+  const directions = $derived(`https://www.google.com/maps/dir/?api=1&destination=${mapQuery}`);
 </script>
 
 <Seo
@@ -28,7 +31,7 @@
         <div>
           <h3>Address</h3>
           <p>{s.address}</p>
-          <a href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`} target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
+          <a href={directions} target="_blank" rel="noopener noreferrer">Get directions ↗</a>
         </div>
       </div>
       <div class="item">
@@ -71,6 +74,16 @@
       {/if}
       <a class="btn btn--outline btn--block" href="/wholesale-enquiry">Send a written enquiry</a>
     </div>
+  </div>
+</section>
+
+<section class="section section--white mapsec">
+  <div class="container">
+    <h2 class="maph">Find us</h2>
+    <div class="map">
+      <iframe title="Mehfeez Jewels location on Google Maps" src={mapEmbed} loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    </div>
+    <a class="btn btn--block dir" href={directions} target="_blank" rel="noopener noreferrer"><Icon name="pin" size={17} /> Get directions</a>
   </div>
 </section>
 
@@ -119,5 +132,36 @@
   .small {
     font-size: 0.82rem;
     margin: 0;
+  }
+  .mapsec {
+    padding-top: 0;
+  }
+  .maph {
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .map {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    min-height: 280px;
+    overflow: hidden;
+    border: 1px solid var(--burgundy-15);
+    background: var(--ivory);
+  }
+  .map iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .dir {
+    max-width: 360px;
+    margin: 14px auto 0;
+  }
+  @media (max-width: 759px) {
+    .map {
+      aspect-ratio: 4 / 5;
+    }
   }
 </style>

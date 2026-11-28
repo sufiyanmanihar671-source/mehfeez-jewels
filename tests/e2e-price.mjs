@@ -195,7 +195,7 @@ await check('Google token endpoint rejects requests without a nonce or from othe
   const foreign = await fetch(BASE + '/auth/google/token', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://evil.example' }, body: JSON.stringify({ credential: 'x.y.z' }) });
   assert.equal(foreign.status, 403);
 });
-await check('CSP allows Google sign-in script and frame only', async () => {
+await check('CSP allows only Google sign-in and Google Maps frames', async () => {
   const csp = (await get('/login')).headers.get('content-security-policy') ?? '';
   assert.match(csp, /script-src[^;]*https:\/\/accounts\.google\.com\/gsi\/client/);
   assert.match(csp, /frame-src https:\/\/accounts\.google\.com\/gsi\//);

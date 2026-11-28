@@ -52,15 +52,16 @@
           <input id="c-order" name="sort_order" type="number" min="0" value={cur?.sort_order ?? data.all.length + 1} />
         </div>
         <div class="field">
-          <label for="c-img">Image</label>
+          <label for="c-img">Photo (optional)</label>
           <input id="c-img" name="image" type="file" accept="image/jpeg,image/png,image/webp,image/avif" use:compressImages />
+          <span class="hint">Shown in the Discover menu and homepage category boxes. Without a photo, a product photo from this category is used.</span>
           {#if cur?.image_url}<label class="checkbox"><input type="checkbox" name="remove_image" /> Remove current image</label>{/if}
         </div>
         <div class="field">
-          <label for="c-group">Show under</label>
+          <label for="c-group">Show in Discover under</label>
           <select id="c-group" name="category_group">
-            <option value="type" selected={(cur?.category_group ?? 'type') === 'type'}>Shop by Category (necklace sets, earrings…)</option>
-            <option value="style" selected={cur?.category_group === 'style'}>Shop by Jewellery Style (American Diamond, Victorian…)</option>
+            <option value="type" selected={(cur?.category_group ?? 'type') === 'type'}>Categories (Necklace Sets, Earrings, Bangles…)</option>
+            <option value="style" selected={cur?.category_group === 'style'}>Styles (American Diamond, Victorian, Heritage…)</option>
           </select>
         </div>
         <label class="checkbox"><input type="checkbox" name="is_active" checked={cur?.is_active ?? true} /> Visible on website</label>
@@ -74,20 +75,20 @@
 {/if}
 
 <div class="table-wrap">
-  <table>
-    <thead><tr><th>Order</th><th>Name</th><th>Group</th><th>Slug</th><th>Products</th><th>Visible</th><th>Actions</th></tr></thead>
+  <table class="rt">
+    <thead><tr><th>Order</th><th>Name</th><th>Shown under</th><th>Slug</th><th>Products</th><th>Visible</th><th>Actions</th></tr></thead>
     <tbody>
       {#each data.all as c, i (c.id)}
         <tr>
-          <td class="ord">
+          <td class="ord" data-label="Order">
             <form method="POST" action="?/move" use:enhance><input type="hidden" name="id" value={c.id} /><input type="hidden" name="dir" value="up" /><button disabled={i === 0} aria-label="Move up">▲</button></form>
             <form method="POST" action="?/move" use:enhance><input type="hidden" name="id" value={c.id} /><input type="hidden" name="dir" value="down" /><button disabled={i === data.all.length - 1} aria-label="Move down">▼</button></form>
           </td>
-          <td><strong>{c.name}</strong></td>
-          <td>{c.category_group === 'style' ? 'Style' : 'Category'}</td>
-          <td><a href={`/categories/${c.slug}`} target="_blank">/{c.slug}</a></td>
-          <td>{data.productCounts[c.id] ?? 0}</td>
-          <td>{c.is_active ? 'Yes' : 'Hidden'}</td>
+          <td><strong>{c.name}</strong>{#if c.image_url}<span class="badge" style="margin-left:6px">Photo</span>{/if}</td>
+          <td data-label="Shown under">{c.category_group === 'style' ? 'Styles' : 'Categories'}</td>
+          <td class="hide-sm"><a href={`/categories/${c.slug}`} target="_blank">/{c.slug}</a></td>
+          <td data-label="Products">{data.productCounts[c.id] ?? 0}</td>
+          <td data-label="Visible">{c.is_active ? 'Yes' : 'Hidden'}</td>
           <td class="acts">
             <button class="btn btn--sm btn--outline" onclick={() => (editing = c)}>Edit</button>
             <form method="POST" action="?/delete" use:enhance={({ cancel }) => { if (!confirm(`Delete category “${c.name}”? Products will be kept but uncategorised.`)) cancel(); }}>
@@ -106,9 +107,9 @@
 <style>
   .editor { margin-bottom: 22px; }
   .editor h2 { font-size: 1.4rem; }
-  .row, .acts { display: flex; gap: 8px; flex-wrap: wrap; }
+  .row, .acts { display: flex !important; gap: 8px; flex-wrap: wrap; }
   .row { margin-top: 18px; }
-  .ord { display: flex; gap: 4px; }
+  .ord { display: flex !important; gap: 4px; align-items: center; }
   .ord button { border: 1px solid var(--charcoal-15); background: var(--white); border-radius: var(--radius); cursor: pointer; padding: 2px 8px; color: var(--burgundy); }
   .ord button:disabled { opacity: 0.3; cursor: default; }
 </style>

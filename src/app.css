@@ -286,6 +286,7 @@ p {
 .req {
   color: var(--burgundy);
 }
+input:not([type]),
 input[type='text'],
 input[type='email'],
 input[type='password'],

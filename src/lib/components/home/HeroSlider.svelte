@@ -4,14 +4,9 @@
   import { imageUrl } from '$lib/image';
   import type { HeroSlide } from '$lib/types';
 
-  let { slides }: { slides: HeroSlide[] } = $props();
-
-  // Minimal copy: short heading, one short line.
-  const DEFAULT = {
-    eyebrow: 'Wholesale only',
-    title: 'Premium Artificial Jewellery, Direct from Manufacturers',
-    subtitle: 'Discover exclusive jewellery collections crafted for retailers, boutiques and wholesale buyers.'
-  };
+  // Heading text comes from Admin > Settings (Homepage text).
+  let { slides, title, subtitle }: { slides: HeroSlide[]; title: string; subtitle: string } = $props();
+  const DEFAULT = $derived({ eyebrow: 'Wholesale only', title, subtitle });
 
   let index = $state(0);
   let paused = $state(false);

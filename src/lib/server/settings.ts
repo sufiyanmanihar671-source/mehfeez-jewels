@@ -15,14 +15,22 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   instagram_url: null,
   facebook_url: null,
   logo_url: null,
-  hero_title: 'Artificial Jewellery, Crafted for Wholesale',
-  hero_subtitle:
-    'Manufacturer and wholesale supplier of American Diamond, Victorian, Heritage, South Indian and Bridal jewellery for retailers and distributors worldwide.',
+  hero_title: 'Premium Artificial Jewellery, Direct from Manufacturers',
+  hero_subtitle: 'Discover exclusive jewellery collections crafted for retailers, boutiques and wholesale buyers.',
   hero_image_url: null
 };
+
+// The first homepage text stored in the database (before the redesign). If it was never edited,
+// show the current homepage text instead, so Admin > Settings matches what the website shows.
+const LEGACY_HERO_TITLE = 'Artificial Jewellery, Crafted for Wholesale';
+const LEGACY_HERO_SUBTITLE =
+  'Manufacturer and wholesale supplier of American Diamond, Victorian, Heritage, South Indian and Bridal jewellery for retailers and distributors worldwide.';
 
 export async function getSettings(supabase: SupabaseClient, configured: boolean): Promise<SiteSettings> {
   if (!configured) return DEFAULT_SETTINGS;
   const { data } = await supabase.from('site_settings').select('*').eq('id', 1).maybeSingle();
-  return { ...DEFAULT_SETTINGS, ...(data ?? {}) };
+  const s: SiteSettings = { ...DEFAULT_SETTINGS, ...(data ?? {}) };
+  if (s.hero_title === LEGACY_HERO_TITLE) s.hero_title = DEFAULT_SETTINGS.hero_title;
+  if (s.hero_subtitle === LEGACY_HERO_SUBTITLE) s.hero_subtitle = DEFAULT_SETTINGS.hero_subtitle;
+  return s;
 }

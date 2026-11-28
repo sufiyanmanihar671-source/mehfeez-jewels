@@ -16,7 +16,7 @@
 
 <Seo title={`${p.name} — Admin`} noindex />
 
-<p><a href="/admin/products">← All products</a> · <a href={`/products/${p.slug}`} target="_blank">View on website ↗</a></p>
+<p class="crumbs"><a href="/admin/products">← All products</a><a href={`/products/${p.slug}`} target="_blank">View on website ↗</a></p>
 <h1>{p.name}</h1>
 {#if page.url.searchParams.get('created')}<div class="alert alert--success">Product created. Add images and variations below.</div>{/if}
 {#if form?.message}<div class="alert alert--error">{form.message}</div>{/if}
@@ -24,14 +24,18 @@
 
 <div class="layout">
   <form class="card" method="POST" action="?/save" novalidate use:enhance={keep}>
-    <h2>Details, price, MOQ &amp; stock</h2>
+    <h2>Product details</h2>
     <ProductFields product={p} price={base} categories={data.allCategories} values={(form?.values as Record<string, unknown>) ?? null} errors={form?.errors ?? {}} />
-    <button class="btn" type="submit" style="margin-top: 22px">Save product</button>
+    <div class="savebar">
+      {#if form?.saved}<span class="ok">✓ Saved</span>{/if}
+      <button class="btn" type="submit">Save product</button>
+    </div>
   </form>
 
   <div class="side">
     <section class="card">
-      <h2>Images</h2>
+      <h2>Photos</h2>
+      <p class="muted small">First photo is the cover. Add 2–5 clear photos on a plain background.</p>
       {#if form?.imageMessage}<div class="alert alert--error">{form.imageMessage}</div>{/if}
       {#if p.images?.length}
         <div class="imgs">
@@ -64,23 +68,23 @@
         }}
       >
         <div class="field">
-          <label for="imgs">Add images (JPG, PNG, WebP · max 5 MB each)</label>
+          <label for="imgs">Add photos (from gallery or camera)</label>
           <input id="imgs" name="images" type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif" use:compressImages={{ onbusy: (b) => (compressing = b) }} />
-          <span class="hint">Photos are resized to 1600px and converted to WebP automatically before upload.</span>
+          <span class="hint">JPG, PNG or WebP. Photos are optimised automatically before upload.</span>
         </div>
         <div class="field" style="margin-top: 10px">
-          <label for="alt">Alt text (for SEO)</label>
+          <label for="alt">Photo description (for Google)</label>
           <input id="alt" name="alt" value={p.name} />
         </div>
-        <button class="btn btn--sm" type="submit" disabled={uploading || compressing} style="margin-top: 12px">
-          {compressing ? 'Optimising…' : uploading ? 'Uploading…' : 'Upload'}
+        <button class="btn btn--sm btn--block" type="submit" disabled={uploading || compressing} style="margin-top: 12px">
+          {compressing ? 'Optimising…' : uploading ? 'Uploading…' : 'Upload photos'}
         </button>
       </form>
     </section>
 
     <section class="card">
       <h2>Variations</h2>
-      <p class="muted small">E.g. colour, stone or size options. Leave price empty to use the base price.</p>
+      <p class="muted small">Only for options with a <b>different price</b> (e.g. “With nath”). For simple colours or sizes use section 3 instead.</p>
       {#each p.variants ?? [] as v (v.id)}
         {@const vp = vPrice(v.id)}
         <form class="variant" method="POST" action="?/updateVariant" use:enhance={keep}>
@@ -123,6 +127,15 @@
 
 <style>
   .layout { display: grid; gap: 20px; }
+  .crumbs { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 0.9rem; }
+  .savebar { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-top: 18px; }
+  .savebar .ok { color: #2f6b3a; font-weight: 600; font-size: 0.9rem; }
+  @media (max-width: 959px) {
+    .savebar { position: sticky; bottom: calc(64px + env(safe-area-inset-bottom)); z-index: 5; margin: 18px -16px -16px; padding: 10px 16px; background: var(--white); border-top: 1px solid var(--burgundy-15); box-shadow: 0 -8px 20px -14px rgba(0,0,0,0.35); }
+    .savebar .btn { flex: 1; }
+    .variant { grid-template-columns: 1fr 1fr; }
+  }
+  .img-acts button { min-height: 30px; }
   @media (min-width: 1200px) { .layout { grid-template-columns: 1.3fr 1fr; align-items: start; } }
   .side { display: grid; gap: 20px; }
   h2 { font-size: 1.4rem; margin: 0 0 14px; }

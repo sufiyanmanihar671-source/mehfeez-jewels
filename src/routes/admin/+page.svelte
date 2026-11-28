@@ -19,6 +19,13 @@
 
 <h1>Dashboard</h1>
 
+<div class="quick">
+  <a class="btn" href="/admin/products/new">+ Add product</a>
+  <a class="btn btn--outline" href="/admin/customers?status=pending">Approve customers{#if s.customers_pending} ({s.customers_pending}){/if}</a>
+  <a class="btn btn--outline" href="/admin/enquiries?status=new">New enquiries{#if s.enquiries_new} ({s.enquiries_new}){/if}</a>
+  <a class="btn btn--outline" href="/" target="_blank">View website ↗</a>
+</div>
+
 <div class="tiles">
   {#each tiles as t}
     <a class="tile" class:hot={t.hot && Number(t.value) > 0} href={t.href}>
@@ -55,10 +62,27 @@
 </div>
 
 <style>
+  .quick {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .quick .btn {
+    min-height: 46px;
+    padding: 0 10px;
+    font-size: 0.7rem;
+  }
+  @media (min-width: 900px) {
+    .quick {
+      display: flex;
+      flex-wrap: wrap;
+    }
+  }
   .tiles {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
     margin-bottom: 26px;
   }
   @media (min-width: 900px) {
@@ -70,7 +94,7 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    padding: 20px;
+    padding: 16px;
     background: var(--white);
     border: 1px solid var(--charcoal-08);
     border-radius: var(--radius-lg);
@@ -83,7 +107,7 @@
   }
   .v {
     font-family: var(--font-display);
-    font-size: 2.2rem;
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
     font-weight: 700;
     color: var(--burgundy);
     line-height: 1;

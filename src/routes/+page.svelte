@@ -72,7 +72,7 @@
 />
 
 <!-- 4. Hero (dark, like the reference) -->
-<HeroSlider slides={data.slides} />
+<HeroSlider slides={data.slides} title={s.hero_title} subtitle={s.hero_subtitle} />
 
 <!-- 5. Trust highlights (ivory strip) -->
 <section class="trust" aria-label="Highlights">

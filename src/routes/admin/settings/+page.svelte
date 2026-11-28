@@ -80,24 +80,29 @@
       </div>
     </div>
 
-    <h2>Homepage hero</h2>
+    <h2>Homepage text</h2>
+    <p class="muted small">The heading shown on the homepage over the bridal photo (when no homepage slides are added).</p>
     <div class="form-grid">
       <div class="field">
-        <label for="ht">Hero title</label>
+        <label for="ht">Heading</label>
         <input id="ht" name="hero_title" value={v.hero_title} aria-invalid={!!e.hero_title} />
         {#if e.hero_title}<span class="field-error">{e.hero_title}</span>{/if}
       </div>
       <div class="field">
-        <label for="hs">Hero subtitle</label>
+        <label for="hs">Line under the heading</label>
         <textarea id="hs" name="hero_subtitle" rows="3" aria-invalid={!!e.hero_subtitle}>{v.hero_subtitle}</textarea>
         {#if e.hero_subtitle}<span class="field-error">{e.hero_subtitle}</span>{/if}
       </div>
     </div>
-    <button class="btn" type="submit" style="margin-top: 24px">Save settings</button>
+    <div class="savebar"><button class="btn" type="submit">Save settings</button></div>
   </form>
 
   <div class="side">
-    {#each [{ field: 'logo_url', title: 'Official logo', hint: 'PNG, SVG or WebP with transparent background works best.', accept: 'image/png,image/svg+xml,image/webp,image/jpeg' }, { field: 'hero_image_url', title: 'Hero image', hint: 'Portrait photo of your jewellery (at least 900px wide).', accept: 'image/jpeg,image/png,image/webp' }] as img}
+    <section class="card tip">
+      <h2>Homepage photos</h2>
+      <p class="muted small">To change the big photo on the homepage, add slides in <a href="/admin/hero">Homepage Slides</a>. Until then the bridal photo is shown.</p>
+    </section>
+    {#each [{ field: 'logo_url', title: 'Logo (optional)', hint: 'Leave empty to use the official Mehfeez Jewels logo. PNG, SVG or WebP with transparent background.', accept: 'image/png,image/svg+xml,image/webp,image/jpeg' }] as img}
       {@const current = (s as Record<string, any>)[img.field] as string | null}
       <section class="card">
         <h2>{img.title}</h2>
@@ -128,6 +133,12 @@
 
 <style>
   .layout { display: grid; gap: 20px; }
+  .small { font-size: 0.88rem; }
+  .savebar { display: flex; justify-content: flex-end; margin-top: 24px; }
+  @media (max-width: 959px) {
+    .savebar { position: sticky; bottom: calc(64px + env(safe-area-inset-bottom)); z-index: 5; margin: 24px -16px -16px; padding: 10px 16px; background: var(--white); border-top: 1px solid var(--burgundy-15); }
+    .savebar .btn { flex: 1; }
+  }
   @media (min-width: 1200px) { .layout { grid-template-columns: 1.4fr 1fr; align-items: start; } }
   .side { display: grid; gap: 20px; }
   h2 { font-size: 1.35rem; margin: 26px 0 14px; padding-bottom: 6px; border-bottom: 1px solid var(--charcoal-08); }

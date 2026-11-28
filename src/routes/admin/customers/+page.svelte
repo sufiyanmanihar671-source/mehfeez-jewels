@@ -20,7 +20,7 @@
 {#if form?.message}<div class="alert alert--error">{form.message}</div>{/if}
 
 <div class="toolbar">
-  <nav class="filters" aria-label="Status filter">
+  <nav class="filters chips" aria-label="Status filter">
     <a class="btn btn--sm" class:btn--outline={data.status !== ''} href="/admin/customers">All</a>
     <a class="btn btn--sm" class:btn--outline={data.status !== 'pending'} href="/admin/customers?status=pending">Pending</a>
     <a class="btn btn--sm" class:btn--outline={data.status !== 'approved'} href="/admin/customers?status=approved">Approved</a>
@@ -40,7 +40,7 @@
 <p class="muted">{data.total} customer{data.total === 1 ? '' : 's'}</p>
 
 <div class="table-wrap">
-  <table>
+  <table class="rt">
     <thead>
       <tr><th>Business</th><th>Contact</th><th>Location</th><th>Type</th><th>Registered</th><th>Status</th><th>Actions</th></tr>
     </thead>
@@ -51,11 +51,11 @@
             <a href={`/admin/customers/${c.id}`}><strong>{c.company_name || '—'}</strong></a><br /><span class="muted">{c.full_name}</span>
             {#if !c.company_name || !c.whatsapp || !c.country}<br /><span class="badge badge--muted">Profile incomplete</span>{/if}
           </td>
-          <td>{c.email}<br /><a href={waLink(c.whatsapp, `Hello ${c.full_name}, this is Mehfeez Jewels.`)} target="_blank" rel="noopener noreferrer">{c.whatsapp}</a></td>
-          <td>{c.city}, {c.country}</td>
-          <td>{c.business_type}</td>
-          <td>{formatDate(c.created_at)}</td>
-          <td><span class="badge" class:badge--solid={c.status === 'approved'} class:badge--dark={c.status === 'rejected'}>{c.status}</span></td>
+          <td data-label="Contact">{c.email}<br /><a href={waLink(c.whatsapp, `Hello ${c.full_name}, this is Mehfeez Jewels.`)} target="_blank" rel="noopener noreferrer">{c.whatsapp}</a></td>
+          <td data-label="Location">{c.city}, {c.country}</td>
+          <td class="hide-sm">{c.business_type}</td>
+          <td data-label="Registered">{formatDate(c.created_at)}</td>
+          <td data-label="Status"><span class="badge" class:badge--solid={c.status === 'approved'} class:badge--dark={c.status === 'rejected'}>{c.status}</span></td>
           <td class="acts">
             {#if c.status !== 'approved'}
               <form method="POST" action="?/setStatus" use:enhance>
@@ -88,8 +88,14 @@
 
 <style>
   .acts {
-    display: flex;
+    display: flex !important;
     gap: 6px;
+  }
+  .acts form {
+    flex: 1;
+  }
+  .acts .btn {
+    width: 100%;
   }
   .pager {
     display: flex;

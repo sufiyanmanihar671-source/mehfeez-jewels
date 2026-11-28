@@ -149,7 +149,7 @@
         <h1>{p.name}</h1>
         <ul class="facts">
           <li class="stock" class:out={p.stock_status === 'out_of_stock'}><span class="dot"></span>{stock}</li>
-          {#if p.material}<li><Icon name="gem" size={15} stroke={2} />{p.material}</li>{/if}
+          {#if p.material}<li><Icon name="gem" size={15} stroke={2} /><span class="fl">Material:</span>{p.material}</li>{/if}
           <li><Icon name="boxes" size={15} stroke={2} />Min. order {MIN_ORDER}</li>
         </ul>
         {#if p.video_url}
@@ -452,6 +452,11 @@
     font-weight: 600;
     color: var(--charcoal);
     white-space: nowrap;
+  }
+  .facts .fl {
+    font-weight: 500;
+    color: var(--muted);
+    margin-right: -2px;
   }
   .facts li :global(svg) {
     color: var(--burgundy);

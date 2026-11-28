@@ -45,27 +45,25 @@
     {:else}
       <JewelPlaceholder label={product.name} />
     {/if}
-    <span class="tags">
-      {#if product.is_new_arrival}<span class="tag">New</span>{/if}
-      {#if product.is_bestseller}<span class="tag tag--dark">Bestseller</span>{/if}
-    </span>
+    {#if product.is_bestseller || product.is_new_arrival}
+      <span class="tag" class:tag--dark={product.is_bestseller}>{product.is_bestseller ? 'Bestseller' : 'New'}</span>
+    {/if}
   </a>
   <div class="body">
     <h3><a href={`/products/${product.slug}`}>{product.name}</a></h3>
-    <p class="meta"><span class="nw">SKU {product.sku}</span><span class="dot">·</span><span class="nw">MOQ {product.moq}</span></p>
     {#if price}
       <p class="price">{formatPrice(price.price, price.currency)} <span>wholesale</span></p>
     {:else if loggedIn && status === 'approved'}
       <p class="note">Price on request</p>
     {:else if loggedIn}
-      <p class="note"><Icon name="lock" size={12} /> Price visible after approval</p>
+      <p class="note"><Icon name="lock" size={11} /> Price after approval</p>
     {:else}
-      <a class="note note--link" href={`/login?next=${encodeURIComponent(page.url.pathname)}`}><Icon name="lock" size={12} /> Login to view price</a>
+      <a class="note note--link" href={`/login?next=${encodeURIComponent(page.url.pathname)}`}><Icon name="lock" size={11} /> Login to view price</a>
     {/if}
     <div class="actions">
-      <a class="btn btn--sm" href={`/products/${product.slug}`}>View Details</a>
-      <a class="btn btn--sm btn--outline" href={wa} target="_blank" rel="noopener noreferrer" aria-label={`Wholesale enquiry for ${product.name} on WhatsApp`}>
-        <Icon name="whatsapp" size={14} /> Enquiry
+      <a class="btn btn--sm view" href={`/products/${product.slug}`}>View Details</a>
+      <a class="wa" href={wa} target="_blank" rel="noopener noreferrer" aria-label={`Wholesale enquiry for ${product.name} on WhatsApp`} title="Enquire on WhatsApp">
+        <Icon name="whatsapp" size={17} />
       </a>
     </div>
   </div>
@@ -78,7 +76,6 @@
     flex-direction: column;
     background: var(--white);
     border: 1px solid var(--burgundy-15);
-    padding: 8px;
     transition: box-shadow 0.3s, transform 0.3s;
   }
   .pc:hover {
@@ -109,18 +106,12 @@
   .pc:hover .media .main {
     transform: scale(1.04);
   }
-  .tags {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    right: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
   .tag {
-    padding: 4px 10px;
-    font-size: 0.62rem;
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 3px 8px;
+    font-size: 0.56rem;
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -136,13 +127,20 @@
     align-items: center;
     text-align: center;
     gap: 4px;
-    padding: 14px 8px 8px;
+    padding: 12px 10px 10px;
     flex: 1;
   }
   h3 {
-    font-size: 1.12rem;
+    font-size: 1.05rem;
+    font-weight: 600;
     line-height: 1.25;
     margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
   }
   h3 a {
     color: var(--charcoal);
@@ -151,29 +149,16 @@
     color: var(--burgundy);
     text-decoration: none;
   }
-  .meta {
-    margin: 0;
-    font-size: 0.74rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .meta .dot {
-    margin: 0 6px;
-  }
-  .meta .nw {
-    white-space: nowrap;
-  }
   .price {
-    margin: 4px 0 0;
+    margin: 2px 0 0;
     font-family: var(--font-display);
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 700;
     color: var(--burgundy);
   }
   .price span {
     font-family: var(--font-body);
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -182,10 +167,10 @@
   .note {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    margin: 4px 0 0;
-    font-size: 0.74rem;
-    letter-spacing: 0.06em;
+    gap: 5px;
+    margin: 2px 0 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
     color: var(--muted);
   }
   .note--link {
@@ -194,56 +179,54 @@
   }
   .actions {
     margin-top: auto;
-    padding-top: 12px;
+    padding-top: 10px;
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     gap: 6px;
   }
-  .actions .btn {
-    min-height: 38px;
-    padding: 0 6px;
-    font-size: 0.66rem;
-    letter-spacing: 0.1em;
+  .view {
+    flex: 1;
+    min-width: 0;
+    min-height: 36px;
+    padding: 0 8px;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+  }
+  .wa {
+    flex: none;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--burgundy-30);
+    color: var(--burgundy);
+    background: var(--white);
+    text-decoration: none !important;
+    transition: background 0.2s, color 0.2s;
+  }
+  .wa:hover {
+    background: var(--burgundy);
+    color: var(--white);
   }
   @media (max-width: 480px) {
-    .pc {
-      padding: 5px;
-    }
-    .tags {
-      top: 6px;
-      left: 6px;
-      right: 6px;
-      gap: 4px;
-    }
-    .tag {
-      padding: 3px 6px;
-      font-size: 0.52rem;
-      letter-spacing: 0.1em;
-    }
     .body {
-      padding: 10px 4px 4px;
-      gap: 3px;
+      padding: 10px 7px 8px;
     }
     h3 {
-      font-size: 0.95rem;
-      overflow-wrap: anywhere;
-    }
-    .meta {
-      font-size: 0.64rem;
-      letter-spacing: 0.04em;
+      font-size: 0.92rem;
     }
     .note {
-      font-size: 0.68rem;
-      letter-spacing: 0.02em;
+      font-size: 0.66rem;
     }
-    .actions .btn {
+    .view {
       min-height: 34px;
-      font-size: 0.6rem;
-      letter-spacing: 0.06em;
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
     }
-    .actions {
-      grid-template-columns: 1fr;
+    .wa {
+      width: 34px;
+      height: 34px;
     }
   }
 </style>

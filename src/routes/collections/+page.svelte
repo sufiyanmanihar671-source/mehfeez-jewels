@@ -20,11 +20,9 @@
   noindex={!!data.q || data.page > 1}
 />
 
-<section class="page-hero">
+<section class="page-hero page-hero--compact">
   <div class="container">
-    <span class="eyebrow">Wholesale catalogue</span>
     <h1>{title}</h1>
-    <p>Browse designs freely. Approved business customers can view wholesale prices after logging in.</p>
   </div>
 </section>
 
@@ -40,6 +38,7 @@
       show={data.show}
       sort={data.sort}
       categories={data.categories}
+      minimal
       loggedIn={!!data.user}
       status={data.profile?.status}
     />

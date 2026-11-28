@@ -15,6 +15,7 @@
     sort,
     categories,
     activeCategory = null,
+    minimal = false,
     loggedIn,
     status
   }: {
@@ -28,6 +29,8 @@
     sort: string;
     categories: Category[];
     activeCategory?: string | null;
+    /** Only the product grid: no filter chips or sort bar (search results still say what matched). */
+    minimal?: boolean;
     loggedIn: boolean;
     status: 'pending' | 'approved' | 'rejected' | null | undefined;
   } = $props();
@@ -39,7 +42,8 @@
   }
 </script>
 
-<div class="layout">
+<div class="layout" class:minimal>
+  {#if !minimal}
   <aside class="filters">
     <form method="GET" class="search" role="search">
       <label class="sr-only" for="q">Search designs</label>
@@ -61,8 +65,12 @@
       <a href="/collections?show=bestsellers" class:active={show === 'bestsellers'}>Bestsellers</a>
     </nav>
   </aside>
+  {/if}
 
   <div>
+    {#if minimal}
+      {#if q}<p class="muted found">{total} {total === 1 ? 'design' : 'designs'} matching “{q}”</p>{/if}
+    {:else}
     <div class="toolbar">
       <span class="muted">{total} {total === 1 ? 'design' : 'designs'}{q ? ` matching “${q}”` : ''}</span>
       <form method="GET">
@@ -76,6 +84,7 @@
         <noscript><button class="btn btn--sm" type="submit">Apply</button></noscript>
       </form>
     </div>
+    {/if}
 
     {#if products.length}
       <div class="grid grid--products">
@@ -104,8 +113,12 @@
     display: grid;
     gap: 28px;
   }
+  .found {
+    margin: 0 0 16px;
+    text-align: center;
+  }
   @media (min-width: 1000px) {
-    .layout {
+    .layout:not(.minimal) {
       grid-template-columns: 250px 1fr;
       gap: 40px;
     }

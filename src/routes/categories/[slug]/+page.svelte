@@ -10,11 +10,9 @@
   noindex={!!data.q || data.page > 1}
 />
 
-<section class="page-hero">
+<section class="page-hero page-hero--compact">
   <div class="container">
-    <span class="eyebrow">Jewellery category</span>
     <h1>{data.category.name}</h1>
-    {#if data.category.description}<p>{data.category.description}</p>{/if}
   </div>
 </section>
 
@@ -33,6 +31,7 @@
       show={data.show}
       sort={data.sort}
       categories={data.categories}
+      minimal
       activeCategory={data.category.slug}
       loggedIn={!!data.user}
       status={data.profile?.status}

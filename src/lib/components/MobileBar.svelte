@@ -3,12 +3,11 @@
   import Icon from './Icon.svelte';
   import { waLink } from '$lib/whatsapp';
   import { imageUrl } from '$lib/image';
-  import { cart } from '$lib/cart.svelte';
   import type { Category, SiteSettings } from '$lib/types';
 
   /**
    * App-style bottom bar on phones with the key B2B actions.
-   * Home · Discover · WhatsApp (centre) · Enquiry Cart · Login/Account.
+   * Home · Discover · WhatsApp (centre) · Contact · Login/Account. (Cart is in the header.)
    * "Discover" opens a sheet of category boxes (same look as the homepage).
    */
   let {
@@ -95,12 +94,8 @@
     <a class="it wa" href={chatHref ?? waLink(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">
       <span class="wa-ic"><Icon name="whatsapp" size={24} /></span><span>WhatsApp</span>
     </a>
-    <a class="it" href="/cart" class:on={path === '/cart'} aria-label={`Enquiry cart, ${cart.count} ${cart.count === 1 ? 'design' : 'designs'}`}>
-      <span class="ic">
-        <Icon name="bag" size={20} stroke={1.5} />
-        {#if cart.count}<span class="badge">{cart.count > 9 ? '9+' : cart.count}</span>{/if}
-      </span>
-      <span>Cart</span>
+    <a class="it" href="/contact" class:on={path === '/contact'}>
+      <Icon name="phone" size={20} stroke={1.5} /><span>Contact</span>
     </a>
     {#if loggedIn}
       <a class="it" href="/account" class:on={path.startsWith('/account')}>
@@ -156,28 +151,6 @@
   }
   .wa {
     color: var(--white);
-  }
-  .ic {
-    position: relative;
-    display: inline-flex;
-  }
-  .badge {
-    position: absolute;
-    top: -6px;
-    right: -10px;
-    min-width: 17px;
-    height: 17px;
-    padding: 0 4px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    background: var(--ivory);
-    color: var(--burgundy);
-    font-size: 0.6rem;
-    font-weight: 700;
-    letter-spacing: 0;
-    box-shadow: 0 0 0 2px var(--burgundy-deep);
   }
   .wa-ic {
     display: inline-flex;

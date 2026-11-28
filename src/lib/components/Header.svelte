@@ -276,11 +276,6 @@
     font-size: 0.58rem;
     font-weight: 700;
   }
-  @media (max-width: 759px) {
-    .icon-btn.cart-btn {
-      display: none;
-    }
-  }
   .tools {
     display: flex;
     justify-content: flex-end;

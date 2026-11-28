@@ -27,7 +27,7 @@
 {#if !isAdmin}
   <Footer settings={data.settings} categories={data.categories} />
   <FloatingActions settings={data.settings} />
-  <MobileBar settings={data.settings} />
+  <MobileBar settings={data.settings} loggedIn={!!data.user} />
 {/if}
 
 <style>

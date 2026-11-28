@@ -13,27 +13,37 @@
     settings,
     product = false,
     chatHref = null,
-    videoHref = null
-  }: { settings: SiteSettings; product?: boolean; chatHref?: string | null; videoHref?: string | null } = $props();
+    videoHref = null,
+    loggedIn = false
+  }: { settings: SiteSettings; product?: boolean; chatHref?: string | null; videoHref?: string | null; loggedIn?: boolean } = $props();
   const path = $derived(page.url.pathname);
 </script>
 
 {#if product || !path.startsWith('/products/')}
 <nav class="mbar" aria-label="Quick actions">
   <a href="/" class:on={path === '/'}>
-    <Icon name="gem" size={20} stroke={1.4} /><span>Home</span>
+    <Icon name="home" size={20} stroke={1.5} /><span>Home</span>
   </a>
   <a href="/collections" class:on={path.startsWith('/collections') || path.startsWith('/categories') || path.startsWith('/products')}>
     <Icon name="designs" size={20} stroke={1.4} /><span>Designs</span>
   </a>
+  <a class="wa" href={chatHref ?? waLink(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">
+    <span class="wa-ic"><Icon name="whatsapp" size={24} /></span><span>WhatsApp</span>
+  </a>
   {#if settings.video_call_enabled}
     <a href={videoHref ?? waLink(settings.video_call_number, settings.video_call_message)} target="_blank" rel="noopener noreferrer">
-      <Icon name="video" size={20} stroke={1.4} /><span>Video</span>
+      <Icon name="video" size={20} stroke={1.4} /><span>Video Call</span>
     </a>
   {/if}
-  <a class="wa" href={chatHref ?? waLink(settings.whatsapp_number, settings.whatsapp_message)} target="_blank" rel="noopener noreferrer">
-    <span class="wa-ic"><Icon name="whatsapp" size={22} /></span><span>WhatsApp</span>
-  </a>
+  {#if loggedIn}
+    <a href="/account" class:on={path.startsWith('/account')}>
+      <Icon name="user" size={20} stroke={1.5} /><span>Account</span>
+    </a>
+  {:else}
+    <a href={`/login?next=${encodeURIComponent(path)}`} class:on={path === '/login' || path === '/register'}>
+      <Icon name="user" size={20} stroke={1.5} /><span>Login</span>
+    </a>
+  {/if}
 </nav>
 {/if}
 
@@ -63,7 +73,7 @@
     color: var(--ivory-70);
     font-size: 0.6rem;
     font-weight: 500;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     white-space: nowrap;
     text-decoration: none !important;
@@ -81,9 +91,9 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
-    margin-top: -18px;
+    width: 44px;
+    height: 44px;
+    margin-top: -22px;
     border-radius: 50%;
     background: var(--ivory);
     color: var(--burgundy);

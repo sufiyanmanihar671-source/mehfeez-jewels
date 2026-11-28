@@ -159,7 +159,7 @@
       <!-- Info -->
       <div class="info">
         <div class="eyebrow">
-          {#if p.category}<a class="cat" href={`/categories/${p.category.slug}`}>{p.category.name}</a>{/if}
+          {#if p.category}<span class="cat">{p.category.name}</span>{/if}
           <span class="sku">SKU {sku}</span>
         </div>
         <h1>{p.name}</h1>
@@ -683,8 +683,12 @@
     .thumbs { margin-top: 10px; gap: 8px; }
     .thumbs button { flex-basis: 52px; height: 52px; }
     h1 { font-size: 1.45rem; margin: 4px 0 6px; }
-    .facts { gap: 6px; margin-bottom: 14px; }
-    .facts li { padding: 5px 10px; font-size: 0.78rem; }
+    /* one line on phones; scrolls sideways only if a material name is very long */
+    .facts { flex-wrap: nowrap; gap: 5px; margin-bottom: 14px; overflow-x: auto; scrollbar-width: none; }
+    .facts::-webkit-scrollbar { display: none; }
+    .facts li { flex: none; gap: 4px; padding: 4px 8px; font-size: 0.68rem; }
+    .facts li :global(svg) { width: 12px; height: 12px; }
+    .facts .dot { width: 6px; height: 6px; }
     .pricebox { padding: 10px 12px; margin-bottom: 14px; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
     .pricebox .pl { flex-basis: 100%; font-size: 0.62rem; }
     .pmsg { font-size: 0.82rem; flex: 1 1 auto; }

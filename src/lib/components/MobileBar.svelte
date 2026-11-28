@@ -67,10 +67,6 @@
         <h2>Discover Designs</h2>
         <button class="x" type="button" onclick={() => (open = false)} aria-label="Close"><Icon name="close" size={18} /></button>
       </div>
-      <div class="quick">
-        <a href="/collections"><Icon name="designs" size={18} stroke={1.5} /> All Designs</a>
-        <a href="/collections?show=new"><Icon name="sparkle" size={18} stroke={1.5} /> New Arrivals</a>
-      </div>
       {#if types.length}
         <h3>Categories</h3>
         {@render tiles(types)}
@@ -270,26 +266,6 @@
     background: var(--white);
     color: var(--burgundy);
     cursor: pointer;
-  }
-  .quick {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin: 4px 0 6px;
-  }
-  .quick a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 44px;
-    background: var(--burgundy);
-    color: var(--white);
-    font-size: 0.74rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-decoration: none !important;
   }
   .sheet h3 {
     margin: 16px 0 8px;

@@ -28,8 +28,12 @@ export function authMessage(err: { code?: string; message: string }): string {
  * A wholesale profile is complete once the few details needed for approval are
  * filled in: business name, WhatsApp number and country. Accounts created with
  * Google start incomplete, because Google only provides a name and email.
+ * Admins never need a business profile.
  */
-export function isProfileComplete(p: { company_name?: string | null; whatsapp?: string | null; country?: string | null } | null | undefined): boolean {
+export function isProfileComplete(
+  p: { role?: string | null; company_name?: string | null; whatsapp?: string | null; country?: string | null } | null | undefined
+): boolean {
   if (!p) return false;
+  if (p.role === 'admin') return true;
   return [p.company_name, p.whatsapp, p.country].every((v) => !!v && v.trim().length > 0);
 }

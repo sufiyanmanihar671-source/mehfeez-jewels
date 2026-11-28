@@ -16,7 +16,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 
   const { data: profile } = await locals.supabase
     .from('profiles')
-    .select('company_name, whatsapp, country, city, address, business_type')
+    .select('role, company_name, whatsapp, country')
     .eq('id', data.user.id)
     .maybeSingle();
 

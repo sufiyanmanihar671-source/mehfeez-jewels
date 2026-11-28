@@ -170,6 +170,11 @@ await check('Google user without business details never sees prices', async () =
   const r = await get('/products/royal-kundan-bridal-set', 'google-token');
   assert.deepEqual(leaks(r.body), []);
 });
+await check('admins are never asked to complete a business profile', async () => {
+  const r = await get('/account/complete?next=%2Fadmin', 'admin-token');
+  assert.equal(r.status, 303);
+  assert.equal(r.headers.get('location'), '/admin');
+});
 await check('complete profile page skips users who already finished it', async () => {
   const r = await get('/account/complete', 'approved-token');
   assert.equal(r.status, 303);
